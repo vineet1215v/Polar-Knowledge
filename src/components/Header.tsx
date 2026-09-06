@@ -5,6 +5,7 @@ interface HeaderProps {
   onNavigate?: (p: string) => void;
   workspaceCount?: number;
   onOpenWorkspace?: () => void;
+  onToggleSidebar?: () => void;
 }
 
 const notificationFeed = [
@@ -56,7 +57,7 @@ function HeaderIconBtn({ label, onClick, children, badge }: { label: string; onC
   );
 }
 
-export default function Header({ onSearch, onNavigate, workspaceCount = 0, onOpenWorkspace }: HeaderProps) {
+export default function Header({ onSearch, onNavigate, workspaceCount = 0, onOpenWorkspace,onToggleSidebar, }: HeaderProps) {
   const [query, setQuery] = useState("");
   const [notifOpen, setNotifOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
@@ -87,31 +88,77 @@ export default function Header({ onSearch, onNavigate, workspaceCount = 0, onOpe
           boxShadow: "0 1px 4px rgba(0,0,0,0.2)",
         }}
       >
-        {/* Search */}
-        <form onSubmit={handleSearch} className="flex-1 relative max-w-md">
-          <svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" strokeWidth={2} className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none">
-            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-          </svg>
-          <input
-            value={query}
-            onChange={e => setQuery(e.target.value)}
-            placeholder="Search expeditions, datasets, publications..."
-            aria-label="Search the knowledge portal"
-            className="w-full text-white text-xs outline-none transition-all"
-            style={{
-              height: 34,
-              paddingLeft: 34,
-              paddingRight: 12,
-              borderRadius: "var(--radius-md)",
-              background: "rgba(255,255,255,0.1)",
-              border: "1px solid rgba(255,255,255,0.15)",
-              fontSize: 12.5,
-              fontFamily: "inherit",
-            }}
-            onFocus={e => { e.target.style.background = "rgba(255,255,255,0.15)"; e.target.style.borderColor = "rgba(255,255,255,0.35)"; }}
-            onBlur={e => { e.target.style.background = "rgba(255,255,255,0.1)"; e.target.style.borderColor = "rgba(255,255,255,0.15)"; }}
-          />
-        </form>
+        <button
+  type="button"
+  onClick={onToggleSidebar}
+  aria-label="Toggle sidebar"
+  className="flex items-center justify-center flex-shrink-0 rounded-md transition-colors"
+  style={{
+    width: 34,
+    height: 34,
+    color: "white",
+    background: "rgba(255,255,255,0.08)",
+    border: "1px solid rgba(255,255,255,0.15)",
+  }}
+  onMouseEnter={(e) => {
+    e.currentTarget.style.background = "rgba(255,255,255,0.16)";
+  }}
+  onMouseLeave={(e) => {
+    e.currentTarget.style.background = "rgba(255,255,255,0.08)";
+  }}
+>
+  <svg
+    width="18"
+    height="18"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+  >
+    <line x1="4" y1="6" x2="20" y2="6" />
+    <line x1="4" y1="12" x2="20" y2="12" />
+    <line x1="4" y1="18" x2="20" y2="18" />
+  </svg>
+</button>
+        {/* Brand */}
+<div className="flex items-center gap-2.5 flex-shrink-0">
+
+  {/* Logo */}
+  <div
+    className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
+    style={{
+      background:
+        "linear-gradient(135deg, var(--accent) 0%, var(--primary-blue) 100%)",
+    }}
+  >
+    <svg
+      viewBox="0 0 24 24"
+      fill="white"
+      style={{
+        width: 18,
+        height: 18,
+      }}
+    >
+      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" />
+    </svg>
+  </div>
+
+  {/* NCPOR text */}
+  <div className="block">
+    <div className="ncpor-brand">
+      NCPOR
+    </div>
+
+    <div
+      className="hidden md:block text-[9px] mt-1"
+      style={{ color: "rgba(255,255,255,0.55)" }}
+    >
+      Polar Knowledge Portal
+    </div>
+  </div>
+
+</div>
 
         <div className="flex items-center gap-1.5 ml-auto">
           {/* Workspace Sources button */}
@@ -192,7 +239,7 @@ export default function Header({ onSearch, onNavigate, workspaceCount = 0, onOpe
             {notificationFeed.map(n => (
               <button
                 key={n.id}
-                className="w-full text-left flex items-start gap-3 px-4 py-3 transition-colors"
+                className="w-full text-left flex items-start gap-5 px-4 py-3 transition-colors"
                 style={{ borderBottom: "1px solid var(--border)", background: n.unread && !readAll ? "#f8faff" : "transparent" }}
                 onMouseEnter={e => (e.currentTarget.style.background = "#f8fafc")}
                 onMouseLeave={e => (e.currentTarget.style.background = n.unread && !readAll ? "#f8faff" : "transparent")}

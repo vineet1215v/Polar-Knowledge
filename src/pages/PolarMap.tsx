@@ -110,21 +110,39 @@ const BASEMAPS = [
 ];
 
 // Station marker icon factory
-function makeStationIcon(station: Station, selected: boolean) {
+function makeStationIcon(station: Station, selected: boolean, hovered: boolean = false) {
   const colors: Record<string, string> = {
-    Indian: selected ? "#1d4ed8" : "#ef4444",
-    "Indian Arctic": selected ? "#0e7490" : "#0891b2",
-    Historic: selected ? "#d97706" : "#f59e0b",
-    International: selected ? "#6d28d9" : "#8b5cf6",
+    Indian: selected || hovered ? "#1d4ed8" : "#ef4444",
+    "Indian Arctic": selected || hovered ? "#0e7490" : "#0891b2",
+    Historic: selected || hovered ? "#d97706" : "#f59e0b",
+    International: selected || hovered ? "#6d28d9" : "#8b5cf6",
   };
   const color = colors[station.type];
-  const size = selected ? 18 : 14;
+  const size = hovered ? 22 : selected ? 18 : 14;
+  const ring = hovered
+    ? `<div style="position:absolute;top:50%;left:50%;width:${size + 14}px;height:${size + 14}px;transform:translate(-50%,-50%);border-radius:50%;border:2px solid ${color};opacity:0.45;"></div>`
+    : "";
   return L.divIcon({
     className: "",
-    html: `<div style="width:${size}px;height:${size}px;border-radius:50%;background:${color};border:2.5px solid white;box-shadow:0 2px 8px rgba(0,0,0,0.3);transition:all 0.2s;cursor:pointer;"></div>`,
+    html: `<div style="position:relative;width:${size}px;height:${size}px;">${ring}<div style="width:${size}px;height:${size}px;border-radius:50%;background:${color};border:2.5px solid white;box-shadow:0 2px 10px rgba(0,0,0,0.35);transition:all 0.15s;cursor:pointer;"></div></div>`,
     iconSize: [size, size],
     iconAnchor: [size / 2, size / 2],
   });
+}
+
+// Rich hover label content for a station
+function stationLabelHtml(station: Station, rich: boolean) {
+  if (!rich) {
+    return `<span class="station-label-name">${station.name}</span>`;
+  }
+  return `
+    <div class="station-label-rich">
+      <div class="station-label-name">${station.name}</div>
+      <div class="station-label-meta">${station.type} · ${station.status} · Est. ${station.established}</div>
+      ${station.expeditions || station.datasets || station.publications
+        ? `<div class="station-label-stats">🚢 ${station.expeditions} · 💾 ${station.datasets} · 📄 ${station.publications}</div>`
+        : ""}
+    </div>`;
 }
 
 // Year filter
@@ -134,6 +152,7 @@ const LAYER_DEFS = [
   { id: "stations", label: "Research Stations",  color: "#ef4444" },
   { id: "routes",   label: "Expedition Routes",  color: "#2563eb" },
   { id: "density",  label: "Knowledge Density",  color: "#7c3aed" },
+  { id: "labels",   label: "Station Labels",     color: "#0f172a" },
 ];
 
 // ── Component ────────────────────────────────────────────────────────────────
@@ -153,10 +172,12 @@ export default function PolarMap({
   const stationMarkersRef = useRef<Map<string, L.Marker>>(new Map());
   const routeLayersRef = useRef<Map<string, L.Polyline>>(new Map());
   const densityLayerRef = useRef<L.LayerGroup | null>(null);
+  const selectedStationRef = useRef<Station | null>(null);
+  const selectedRouteRef = useRef<Route | null>(null);
 
   const [selectedStation, setSelectedStation] = useState<Station | null>(null);
   const [selectedRoute, setSelectedRoute] = useState<Route | null>(null);
-  const [activeLayers, setActiveLayers] = useState(new Set(["stations", "routes"]));
+  const [activeLayers, setActiveLayers] = useState(new Set(["stations", "routes", "labels"]));
   const [activeBasemap, setActiveBasemap] = useState("osm");
   const [timeYear, setTimeYear] = useState(2024);
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
@@ -204,8 +225,26 @@ export default function PolarMap({
       STATIONS.forEach(station => {
         const marker = L.marker([station.lat, station.lng], {
           icon: makeStationIcon(station, false),
-          title: station.name,
         });
+
+        // Permanent name label — always visible, low-key styling
+        marker.bindTooltip(stationLabelHtml(station, false), {
+          permanent: true, direction: "top", offset: [0, -10],
+          className: "station-tooltip-permanent", opacity: 1,
+        });
+
+        marker.on("mouseover", () => {
+          const isSelected = selectedStationRef.current?.id === station.id;
+          marker.setIcon(makeStationIcon(station, isSelected, true));
+          marker.setTooltipContent(stationLabelHtml(station, true));
+          marker.getElement()?.style.setProperty("z-index", "1000");
+        });
+        marker.on("mouseout", () => {
+          const isSelected = selectedStationRef.current?.id === station.id;
+          marker.setIcon(makeStationIcon(station, isSelected, false));
+          marker.setTooltipContent(stationLabelHtml(station, false));
+        });
+
         marker.on("click", () => {
           setSelectedStation(station);
           setSelectedRoute(null);
@@ -225,7 +264,29 @@ export default function PolarMap({
           color: route.color, weight: 2.5,
           opacity: 0.85, dashArray: "8, 5",
         });
-        poly.on("click", () => { setSelectedRoute(route); setSelectedStation(null); });
+
+        // Permanent label at the route's midpoint
+        poly.bindTooltip(
+          `<span class="route-label-name" style="color:${route.color}">🚢 ${route.label}</span>`,
+          { permanent: true, direction: "right", offset: [6, 0], className: "route-tooltip-permanent", opacity: 1 }
+        );
+
+        poly.on("mouseover", () => {
+          poly.setStyle({ weight: 5, opacity: 1 });
+          poly.bringToFront();
+        });
+        poly.on("mouseout", () => {
+          const isSelected = selectedRouteRef.current?.id === route.id;
+          poly.setStyle({ weight: isSelected ? 4.5 : 2.5, opacity: isSelected ? 1 : 0.85 });
+        });
+
+        poly.on("click", () => {
+          setSelectedRoute(route);
+          setSelectedStation(null);
+          routeLayersRef.current.forEach((p, id) => {
+            p.setStyle({ weight: id === route.id ? 4.5 : 2.5, opacity: id === route.id ? 1 : 0.85 });
+          });
+        });
         poly.addTo(map);
         routeLayersRef.current.set(route.id, poly);
       });
@@ -257,6 +318,10 @@ export default function PolarMap({
     };
   }, []);
 
+  // Keep selection refs in sync so map event handlers avoid stale closures
+  useEffect(() => { selectedStationRef.current = selectedStation; }, [selectedStation]);
+  useEffect(() => { selectedRouteRef.current = selectedRoute; }, [selectedRoute]);
+
   // Toggle layers
   useEffect(() => {
     const map = mapRef.current;
@@ -277,6 +342,12 @@ export default function PolarMap({
       if (activeLayers.has("density")) densityLayerRef.current.addTo(map);
       else map.removeLayer(densityLayerRef.current);
     }
+
+    // Show/hide permanent station name labels
+    stationMarkersRef.current.forEach(m => {
+      if (activeLayers.has("labels")) m.openTooltip();
+      else m.closeTooltip();
+    });
   }, [activeLayers, timeYear]);
 
   // Timeline filter — update route visibility
@@ -419,10 +490,11 @@ export default function PolarMap({
       </div>
 
       {/* Map + Right panel */}
-      <div className="flex flex-1 overflow-hidden px-3 pb-2 gap-2">
-        {/* Map */}
-        <div className="flex-1 relative rounded-xl overflow-hidden" style={{ border: "1px solid var(--border)" }}>
-          {mapLoading && (
+      <div className="polar-map-layout flex flex-1 overflow-hidden px-3 pb-2 gap-2">        {/* Map */}
+<div
+  className="polar-map-container flex-1 relative rounded-xl overflow-hidden"
+  style={{ border: "1px solid var(--border)" }}
+>          {mapLoading && (
             <div className="absolute inset-0 flex items-center justify-center z-10" style={{ background: "#b8d4e8" }}>
               <div className="text-center">
                 <div className="w-8 h-8 border-2 border-blue-300 border-t-blue-600 rounded-full animate-spin mx-auto mb-2"></div>
@@ -441,6 +513,7 @@ export default function PolarMap({
             </div>
           )}
 
+          
           {/* Leaflet container */}
           <div ref={mapContainerRef} className="w-full h-full" style={{ zIndex: 0 }} />
 
@@ -462,8 +535,10 @@ export default function PolarMap({
         </div>
 
         {/* Right panel */}
-        <div className="flex flex-col gap-2 flex-shrink-0 overflow-y-auto" style={{ width: 220 }}>
-
+<div
+  className="polar-map-sidebar flex flex-col gap-2 flex-shrink-0 overflow-y-auto"
+  style={{ width: 220 }}
+>
           {/* Station detail */}
           {selectedStation && (
             <div className="card p-3">

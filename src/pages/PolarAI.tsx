@@ -5,8 +5,6 @@ import type { WorkspaceSource, SourceType } from "../workspaceStore";
 import { typeIcon } from "../workspaceStore";
 import { publications, datasets, expeditions } from "../data";
 
-// ── Types ──────────────────────────────────────────────────────────────────
-
 interface Message {
   role: "user" | "assistant";
   text: string;
@@ -33,8 +31,6 @@ interface FlashCard { q: string; a: string; source: string; }
 interface QuizQ { q: string; options: string[]; correct: number; explanation: string; source: string; }
 interface Slide { title: string; bullets: string[]; source: string; }
 interface Scene { scene: number; narration: string; visual: string; source: string; }
-
-// ── Static data ────────────────────────────────────────────────────────────
 
 const STUDIO_TOOLS = [
   { id: "report",      icon: "📋", label: "Research Report",  desc: "Structured report with executive summary and findings" },
@@ -103,8 +99,6 @@ const EXAMPLE_QUESTIONS = [
   "Explain Southern Ocean carbon uptake",
 ];
 
-// ── Data lookup ──────────────────────────────────────────────────────────────
-
 type PubRecord  = typeof publications[0];
 type DsRecord   = typeof datasets[0];
 type ExpRecord  = typeof expeditions[0];
@@ -127,8 +121,6 @@ function resolveAll(sources: WorkspaceSource[]): ResolvedSource[] {
     };
   });
 }
-
-// ── Content generators (source-data-driven) ──────────────────────────────────
 
 function genReport(sources: WorkspaceSource[]): string {
   const date = new Date().toLocaleDateString("en-IN", { year: "numeric", month: "long", day: "numeric" });
@@ -210,8 +202,6 @@ AI-generated draft · Not an official NCPOR document · Requires scientific and 
 function genSlides(sources: WorkspaceSource[]): Slide[] {
   const resolved = resolveAll(sources);
   const slides: Slide[] = [];
-
-  // Title slide
   const regions = [...new Set(resolved.flatMap(r => r.exp ? [r.exp.region] : r.ds ? [r.ds.region] : []))];
   slides.push({
     title: "NCPOR Polar Knowledge Synthesis",
@@ -223,8 +213,6 @@ function genSlides(sources: WorkspaceSource[]): Slide[] {
     ],
     source: "NCPOR Repository",
   });
-
-  // One slide per source with its real data
   resolved.forEach(r => {
     if (r.pub) {
       slides.push({
@@ -262,8 +250,6 @@ function genSlides(sources: WorkspaceSource[]): Slide[] {
       });
     }
   });
-
-  // Conclusion
   slides.push({
     title: "Conclusions & Next Steps",
     bullets: [
@@ -389,8 +375,6 @@ function genFlashcards(sources: WorkspaceSource[]): FlashCard[] {
       cards.push({ q: `Which region did the ${r.exp.title} cover?`, a: `${r.exp.region} — status: ${r.exp.status}`, source: r.exp.title });
     }
   });
-
-  // Always include at least one general card if no sources matched
   if (cards.length === 0) {
     cards.push({ q: "What does NCPOR stand for?", a: "National Centre for Polar and Ocean Research — apex body for Indian polar science, Ministry of Earth Sciences.", source: "NCPOR" });
   }
@@ -551,8 +535,6 @@ function genDataTable(sources: WorkspaceSource[]): { headers: string[]; rows: st
   return { headers, rows: rows.length > 0 ? rows : [["–", "No sources selected", "–", "–", "–", "–", "–"]] };
 }
 
-// ── Source search helpers ────────────────────────────────────────────────────
-
 type SearchResult = { id: string; type: SourceType; title: string; meta: string; date?: string; origin?: string };
 
 function searchAllSources(query: string): SearchResult[] {
@@ -571,13 +553,9 @@ function searchAllSources(query: string): SearchResult[] {
   return results.slice(0, 8);
 }
 
-// ── Sub-components ──────────────────────────────────────────────────────────
-
 function MindMapView({ sources }: { sources: WorkspaceSource[] }) {
   const [selected, setSelected] = useState<number | null>(null);
   const resolved = resolveAll(sources);
-
-  // Place each source as a node around a centre point
   const angleStep = (2 * Math.PI) / Math.max(sources.length, 1);
   const radius = Math.min(34, 10 + sources.length * 5);
 
@@ -586,8 +564,6 @@ function MindMapView({ sources }: { sources: WorkspaceSource[] }) {
     expedition: "#2563eb", media: "#d97706",
     event: "#0891b2", station: "#dc2626", researcher: "#ea580c",
   };
-
-  // Build child attributes from resolved data
   function childNodes(r: ResolvedSource, px: number, py: number) {
     const children: { label: string; cx: number; cy: number; color: string }[] = [];
     const push = (label: string, dx: number, dy: number) =>
@@ -608,9 +584,9 @@ function MindMapView({ sources }: { sources: WorkspaceSource[] }) {
     : `${sources.length} Sources`;
 
   return (
-    <div className="rounded-xl overflow-hidden relative" style={{ background: "#f8fafc", border: "1px solid var(--border)", height: 300 }}>
+    <div className="rounded-xl overflow-hidden relative" style={{ background: "var(--surface-secondary)", border: "1px solid var(--border)", height: 300 }}>
       <svg width="100%" height="100%" viewBox="0 0 100 100" style={{ cursor: "default" }}>
-        {/* Centre */}
+        
         <circle cx="50" cy="50" r="11" fill="#1e40af18" stroke="#1e40af" strokeWidth="0.8"/>
         <text x="50" y="48.5" textAnchor="middle" fontSize="3" fill="#1e40af" fontWeight="700">{centreLabel.slice(0, 14)}</text>
         <text x="50" y="53" textAnchor="middle" fontSize="2.3" fill="#1e40af" opacity="0.7">NCPOR</text>
@@ -624,9 +600,9 @@ function MindMapView({ sources }: { sources: WorkspaceSource[] }) {
 
           return (
             <g key={i} style={{ cursor: "pointer" }} onClick={() => setSelected(isSelected ? null : i)}>
-              {/* Spoke */}
+              
               <line x1="50" y1="50" x2={pos.x} y2={pos.y} stroke={color} strokeWidth={isSelected ? 0.9 : 0.5} opacity={isSelected ? 0.8 : 0.4} strokeDasharray={isSelected ? "none" : "2,1"}/>
-              {/* Child nodes */}
+              
               {children.map((ch, ci) => (
                 <g key={ci}>
                   <line x1={pos.x} y1={pos.y} x2={ch.cx} y2={ch.cy} stroke={ch.color} strokeWidth="0.4" opacity="0.5"/>
@@ -634,7 +610,7 @@ function MindMapView({ sources }: { sources: WorkspaceSource[] }) {
                   <text x={ch.cx} y={ch.cy + 0.8} textAnchor="middle" fontSize="2.5" fill={ch.color} fontWeight="500">{ch.label.slice(0, 10)}</text>
                 </g>
               ))}
-              {/* Main node */}
+              
               <circle cx={pos.x} cy={pos.y} r={isSelected ? 9 : 7.5} fill={color + (isSelected ? "28" : "18")} stroke={color} strokeWidth={isSelected ? 1 : 0.7}/>
               <text x={pos.x} y={pos.y - 0.5} textAnchor="middle" fontSize="2.8" fill={color} fontWeight="700">{label.slice(0, 10)}</text>
               <text x={pos.x} y={pos.y + 3.2} textAnchor="middle" fontSize="2" fill={color} opacity="0.75">{r.ws.type}</text>
@@ -656,7 +632,7 @@ function FlashcardViewer({ cards }: { cards: FlashCard[] }) {
   return (
     <div className="space-y-3">
       <div className="text-[11px] font-semibold" style={{ color: "var(--text-muted)" }}>Card {idx + 1} of {cards.length}</div>
-      <div onClick={() => setFlipped(f => !f)} className="cursor-pointer select-none rounded-xl p-5 min-h-[120px] flex flex-col justify-between transition-all" style={{ background: flipped ? "#eff6ff" : "white", border: `2px solid ${flipped ? "#bfdbfe" : "var(--border)"}` }}>
+      <div onClick={() => setFlipped(f => !f)} className="cursor-pointer select-none rounded-xl p-5 min-h-[120px] flex flex-col justify-between transition-all" style={{ background: flipped ? "var(--accent-light)" : "white", border: `2px solid ${flipped ? "var(--accent-border)" : "var(--border)"}` }}>
         <div className="text-[9px] font-semibold uppercase" style={{ color: "var(--text-muted)" }}>{flipped ? "ANSWER" : "QUESTION"}</div>
         <div className="text-sm font-medium leading-snug mt-2" style={{ color: "var(--text-primary)" }}>{flipped ? card.a : card.q}</div>
         <div className="text-[9px] mt-3" style={{ color: "var(--text-muted)" }}>Source: {card.source} · Click to {flipped ? "see question" : "reveal answer"}</div>
@@ -705,7 +681,7 @@ function QuizViewer({ questions }: { questions: QuizQ[] }) {
           const isCorrect = i === q.correct;
           let bg = "white", border = "var(--border)", color = "var(--text-primary)";
           if (selected !== null) {
-            if (isCorrect) { bg = "#f0fdf4"; border = "#86efac"; color = "#166534"; }
+            if (isCorrect) { bg = "var(--success-bg)"; border = "#86efac"; color = "var(--success)"; }
             else if (isSelected) { bg = "#fef2f2"; border = "#fca5a5"; color = "#991b1b"; }
           }
           return (
@@ -730,7 +706,7 @@ function SlidesViewer({ slides }: { slides: Slide[] }) {
   const s = slides[idx];
   return (
     <div className="space-y-3">
-      <div className="rounded-xl p-5 min-h-[160px] flex flex-col justify-between" style={{ background: "linear-gradient(135deg, #0c1e3c 0%, #1e40af 100%)", color: "white" }}>
+      <div className="rounded-xl p-5 min-h-[160px] flex flex-col justify-between" style={{ background: "linear-gradient(135deg, var(--header-bg) 0%, var(--accent) 100%)", color: "white" }}>
         <div className="text-[9px] uppercase tracking-widest opacity-60">Slide {idx + 1} of {slides.length}</div>
         <div>
           <div className="text-base font-bold mb-3">{s.title}</div>
@@ -785,8 +761,6 @@ function DataTableView({ data }: { data: ReturnType<typeof genDataTable> }) {
   );
 }
 
-// ── Main component ──────────────────────────────────────────────────────────
-
 export default function PolarAI({
   onNavigate,
   workspaceSources = [],
@@ -798,7 +772,6 @@ export default function PolarAI({
   onAddToWorkspace?: (s: WorkspaceSource) => void;
   onOpenStudio?: () => void;
 }) {
-  // Chat state
   const [messages, setMessages] = useState<Message[]>([
     { role: "assistant", agent: "research", text: "Welcome to the Polar Knowledge Workspace. Select sources from the left panel, then ask questions in Chat or create outputs in Studio. Every answer shows its evidence and confidence level." },
   ]);
@@ -806,16 +779,10 @@ export default function PolarAI({
   const [selectedAgent, setSelectedAgent] = useState("research");
   const [agentPanelOpen, setAgentPanelOpen] = useState(false);
   const [actionAnswer, setActionAnswer] = useState<string | null>(null);
-
-  // Layout state
   const [mainTab, setMainTab] = useState<"chat" | "studio" | "history">("chat");
-
-  // Source search state
   const [addSourceOpen, setAddSourceOpen] = useState(false);
   const [sourceSearch, setSourceSearch] = useState("");
   const [addedIds, setAddedIds] = useState<Set<string>>(new Set());
-
-  // Studio state
   const [selectedTool, setSelectedTool] = useState<string | null>(null);
   const [generating, setGenerating] = useState(false);
   const [toolOutput, setToolOutput] = useState<any>(null);
@@ -827,8 +794,6 @@ export default function PolarAI({
 
   const searchResults = searchAllSources(sourceSearch);
   const activeAgent = aiAgents.find(a => a.id === selectedAgent)!;
-
-  // Chat
   function ask(q: string) {
     const userMsg: Message = { role: "user", text: q };
     const found = RESPONSES[q];
@@ -850,8 +815,6 @@ export default function PolarAI({
     const result = ACTION_RESULTS[action];
     if (result) setActionAnswer(result);
   }
-
-  // Source management
   function addSource(result: SearchResult) {
     if (addedIds.has(result.id)) return;
     onAddToWorkspace?.({ id: result.id, type: result.type, title: result.title, meta: result.meta, date: result.date, origin: result.origin });
@@ -861,8 +824,6 @@ export default function PolarAI({
   function isAlreadyInWorkspace(id: string) {
     return workspaceSources.some(s => s.id === id) || addedIds.has(id);
   }
-
-  // Studio
   function runTool(toolId: string) {
     if (workspaceSources.length === 0) return;
     setSelectedTool(toolId);
@@ -899,7 +860,7 @@ export default function PolarAI({
     if (!toolOutput) return null;
     switch (selectedTool) {
       case "report": case "audio":
-        return <pre className="text-[10px] leading-relaxed whitespace-pre-wrap font-mono p-3 rounded-lg overflow-auto max-h-72" style={{ background: "#f8fafc", border: "1px solid var(--border)", color: "var(--text-primary)" }}>{toolOutput}</pre>;
+        return <pre className="text-[10px] leading-relaxed whitespace-pre-wrap font-mono p-3 rounded-lg overflow-auto max-h-72" style={{ background: "var(--surface-secondary)", border: "1px solid var(--border)", color: "var(--text-primary)" }}>{toolOutput}</pre>;
       case "slides":     return <SlidesViewer slides={toolOutput} />;
       case "flashcards": return <FlashcardViewer cards={toolOutput} />;
       case "quiz":       return <QuizViewer questions={toolOutput} />;
@@ -909,7 +870,7 @@ export default function PolarAI({
       case "video":      return (
         <div className="space-y-2">
           {(toolOutput as Scene[]).map((scene) => (
-            <div key={scene.scene} className="rounded-lg p-3" style={{ background: "#f8fafc", border: "1px solid var(--border)" }}>
+            <div key={scene.scene} className="rounded-lg p-3" style={{ background: "var(--surface-secondary)", border: "1px solid var(--border)" }}>
               <div className="text-[9px] font-bold uppercase mb-1" style={{ color: "var(--accent)" }}>Scene {scene.scene}</div>
               <div className="text-[11px] font-medium mb-1" style={{ color: "var(--text-primary)" }}>{scene.narration}</div>
               <div className="text-[10px] italic" style={{ color: "var(--text-muted)" }}>Visual: {scene.visual}</div>
@@ -926,36 +887,22 @@ export default function PolarAI({
 
   return (
     <div className="h-full flex overflow-hidden" style={{ background: "var(--content-bg)" }}>
-
-      {/* ── Sources panel ── */}
-      <div className="flex-shrink-0 flex flex-col overflow-hidden" style={{ width: 230, background: "white", borderRight: "1px solid var(--border)" }}>
-        {/* Header */}
-        <div className="p-3 flex-shrink-0" style={{ borderBottom: "1px solid var(--border)" }}>
-          <div className="flex items-center justify-between mb-2">
-            <h2 className="text-xs font-bold" style={{ color: "var(--text-primary)" }}>Sources</h2>
-            {workspaceSources.length > 0 && (
-              <span className="text-[9px] font-semibold px-1.5 py-0.5 rounded-full" style={{ background: "var(--accent)", color: "white" }}>{workspaceSources.length}</span>
-            )}
+      <aside className="w-[250px] xl:w-[270px] flex-shrink-0 flex flex-col overflow-hidden bg-white" style={{ borderRight: "1px solid var(--border)" }}>
+        <div className="px-4 py-3 flex-shrink-0" style={{ borderBottom: "1px solid var(--border)" }}>
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="text-[11px] font-bold uppercase tracking-wider" style={{ color: "var(--text-primary)" }}>Sources</div>
+              <div className="text-[9px] mt-0.5" style={{ color: "var(--text-muted)" }}>Trusted NCPOR knowledge</div>
+            </div>
+            {workspaceSources.length > 0 && <span className="text-[9px] font-bold px-2 py-0.5 rounded-full" style={{ background: "var(--accent)", color: "white" }}>{workspaceSources.length}</span>}
           </div>
-          <button
-            onClick={() => setAddSourceOpen(v => !v)}
-            className="w-full btn-primary btn-sm"
-          >
-            + Add Sources
-          </button>
+          <button onClick={() => setAddSourceOpen(v => !v)} className="w-full btn-primary btn-sm mt-3">+ Add Sources</button>
         </div>
 
-        {/* Search panel */}
         {addSourceOpen && (
           <div className="flex-shrink-0" style={{ borderBottom: "1px solid var(--border)", background: "var(--surface-secondary)" }}>
-            <div className="p-2.5">
-              <input
-                className="search-input w-full text-[11px]"
-                placeholder="Search publications, datasets..."
-                value={sourceSearch}
-                onChange={e => setSourceSearch(e.target.value)}
-                autoFocus
-              />
+            <div className="p-3">
+              <input className="search-input w-full text-[11px]" placeholder="Search publications, datasets..." value={sourceSearch} onChange={e => setSourceSearch(e.target.value)} autoFocus />
             </div>
             {sourceSearch && (
               <div className="overflow-y-auto" style={{ maxHeight: 220 }}>
@@ -964,20 +911,13 @@ export default function PolarAI({
                 ) : searchResults.map(r => {
                   const already = isAlreadyInWorkspace(r.id);
                   return (
-                    <div key={r.id} className="px-3 py-2 flex items-start gap-2" style={{ borderBottom: "1px solid var(--border)" }}>
+                    <div key={r.id} className="px-3 py-2 flex items-start gap-2" style={{ borderTop: "1px solid var(--border)" }}>
                       <span className="flex-shrink-0 text-sm mt-0.5">{typeIcon[r.type]}</span>
                       <div className="flex-1 min-w-0">
                         <div className="text-[10px] font-medium leading-snug" style={{ color: "var(--text-primary)" }}>{r.title.slice(0, 42)}{r.title.length > 42 ? "…" : ""}</div>
                         <div className="text-[9px]" style={{ color: "var(--text-muted)" }}>{r.meta}</div>
                       </div>
-                      <button
-                        onClick={() => addSource(r)}
-                        disabled={already}
-                        className="flex-shrink-0 text-[9px] px-1.5 py-0.5 rounded font-semibold transition-all"
-                        style={{ background: already ? "var(--success-bg)" : "var(--accent)", color: already ? "var(--success)" : "white", cursor: already ? "default" : "pointer" }}
-                      >
-                        {already ? "✓" : "Add"}
-                      </button>
+                      <button onClick={() => addSource(r)} disabled={already} className="flex-shrink-0 text-[9px] px-1.5 py-0.5 rounded font-semibold" style={{ background: already ? "var(--success-bg)" : "var(--accent)", color: already ? "var(--success)" : "white", cursor: already ? "default" : "pointer" }}>{already ? "✓" : "Add"}</button>
                     </div>
                   );
                 })}
@@ -986,63 +926,52 @@ export default function PolarAI({
           </div>
         )}
 
-        {/* Source list */}
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1 overflow-y-auto p-3">
           {workspaceSources.length === 0 ? (
-            <div className="p-4 text-center">
+            <div className="rounded-xl p-5 text-center" style={{ background: "var(--surface-secondary)", border: "1px dashed var(--accent-border)" }}>
               <div className="text-2xl mb-2">📚</div>
-              <div className="text-[11px] font-medium mb-1" style={{ color: "var(--text-secondary)" }}>No sources selected</div>
-              <div className="text-[9px]" style={{ color: "var(--text-muted)" }}>Add sources to ground the AI in trusted NCPOR knowledge</div>
+              <div className="text-[11px] font-semibold" style={{ color: "var(--text-secondary)" }}>No sources selected</div>
+              <div className="text-[9px] leading-relaxed mt-1" style={{ color: "var(--text-muted)" }}>Add publications, datasets or expedition records to ground PolarAI.</div>
             </div>
           ) : (
-            <div className="p-2 space-y-1">
+            <div className="space-y-2">
               {workspaceSources.map(s => (
-                <div key={s.id} className="flex items-start gap-2 p-2 rounded-lg" style={{ background: "var(--accent-light)", border: "1px solid var(--accent-border)" }}>
-                  <span className="flex-shrink-0 text-sm">{typeIcon[s.type]}</span>
-                  <div className="flex-1 min-w-0">
-                    <div className="text-[10px] font-medium leading-snug" style={{ color: "var(--text-primary)" }}>{s.title.slice(0, 36)}{s.title.length > 36 ? "…" : ""}</div>
-                    <div className="text-[9px] mt-0.5" style={{ color: "var(--text-muted)" }}>{s.meta.slice(0, 30)}{s.meta.length > 30 ? "…" : ""}</div>
-                    {s.version && <div className="text-[8px] mt-0.5" style={{ color: "var(--text-muted)" }}>v{s.version}</div>}
+                <div key={s.id} className="rounded-xl p-3" style={{ background: "var(--accent-light)", border: "1px solid var(--accent-border)" }}>
+                  <div className="flex items-start gap-2">
+                    <span className="flex-shrink-0 text-sm">{typeIcon[s.type]}</span>
+                    <div className="min-w-0 flex-1">
+                      <div className="text-[10px] font-semibold leading-snug" style={{ color: "var(--text-primary)" }}>{s.title}</div>
+                      <div className="text-[9px] mt-1" style={{ color: "var(--text-muted)" }}>{s.meta}</div>
+                      {s.version && <div className="text-[8px] mt-1" style={{ color: "var(--text-muted)" }}>Version {s.version}</div>}
+                    </div>
                   </div>
                 </div>
               ))}
-              <div className="text-[9px] text-center pt-1" style={{ color: "var(--accent)" }}>AI answers grounded in these sources</div>
+              <div className="text-[9px] text-center pt-1 font-medium" style={{ color: "var(--accent)" }}>✓ AI answers grounded in selected sources</div>
             </div>
           )}
         </div>
 
-        {/* Evidence trust model */}
         <div className="flex-shrink-0 p-3" style={{ borderTop: "1px solid var(--border)" }}>
-          <div className="text-[10px] font-semibold mb-2" style={{ color: "var(--text-muted)" }}>EVIDENCE TRUST</div>
-          <div className="space-y-1">
-            {(["source_backed", "synthesis", "insufficient_evidence", "conflicting"] as const).map(s => (
-              <EvidenceBadge key={s} status={s} />
-            ))}
-          </div>
+          <div className="text-[9px] font-bold uppercase tracking-wider mb-2" style={{ color: "var(--text-muted)" }}>Evidence Trust</div>
+          <div className="grid grid-cols-2 gap-1.5">{(["source_backed", "synthesis", "insufficient_evidence", "conflicting"] as const).map(s => <EvidenceBadge key={s} status={s} />)}</div>
         </div>
-      </div>
+      </aside>
 
-      {/* ── Main area ── */}
-      <div className="flex-1 flex flex-col overflow-hidden">
-        {/* Page header */}
-        <div className="flex-shrink-0 px-4 pt-3 pb-0">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="page-header-title">Polar Knowledge AI</h1>
-              <p className="page-header-sub">Source-grounded intelligence from NCPOR's research repository.</p>
+      <section className="flex-1 min-w-0 flex flex-col overflow-hidden bg-white" style={{ borderRight: "1px solid var(--border)" }}>
+        <div className="flex-shrink-0 px-5 py-4" style={{ borderBottom: "1px solid var(--border)" }}>
+          <div className="flex items-center justify-between gap-3">
+            <div className="min-w-0">
+              <h1 className="page-header-title">PolarAI</h1>
+              <p className="page-header-sub">Source-grounded polar intelligence</p>
             </div>
-            <button className="btn-outline btn-sm" onClick={() => setAgentPanelOpen(v => !v)}>
-              {activeAgent.icon} {activeAgent.name} ↓
-            </button>
+            <button className="btn-outline btn-sm flex-shrink-0" onClick={() => setAgentPanelOpen(v => !v)}>{activeAgent.icon} {activeAgent.name} ▾</button>
           </div>
-
           {agentPanelOpen && (
-            <div className="mt-2 card p-3">
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+            <div className="mt-3 card p-3">
+              <div className="grid grid-cols-2 gap-2">
                 {aiAgents.map(agent => (
-                  <button key={agent.id} onClick={() => { setSelectedAgent(agent.id); setAgentPanelOpen(false); }}
-                    className="p-2 rounded-lg text-left border transition-all"
-                    style={{ border: selectedAgent === agent.id ? "1px solid #93c5fd" : "1px solid transparent", background: selectedAgent === agent.id ? "#eff6ff" : "transparent" }}>
+                  <button key={agent.id} onClick={() => { setSelectedAgent(agent.id); setAgentPanelOpen(false); }} className="p-2 rounded-lg text-left border transition-all" style={{ border: selectedAgent === agent.id ? "1px solid var(--accent-border)" : "1px solid transparent", background: selectedAgent === agent.id ? "var(--accent-light)" : "transparent" }}>
                     <div className="text-base mb-0.5">{agent.icon}</div>
                     <div className="text-[10px] font-semibold" style={{ color: "var(--text-primary)" }}>{agent.name}</div>
                     <div className="text-[9px]" style={{ color: "var(--text-muted)" }}>{agent.purpose.slice(0, 45)}…</div>
@@ -1051,242 +980,74 @@ export default function PolarAI({
               </div>
             </div>
           )}
-
-          {/* Tab bar */}
-          <div className="tab-bar mt-3">
-            {(["chat", "studio", "history"] as const).map(tab => (
-              <button key={tab} onClick={() => setMainTab(tab)}
-                className={`tab-item ${mainTab === tab ? "active" : ""}`}
-                style={{ textTransform: "capitalize" }}>
-                {tab === "chat" ? "💬 Chat" : tab === "studio" ? "✨ Studio" : "📋 History"}
-                {tab === "history" && artifacts.length > 0 && (
-                  <span className="ml-1 text-[9px] px-1 rounded-full" style={{ background: "var(--accent)", color: "white" }}>{artifacts.length}</span>
-                )}
-              </button>
-            ))}
-          </div>
         </div>
 
-        {/* Tab content */}
-        <div className="flex-1 overflow-hidden p-3 pt-2">
-
-          {/* ── CHAT TAB ── */}
-          {mainTab === "chat" && (
-            <div className="h-full card flex flex-col overflow-hidden">
-              <div className="flex-1 overflow-y-auto p-4 space-y-4">
-                {messages.map((msg, i) => (
-                  <div key={i} className={`flex gap-3 ${msg.role === "user" ? "flex-row-reverse" : ""}`}>
-                    {msg.role === "assistant"
-                      ? <div className="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center text-sm" style={{ background: "var(--accent)" }}>{aiAgents.find(a => a.id === msg.agent)?.icon || "🤖"}</div>
-                      : <div className="w-8 h-8 rounded-full bg-slate-200 flex-shrink-0 flex items-center justify-center font-semibold text-sm text-slate-600">R</div>
-                    }
-                    <div className={`max-w-lg flex flex-col gap-1.5 ${msg.role === "user" ? "items-end" : "items-start"}`}>
-                      {msg.role === "user"
-                        ? <div className="rounded-2xl rounded-tr-sm px-4 py-2.5 text-sm text-white" style={{ background: "var(--accent)" }}>{msg.text}</div>
-                        : (
-                          <div className="space-y-1.5 w-full">
-                            {msg.agent && i > 0 && (
-                              <div className="text-[9px]" style={{ color: "var(--text-muted)" }}>
-                                {aiAgents.find(a => a.id === msg.agent)?.name} · {new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
-                              </div>
-                            )}
-                            <div className="rounded-2xl rounded-tl-sm px-4 py-3 text-sm leading-relaxed" style={{ background: "#f0f7ff", color: "var(--text-primary)" }}>{msg.text}</div>
-                            {msg.evidenceStatus && (
-                              <EvidenceBadge status={msg.evidenceStatus} confidence={msg.confidence} />
-                            )}
-                            {msg.sources && msg.sources.map((s, si) => (
-                              <div key={si} className="flex items-start gap-1.5 text-[10px]" style={{ color: "var(--text-muted)" }}>
-                                <span className="text-blue-400 mt-0.5">📎</span>{s}
-                              </div>
-                            ))}
-                            {msg.evidenceStatus === "insufficient_evidence" && (
-                              <div className="text-[10px] rounded p-2" style={{ background: "#fefce8", color: "#92400e" }}>
-                                ⚠ Insufficient evidence in available NCPOR sources. Absence of records does not indicate absence of work.
-                              </div>
-                            )}
-                            {msg.actions && (
-                              <div className="flex flex-wrap gap-1.5">
-                                {msg.actions.map((a, ai) => <button key={ai} onClick={() => handleAction(a)} className="btn-outline btn-sm text-[10px]">{a}</button>)}
-                              </div>
-                            )}
-                            {msg.relatedLinks && (
-                              <div className="flex flex-wrap gap-1.5 pt-0.5">
-                                {msg.relatedLinks.map((l, li) => (
-                                  <button key={li} onClick={() => onNavigate?.(l.dest)} className="text-[10px] font-semibold px-2 py-0.5 rounded-full border" style={{ borderColor: "var(--accent)", color: "var(--accent)" }}>
-                                    → {l.label}
-                                  </button>
-                                ))}
-                              </div>
-                            )}
-                          </div>
-                        )
-                      }
-                    </div>
-                  </div>
-                ))}
-
-                {actionAnswer && (
-                  <div className="mx-11 p-3 rounded-xl text-xs leading-relaxed whitespace-pre-wrap" style={{ background: "#f0fdf4", border: "1px solid #bbf7d0", color: "#166534" }}>
-                    <div className="font-semibold mb-1 text-[10px] uppercase">Action Result · AI Generated · Not Official</div>
-                    {actionAnswer}
-                  </div>
-                )}
-              </div>
-
-              <div className="p-3 flex-shrink-0" style={{ borderTop: "1px solid var(--border)" }}>
-                {workspaceSources.length > 0 && (
-                  <div className="text-[9px] mb-2 flex items-center gap-1.5" style={{ color: "var(--accent)" }}>
-                    <span>📚</span>
-                    Grounded in {workspaceSources.length} selected source(s): {workspaceSources.slice(0, 2).map(s => s.title.slice(0, 20)).join(", ")}{workspaceSources.length > 2 ? `…+${workspaceSources.length - 2}` : ""}
-                  </div>
-                )}
-                <div className="flex gap-2">
-                  <input
-                    className="search-input flex-1"
-                    value={input}
-                    onChange={e => setInput(e.target.value)}
-                    onKeyDown={e => e.key === "Enter" && input.trim() && ask(input)}
-                    placeholder="Ask anything about polar science..."
-                  />
-                  <button className="btn-primary px-4" onClick={() => input.trim() && ask(input)}>
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-4 h-4"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-                  </button>
-                </div>
-                <div className="mt-2 flex flex-wrap gap-1.5">
-                  {EXAMPLE_QUESTIONS.slice(0, 4).map(q => (
-                    <button key={q} onClick={() => ask(q)} className="text-[10px] px-2 py-0.5 rounded border hover:bg-blue-50 hover:border-blue-200 transition-colors" style={{ borderColor: "var(--border)", color: "var(--text-secondary)" }}>{q}</button>
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* ── STUDIO TAB ── */}
-          {mainTab === "studio" && (
-            <div className="h-full flex gap-3 overflow-hidden">
-              {/* Tool grid */}
-              <div className="w-52 flex-shrink-0 overflow-y-auto space-y-2">
-                {workspaceSources.length === 0 && (
-                  <div className="card p-3 text-center">
-                    <div className="text-xl mb-1.5">📚</div>
-                    <div className="text-[11px] font-medium mb-1" style={{ color: "var(--text-secondary)" }}>No sources selected</div>
-                    <div className="text-[9px] mb-2" style={{ color: "var(--text-muted)" }}>Add sources from the left panel to enable Studio tools</div>
-                    <button className="btn-outline btn-sm w-full" onClick={() => setAddSourceOpen(true)}>+ Add Sources</button>
-                  </div>
-                )}
-                {STUDIO_TOOLS.map(tool => (
-                  <button
-                    key={tool.id}
-                    onClick={() => workspaceSources.length > 0 && runTool(tool.id)}
-                    disabled={workspaceSources.length === 0}
-                    className="w-full card p-3 text-left transition-all hover:shadow-md"
-                    style={{
-                      border: selectedTool === tool.id ? "1px solid var(--accent)" : "1px solid var(--border)",
-                      background: selectedTool === tool.id ? "var(--accent-light)" : "white",
-                      opacity: workspaceSources.length === 0 ? 0.5 : 1,
-                    }}
-                  >
-                    <div className="text-lg mb-1">{tool.icon}</div>
-                    <div className="text-[11px] font-semibold" style={{ color: "var(--text-primary)" }}>{tool.label}</div>
-                    <div className="text-[9px] mt-0.5" style={{ color: "var(--text-muted)" }}>{tool.desc}</div>
-                  </button>
-                ))}
-              </div>
-
-              {/* Output panel */}
-              <div className="flex-1 overflow-hidden">
-                {!selectedTool ? (
-                  <div className="h-full card flex items-center justify-center text-center p-8">
-                    <div>
-                      <div className="text-3xl mb-3">✨</div>
-                      <div className="font-semibold text-sm mb-1" style={{ color: "var(--text-primary)" }}>Select a Studio tool</div>
-                      <div className="text-[11px]" style={{ color: "var(--text-muted)" }}>
-                        {workspaceSources.length > 0 ? `${workspaceSources.length} source(s) ready · Choose a tool to generate content` : "Add sources, then choose a tool to generate evidence-backed content"}
-                      </div>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="h-full card flex flex-col overflow-hidden">
-                    <div className="p-3 flex-shrink-0 flex items-center justify-between" style={{ borderBottom: "1px solid var(--border)" }}>
-                      <div className="flex items-center gap-2">
-                        <span className="text-lg">{activeTool?.icon}</span>
-                        <div>
-                          <div className="text-sm font-bold" style={{ color: "var(--text-primary)" }}>{activeTool?.label}</div>
-                          <div className="text-[9px]" style={{ color: "var(--text-muted)" }}>{workspaceSources.length} source(s) · Draft · AI Generated</div>
-                        </div>
-                      </div>
-                      <div className="flex gap-1.5">
-                        <button className="btn-outline btn-sm text-[10px]" onClick={() => runTool(selectedTool)}>Regenerate</button>
-                        <button className="btn-outline btn-sm text-[10px]">Save</button>
-                        {selectedTool === "report" && toolOutput && (
-                          <button className="btn-outline btn-sm text-[10px]">Submit for Review</button>
-                        )}
-                      </div>
-                    </div>
-
-                    {generating ? (
-                      <div className="flex-1 flex items-center justify-center">
-                        <div className="text-center">
-                          <div className="w-8 h-8 border-2 border-blue-300 border-t-blue-600 rounded-full animate-spin mx-auto mb-3"></div>
-                          <div className="text-sm font-medium" style={{ color: "var(--text-primary)" }}>Generating {activeTool?.label}…</div>
-                          <div className="text-[10px] mt-1" style={{ color: "var(--text-muted)" }}>Analyzing {workspaceSources.length} source(s)</div>
-                        </div>
-                      </div>
-                    ) : toolOutput ? (
-                      <div className="flex-1 overflow-y-auto p-4">
-                        {renderToolOutput()}
-                        <div className="mt-4 p-2 rounded text-[9px]" style={{ background: "#fefce8", border: "1px solid #fde68a", color: "#92400e" }}>
-                          AI-generated content · Not an official NCPOR document · Requires review before publication
-                        </div>
-                      </div>
-                    ) : null}
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
-
-          {/* ── HISTORY TAB ── */}
-          {mainTab === "history" && (
-            <div className="h-full overflow-y-auto space-y-2">
-              <div className="flex items-center justify-between mb-3">
-                <h2 className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>Generated Artifacts</h2>
-                <div className="text-[10px]" style={{ color: "var(--text-muted)" }}>{artifacts.length} artifact(s)</div>
-              </div>
+        <div className="flex-1 overflow-y-auto p-5">
+          {mainTab === "history" ? (
+            <div className="space-y-2">
+              <div className="flex items-center justify-between mb-3"><h2 className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>Generated Artifacts</h2><div className="text-[10px]" style={{ color: "var(--text-muted)" }}>{artifacts.length} artifact(s)</div></div>
               {artifacts.map(a => (
                 <div key={a.id} className="card p-4 flex items-center gap-3">
-                  <div className="text-2xl">{a.icon}</div>
-                  <div className="flex-1 min-w-0">
-                    <div className="text-sm font-medium" style={{ color: "var(--text-primary)" }}>{a.title}</div>
-                    <div className="text-[10px] mt-0.5" style={{ color: "var(--text-muted)" }}>{a.sourceCount} source(s) · {a.createdAt}</div>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-[9px] font-semibold px-2 py-0.5 rounded-full" style={{
-                      background: a.status === "approved" ? "var(--success-bg)" : a.status === "saved" ? "var(--accent-light)" : "var(--warning-bg)",
-                      color: a.status === "approved" ? "var(--success)" : a.status === "saved" ? "var(--accent)" : "var(--warning)",
-                      border: `1px solid ${a.status === "approved" ? "var(--success-border)" : a.status === "saved" ? "var(--accent-border)" : "var(--warning-border)"}`,
-                    }}>{a.status}</span>
-                    <button
-                      className="btn-outline btn-sm text-[10px]"
-                      onClick={() => { setMainTab("studio"); setSelectedTool(a.tool); if (workspaceSources.length > 0) runTool(a.tool); }}
-                    >
-                      Open
-                    </button>
-                  </div>
+                  <div className="text-2xl">{a.icon}</div><div className="flex-1 min-w-0"><div className="text-sm font-medium" style={{ color: "var(--text-primary)" }}>{a.title}</div><div className="text-[10px] mt-0.5" style={{ color: "var(--text-muted)" }}>{a.sourceCount} source(s) · {a.createdAt}</div></div>
+                  <div className="flex items-center gap-2"><span className="text-[9px] font-semibold px-2 py-0.5 rounded-full" style={{ background: a.status === "approved" ? "var(--success-bg)" : a.status === "saved" ? "var(--accent-light)" : "var(--warning-bg)", color: a.status === "approved" ? "var(--success)" : a.status === "saved" ? "var(--accent)" : "var(--warning)" }}>{a.status}</span><button className="btn-outline btn-sm text-[10px]" onClick={() => { setMainTab("studio"); setSelectedTool(a.tool); if (workspaceSources.length > 0) runTool(a.tool); }}>Open</button></div>
                 </div>
               ))}
-              {artifacts.length === 0 && (
-                <div className="card p-8 text-center">
-                  <div className="text-3xl mb-2">📋</div>
-                  <div className="text-sm font-medium" style={{ color: "var(--text-secondary)" }}>No artifacts yet</div>
-                  <div className="text-[10px] mt-1" style={{ color: "var(--text-muted)" }}>Go to Studio to generate your first artifact</div>
-                  <button className="btn-primary btn-sm mt-3" onClick={() => setMainTab("studio")}>Open Studio →</button>
+              {artifacts.length === 0 && <div className="card p-8 text-center"><div className="text-3xl mb-2">📋</div><div className="text-sm font-medium" style={{ color: "var(--text-secondary)" }}>No artifacts yet</div><button className="btn-primary btn-sm mt-3" onClick={() => setMainTab("studio")}>Open Studio →</button></div>}
+            </div>
+          ) : (
+            <div className="h-full flex flex-col min-h-0">
+              <div className="flex-shrink-0 flex items-center gap-1 mb-3 p-1 rounded-lg w-fit" style={{ background: "var(--surface-secondary)", border: "1px solid var(--border)" }}>
+                <button className={`px-3 py-1.5 rounded-md text-[10px] font-semibold ${mainTab === "chat" ? "shadow-sm" : ""}`} style={{ background: mainTab === "chat" ? "white" : "transparent", color: mainTab === "chat" ? "var(--accent)" : "var(--text-muted)" }} onClick={() => setMainTab("chat")}>Conversation</button>
+                <button className={`px-3 py-1.5 rounded-md text-[10px] font-semibold`} style={{ color: "var(--text-muted)" }} onClick={() => setMainTab("history")}>History {artifacts.length > 0 && `(${artifacts.length})`}</button>
+              </div>
+              <div className="flex-1 min-h-0 card flex flex-col overflow-hidden">
+                <div className="flex-1 overflow-y-auto p-5 space-y-4">
+                  {messages.map((msg, i) => (
+                    <div key={i} className={`flex gap-3 ${msg.role === "user" ? "flex-row-reverse" : ""}`}>
+                      {msg.role === "assistant" ? <div className="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center text-sm" style={{ background: "var(--accent-light)", border: "1px solid var(--accent-border)" }}>{aiAgents.find(a => a.id === msg.agent)?.icon || "🤖"}</div> : <div className="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center font-semibold text-sm" style={{ background: "var(--surface-secondary)", color: "var(--text-secondary)", border: "1px solid var(--border)" }}>R</div>}
+                      <div className={`max-w-xl flex flex-col gap-1.5 ${msg.role === "user" ? "items-end" : "items-start"}`}>
+                        {msg.role === "assistant" && msg.agent && i > 0 && <div className="text-[9px]" style={{ color: "var(--text-muted)" }}>{aiAgents.find(a => a.id === msg.agent)?.name} · {new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</div>}
+                        {msg.role === "user" ? <div className="rounded-2xl rounded-tr-sm px-4 py-2.5 text-sm text-white" style={{ background: "var(--accent)" }}>{msg.text}</div> : <div className="space-y-2 w-full"><div className="rounded-2xl rounded-tl-sm px-4 py-3 text-sm leading-relaxed" style={{ background: "var(--accent-light)", color: "var(--text-primary)", border: "1px solid var(--accent-border)" }}>{msg.text}</div>{msg.evidenceStatus && <EvidenceBadge status={msg.evidenceStatus} confidence={msg.confidence} />}{msg.sources && msg.sources.map((src, si) => <div key={si} className="flex items-start gap-1.5 text-[10px]" style={{ color: "var(--text-muted)" }}><span style={{ color: "var(--accent)" }}>📎</span>{src}</div>)}{msg.evidenceStatus === "insufficient_evidence" && <div className="text-[10px] rounded-lg p-2" style={{ background: "var(--warning-bg)", color: "var(--warning)", border: "1px solid var(--warning-border)" }}>⚠ Insufficient evidence in available NCPOR sources. Absence of records does not indicate absence of work.</div>}{msg.actions && <div className="flex flex-wrap gap-1.5">{msg.actions.map((a, ai) => <button key={ai} onClick={() => handleAction(a)} className="btn-outline btn-sm text-[10px]">{a}</button>)}</div>}{msg.relatedLinks && <div className="flex flex-wrap gap-1.5">{msg.relatedLinks.map((l, li) => <button key={li} onClick={() => onNavigate?.(l.dest)} className="text-[10px] font-semibold px-2 py-0.5 rounded-full border" style={{ borderColor: "var(--accent-border)", color: "var(--accent)" }}>→ {l.label}</button>)}</div>}</div>}
+                      </div>
+                    </div>
+                  ))}
+                  {actionAnswer && <div className="mx-11 p-3 rounded-xl text-xs leading-relaxed whitespace-pre-wrap" style={{ background: "var(--success-bg)", border: "1px solid var(--success-border)", color: "var(--success)" }}><div className="font-semibold mb-1 text-[10px] uppercase">Action Result · AI Generated · Not Official</div>{actionAnswer}</div>}
                 </div>
-              )}
+                <div className="p-3 flex-shrink-0" style={{ borderTop: "1px solid var(--border)" }}>
+                  {workspaceSources.length > 0 && <div className="text-[9px] mb-2 flex items-center gap-1.5" style={{ color: "var(--accent)" }}>📚 Grounded in {workspaceSources.length} selected source(s): {workspaceSources.slice(0, 2).map(s => s.title.slice(0, 20)).join(", ")}{workspaceSources.length > 2 ? `…+${workspaceSources.length - 2}` : ""}</div>}
+                  <div className="flex gap-2"><input className="search-input flex-1" value={input} onChange={e => setInput(e.target.value)} onKeyDown={e => e.key === "Enter" && input.trim() && ask(input)} placeholder="Ask about polar science..."/><button className="btn-primary px-4" onClick={() => input.trim() && ask(input)}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-4 h-4"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button></div>
+                  <div className="mt-2 flex flex-wrap gap-1.5">{EXAMPLE_QUESTIONS.slice(0, 4).map(q => <button key={q} onClick={() => ask(q)} className="text-[10px] px-2 py-0.5 rounded border" style={{ borderColor: "var(--border)", color: "var(--text-secondary)", background: "white" }}>{q}</button>)}</div>
+                </div>
+              </div>
             </div>
           )}
         </div>
-      </div>
+      </section>
+
+      <aside className="w-[250px] xl:w-[285px] flex-shrink-0 flex flex-col overflow-hidden bg-white">
+        <div className="px-4 py-4 flex-shrink-0" style={{ borderBottom: "1px solid var(--border)" }}>
+          <div className="text-[11px] font-bold uppercase tracking-wider" style={{ color: "var(--text-primary)" }}>Studio</div>
+          <div className="text-[9px] mt-0.5" style={{ color: "var(--text-muted)" }}>Create knowledge outputs</div>
+        </div>
+        <div className="flex-1 overflow-y-auto p-3 space-y-2">
+          {STUDIO_TOOLS.map(tool => <button key={tool.id} onClick={() => workspaceSources.length > 0 && runTool(tool.id)} disabled={workspaceSources.length === 0} className="w-full card p-3 text-left transition-all" style={{ border: selectedTool === tool.id ? "1px solid var(--accent)" : "1px solid var(--border)", background: selectedTool === tool.id ? "var(--accent-light)" : "white", opacity: workspaceSources.length === 0 ? 0.55 : 1 }}><div className="flex items-start gap-3"><div className="text-lg flex-shrink-0">{tool.icon}</div><div className="min-w-0"><div className="text-[11px] font-semibold" style={{ color: "var(--text-primary)" }}>{tool.label}</div><div className="text-[9px] mt-0.5 leading-snug" style={{ color: "var(--text-muted)" }}>{tool.desc}</div></div></div></button>)}
+        </div>
+        <div className="flex-shrink-0 p-3" style={{ borderTop: "1px solid var(--border)" }}>
+          <div className="rounded-lg p-2.5 text-[9px]" style={{ background: "var(--surface-secondary)", color: "var(--text-muted)", border: "1px solid var(--border)" }}>{workspaceSources.length > 0 ? `${workspaceSources.length} source(s) ready for generation.` : "Add sources to enable Studio tools."}</div>
+        </div>
+      </aside>
+
+      {selectedTool && toolOutput && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-6" style={{ background: "rgba(15, 23, 42, 0.28)" }} onClick={() => setSelectedTool(null)}>
+          <div className="w-full max-w-4xl max-h-[85vh] card flex flex-col overflow-hidden bg-white" onClick={e => e.stopPropagation()}>
+            <div className="p-4 flex items-center justify-between flex-shrink-0" style={{ borderBottom: "1px solid var(--border)" }}>
+              <div className="flex items-center gap-2"><span className="text-lg">{activeTool?.icon}</span><div><div className="text-sm font-bold" style={{ color: "var(--text-primary)" }}>{activeTool?.label}</div><div className="text-[9px]" style={{ color: "var(--text-muted)" }}>{workspaceSources.length} source(s) · AI Generated Draft</div></div></div>
+              <div className="flex gap-1.5"><button className="btn-outline btn-sm text-[10px]" onClick={() => runTool(selectedTool)}>Regenerate</button><button className="btn-outline btn-sm text-[10px]">Save</button>{selectedTool === "report" && <button className="btn-outline btn-sm text-[10px]">Submit for Review</button>}<button className="btn-outline btn-sm text-[10px]" onClick={() => setSelectedTool(null)}>Close</button></div>
+            </div>
+            <div className="flex-1 overflow-y-auto p-5">{generating ? <div className="py-16 text-center"><div className="w-8 h-8 border-2 border-blue-300 border-t-blue-600 rounded-full animate-spin mx-auto mb-3"/><div className="text-sm font-medium" style={{ color: "var(--text-primary)" }}>Generating {activeTool?.label}…</div><div className="text-[10px] mt-1" style={{ color: "var(--text-muted)" }}>Analyzing {workspaceSources.length} source(s)</div></div> : renderToolOutput()}<div className="mt-4 p-2 rounded text-[9px]" style={{ background: "var(--warning-bg)", border: "1px solid var(--warning-border)", color: "var(--warning)" }}>AI-generated content · Not an official NCPOR document · Requires review before publication</div></div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

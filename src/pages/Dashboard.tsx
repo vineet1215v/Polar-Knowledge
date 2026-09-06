@@ -176,7 +176,7 @@ export default function Dashboard({ onNavigate, onOpenStudio }: Props) {
         </div>
 
         {/* ── KNOWLEDGE PULSE ───────────────────────────────── */}
-        <div className="card p-4">
+        {/* <div className="card p-4">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-green-500 pulse-dot"/>
@@ -194,11 +194,11 @@ export default function Dashboard({ onNavigate, onOpenStudio }: Props) {
                 <div className="text-[10px] mt-1 leading-tight" style={{ color: "var(--text-muted)" }}>{kp.detail}</div>
                 <div className="text-[9px] mt-1" style={{ color: "var(--text-muted)" }}>{kp.timestamp}</div>
               </div>
-            ))}
-          </div>
+            ))} */}
+          {/* </div> */}
 
           {/* Intelligence Feed (expandable) */}
-          {intelligenceOpen && (
+          {/* {intelligenceOpen && (
             <div className="mt-3 pt-3 border-t space-y-2" style={{ borderColor: "var(--border)" }}>
               <div className="text-xs font-semibold mb-2" style={{ color: "var(--text-primary)" }}>Intelligence Feed</div>
               {intelligenceFeed.map(item => {
@@ -225,8 +225,8 @@ export default function Dashboard({ onNavigate, onOpenStudio }: Props) {
                 );
               })}
             </div>
-          )}
-        </div>
+          )} */}
+        {/* </div> */}
 
         {/* Latest Updates */}
         <div className="card p-4">

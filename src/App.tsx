@@ -16,6 +16,7 @@ import About from "./pages/About";
 import { WorkspaceSource, typeIcon } from "./workspaceStore";
 // AddToWorkspaceButton lives in components/AddToWorkspace to avoid circular imports
 
+
 type Page =
   | "dashboard" | "expeditions" | "publications" | "datasets"
   | "media" | "map" | "ai" | "education" | "news" | "events" | "about";
@@ -148,6 +149,8 @@ export default function App() {
   const [searchQuery, setSearchQuery] = useState("");
   const [workspace, setWorkspace] = useState<WorkspaceSource[]>([]);
   const [studioOpen, setStudioOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+
 
   const navigate = (p: string) => { setPage(p as Page); setSearchQuery(""); };
 
@@ -178,37 +181,70 @@ export default function App() {
   }
 
   return (
-    <div className="flex h-full overflow-hidden">
-      <Sidebar active={page} onNavigate={setPage}/>
-      <div className="flex flex-col flex-1 min-w-0 overflow-hidden">
-        <Header
-          onSearch={setSearchQuery}
-          onNavigate={navigate}
-          workspaceCount={workspace.length}
-          onOpenWorkspace={() => setStudioOpen(true)}
-        />
-        <div className="flex-1 overflow-hidden">{renderPage()}</div>
-      </div>
+    <div className="h-full overflow-hidden">
+      {/* ── FULL WIDTH HEADER ───────────────────────────── */}
+    <Header
+      onSearch={setSearchQuery}
+      onNavigate={navigate}
+      workspaceCount={workspace.length}
+      onOpenWorkspace={() => setStudioOpen(true)}
+      onToggleSidebar={() =>
+        setSidebarCollapsed(prev => !prev)
+      }
+    />
 
-      {searchQuery && <SearchResults query={searchQuery} onClose={() => setSearchQuery("")} onNavigate={p => { setPage(p); setSearchQuery(""); }}/>}
+    {/* ── SIDEBAR ────────────────────────────────────── */}
+    <Sidebar
+      active={page}
+      onNavigate={setPage}
+      collapsed={sidebarCollapsed}
+    />
 
-      {workspace.length > 0 && !studioOpen && (
-        <WorkspaceTray
-          sources={workspace}
-          onRemove={removeFromWorkspace}
-          onClear={() => setWorkspace([])}
-          onOpenAI={() => { navigate("ai"); }}
-          onOpenStudio={() => setStudioOpen(true)}
-        />
-      )}
+    {/* ── MAIN CONTENT ───────────────────────────────── */}
+   <main
+  style={{
+    position: "fixed",
+    top: "var(--header-height)",
+    left: sidebarCollapsed ? "72px" : "var(--sidebar-width)",
+    right: 0,
+    bottom: 0,
+    overflow: "auto",
+    transition: "left 0.2s ease",
+    background: "var(--page-bg)",
+  }}
+>
+  {renderPage()}
+</main>
 
-      {studioOpen && (
-        <PolarStudio
-          sources={workspace}
-          onClose={() => setStudioOpen(false)}
-          onNavigate={navigate}
-        />
-      )}
-    </div>
+    {searchQuery && (
+      <SearchResults
+        query={searchQuery}
+        onClose={() => setSearchQuery("")}
+        onNavigate={p => {
+          setPage(p);
+          setSearchQuery("");
+        }}
+      />
+    )}
+
+    {workspace.length > 0 && !studioOpen && (
+      <WorkspaceTray
+        sources={workspace}
+        onRemove={removeFromWorkspace}
+        onClear={() => setWorkspace([])}
+        onOpenAI={() => navigate("ai")}
+        onOpenStudio={() => setStudioOpen(true)}
+      />
+    )}
+
+    {studioOpen && (
+      <PolarStudio
+        sources={workspace}
+        onClose={() => setStudioOpen(false)}
+        onNavigate={navigate}
+      />
+    )}
+
+  </div>
   );
 }

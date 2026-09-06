@@ -26,7 +26,7 @@ html, body, #root {
   ─────────────────────────────────────────────── */
   --header-bg:           #0c1e3c;
   --header-border:       rgba(255,255,255,0.08);
-  --header-height:       56px;
+  --header-height:       64px;
 
   --sidebar-bg:          #ffffff;
   --sidebar-border:      #e8ecf0;
@@ -464,7 +464,747 @@ html, body, #root {
 .pulse-dot { animation: pulse-dot 2s infinite; }
 
 /* ═══════════════════════════════════════════════════
+   POLAR MAP — INTERACTIVE LABELS
+═══════════════════════════════════════════════════ */
+/* Permanent station name label (always visible) */
+.station-tooltip-permanent {
+  background: rgba(15, 23, 42, 0.88);
+  color: #ffffff;
+  border: none;
+  border-radius: 5px;
+  padding: 2px 7px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+  pointer-events: none;
+  transition: all 0.15s ease;
+}
+.station-tooltip-permanent.leaflet-tooltip-top::before { display: none; }
+.station-label-name {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+/* Rich hover version — expands with type / status / stats */
+.station-label-rich {
+  padding: 2px 2px;
+  min-width: 120px;
+}
+.station-label-rich .station-label-name { font-size: 11px; margin-bottom: 1px; }
+.station-label-meta {
+  font-size: 9px;
+  color: #cbd5e1;
+  white-space: nowrap;
+  margin-bottom: 2px;
+}
+.station-label-stats {
+  font-size: 9px;
+  color: #93c5fd;
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+/* Permanent expedition route name label */
+.route-tooltip-permanent {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+  pointer-events: none;
+}
+.route-tooltip-permanent::before { display: none; }
+.route-label-name {
+  font-size: 10px;
+  font-weight: 700;
+  white-space: nowrap;
+  text-shadow:
+    -1px -1px 0 #fff, 1px -1px 0 #fff,
+    -1px 1px 0 #fff, 1px 1px 0 #fff,
+    0 0 4px rgba(255,255,255,0.9);
+}
+
+/* ═══════════════════════════════════════════════════
    FOCUS
 ═══════════════════════════════════════════════════ */
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 button:focus:not(:focus-visible) { outline: none; }
+
+
+/* ═══════════════════════════════════════════════════════════
+   GLOBAL RESPONSIVE SYSTEM
+   PC → TABLET → MOBILE
+   NCPOR POLAR KNOWLEDGE PORTAL
+═══════════════════════════════════════════════════════════ */
+
+/* ─────────────────────────────────────────────────────────
+   RESPONSIVE FOUNDATION
+───────────────────────────────────────────────────────── */
+
+html {
+  width: 100%;
+  min-width: 0;
+  overflow-x: hidden;
+}
+
+body,
+#root {
+  width: 100%;
+  min-width: 0;
+  min-height: 100%;
+  overflow-x: hidden;
+}
+
+img,
+svg,
+video,
+canvas,
+iframe {
+  max-width: 100%;
+}
+
+button,
+input,
+select,
+textarea {
+  max-width: 100%;
+}
+
+button {
+  touch-action: manipulation;
+}
+
+
+/* ─────────────────────────────────────────────────────────
+   FLEX / GRID SAFETY
+───────────────────────────────────────────────────────── */
+
+[class*="grid"],
+[class*="flex"] {
+  min-width: 0;
+}
+
+.grid,
+[class*="grid-"] {
+  min-width: 0;
+}
+
+main,
+section,
+article,
+aside {
+  min-width: 0;
+}
+
+
+/* ─────────────────────────────────────────────────────────
+   TABLE RESPONSIVENESS
+───────────────────────────────────────────────────────── */
+
+.data-table {
+  min-width: 650px;
+}
+
+.data-table-wrapper,
+.table-container,
+.table-responsive,
+[class*="table-wrapper"] {
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+
+/* ─────────────────────────────────────────────────────────
+   LARGE DESKTOP
+   ≥ 1200px
+───────────────────────────────────────────────────────── */
+
+@media (min-width: 1200px) {
+
+  .main-content,
+  .page-content,
+  main {
+    min-width: 0;
+  }
+
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   TABLET
+   769px – 1199px
+═══════════════════════════════════════════════════════════ */
+
+@media (max-width: 1199px) {
+
+  :root {
+    --sidebar-width: 220px;
+  }
+
+  /* Main content should never create horizontal scrolling */
+  main,
+  .main-content,
+  .page-content {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  /* Generic grids become 2 columns */
+  .kpi-grid,
+  .stats-grid,
+  .cards-grid,
+  .dashboard-grid,
+  .content-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  /* Large cards */
+  .kpi-card {
+    min-width: 0;
+  }
+
+  /* Header controls */
+  .page-header-title {
+    font-size: 19px;
+  }
+
+  /* Buttons */
+  .btn-primary,
+  .btn-outline,
+  .btn-navy {
+    max-width: 100%;
+  }
+
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   TABLET / SMALL LAPTOP
+   769px – 1024px
+═══════════════════════════════════════════════════════════ */
+
+@media (max-width: 1024px) {
+
+  :root {
+    --header-height: 60px;
+    --sidebar-width: 210px;
+  }
+
+  /* Reduce page spacing */
+  .main-content,
+  .page-content {
+    padding-left: 18px !important;
+    padding-right: 18px !important;
+  }
+
+  /* Header */
+  .page-header {
+    gap: 12px;
+  }
+
+  .page-header-title {
+    font-size: 18px;
+  }
+
+  .page-header-sub {
+    font-size: 12px;
+  }
+
+  /* KPI */
+  .kpi-card {
+    padding: 16px;
+  }
+
+  .kpi-value {
+    font-size: 25px;
+  }
+
+  /* Tabs can scroll instead of breaking */
+  .tab-bar {
+    max-width: 100%;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .tab-bar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .tab-item {
+    flex-shrink: 0;
+  }
+
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   MOBILE
+   ≤ 768px
+═══════════════════════════════════════════════════════════ */
+
+@media (max-width: 768px) {
+
+  :root {
+    --header-height: 56px;
+    --sidebar-width: 0px;
+  }
+
+  /* ───────────────────────────────────────────────────────
+     PAGE
+  ─────────────────────────────────────────────────────── */
+
+  body {
+    font-size: 14px;
+  }
+
+  main,
+  .main-content,
+  .page-content {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    padding: 14px !important;
+    margin: 0 !important;
+  }
+
+
+  /* ───────────────────────────────────────────────────────
+     HEADER
+  ─────────────────────────────────────────────────────── */
+
+  header {
+    min-height: var(--header-height);
+    width: 100%;
+    max-width: 100%;
+  }
+
+
+  /* ───────────────────────────────────────────────────────
+     SIDEBAR
+  ─────────────────────────────────────────────────────── */
+
+  /*
+     Sidebar becomes an off-canvas drawer.
+     Your Sidebar component can use its existing
+     collapsed/open class/state.
+  */
+
+  .sidebar {
+    width: min(82vw, 300px);
+    max-width: 300px;
+    position: fixed;
+    left: 0;
+    top: var(--header-height);
+    bottom: 0;
+    z-index: 1000;
+    overflow-y: auto;
+    overflow-x: hidden;
+    transform: translateX(0);
+    transition: transform 0.22s ease;
+  }
+
+  .sidebar.collapsed,
+  .sidebar.closed,
+  .sidebar.mobile-closed {
+    transform: translateX(-100%);
+  }
+
+
+  /* ───────────────────────────────────────────────────────
+     SIDEBAR NAV
+  ─────────────────────────────────────────────────────── */
+
+  .sidebar-nav-item {
+    min-height: 42px;
+    padding: 9px 11px;
+    font-size: 13px;
+  }
+
+
+  /* ───────────────────────────────────────────────────────
+     PAGE HEADERS
+  ─────────────────────────────────────────────────────── */
+
+  .page-header {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .page-header-title {
+    font-size: 18px;
+    line-height: 1.3;
+  }
+
+  .page-header-sub {
+    font-size: 12px;
+  }
+
+
+  /* ───────────────────────────────────────────────────────
+     GRIDS → ONE COLUMN
+  ─────────────────────────────────────────────────────── */
+
+  .kpi-grid,
+  .stats-grid,
+  .cards-grid,
+  .dashboard-grid,
+  .content-grid,
+  .grid-2,
+  .grid-3,
+  .grid-4 {
+    grid-template-columns: 1fr !important;
+  }
+
+
+  /* ───────────────────────────────────────────────────────
+     FLEX ROWS → WRAP
+  ─────────────────────────────────────────────────────── */
+
+  .toolbar,
+  .page-actions,
+  .filter-row,
+  .action-row,
+  .header-actions {
+    flex-wrap: wrap;
+  }
+
+
+  /* ───────────────────────────────────────────────────────
+     CARDS
+  ─────────────────────────────────────────────────────── */
+
+  .card {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .kpi-card {
+    width: 100%;
+    padding: 16px;
+  }
+
+  .kpi-value {
+    font-size: 24px;
+  }
+
+
+  /* ───────────────────────────────────────────────────────
+     BUTTONS
+  ─────────────────────────────────────────────────────── */
+
+  .btn-primary,
+  .btn-outline,
+  .btn-navy {
+    min-height: 40px;
+  }
+
+  .btn-primary,
+  .btn-outline {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+
+  /* ───────────────────────────────────────────────────────
+     TABS
+  ─────────────────────────────────────────────────────── */
+
+  .tab-bar {
+    width: 100%;
+    overflow-x: auto;
+    display: flex;
+    flex-wrap: nowrap;
+    scrollbar-width: none;
+  }
+
+  .tab-bar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .tab-item {
+    flex: 0 0 auto;
+    min-height: 38px;
+    padding: 8px 12px;
+  }
+
+
+  /* ───────────────────────────────────────────────────────
+     FORMS
+  ─────────────────────────────────────────────────────── */
+
+  .filter-select,
+  .search-input {
+    min-height: 40px;
+  }
+
+  .filter-select {
+    width: 100%;
+  }
+
+
+  /* ───────────────────────────────────────────────────────
+     TABLE
+  ─────────────────────────────────────────────────────── */
+
+  .data-table {
+    min-width: 680px;
+    font-size: 12px;
+  }
+
+  .data-table th,
+  .data-table td {
+    padding: 9px 10px;
+  }
+
+
+  /* ───────────────────────────────────────────────────────
+     MODALS
+  ─────────────────────────────────────────────────────── */
+
+  .modal-surface {
+    width: calc(100vw - 24px) !important;
+    max-width: calc(100vw - 24px) !important;
+    max-height: calc(100vh - 24px);
+    overflow-y: auto;
+    border-radius: var(--radius-lg);
+  }
+
+
+  /* ───────────────────────────────────────────────────────
+     DRAWERS
+  ─────────────────────────────────────────────────────── */
+
+  .drawer {
+    width: min(92vw, 360px) !important;
+    max-width: 92vw !important;
+  }
+
+
+  /* ───────────────────────────────────────────────────────
+     MEDIA
+  ─────────────────────────────────────────────────────── */
+
+  .publication-thumb {
+    width: 64px;
+    height: 48px;
+  }
+
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   SMALL MOBILE
+   ≤ 480px
+═══════════════════════════════════════════════════════════ */
+
+@media (max-width: 480px) {
+
+  :root {
+    --header-height: 54px;
+  }
+
+  main,
+  .main-content,
+  .page-content {
+    padding: 10px !important;
+  }
+
+  .page-header-title {
+    font-size: 17px;
+  }
+
+  .page-header-sub {
+    font-size: 11.5px;
+  }
+
+  .kpi-card {
+    padding: 14px;
+  }
+
+  .kpi-label {
+    font-size: 10px;
+  }
+
+  .kpi-value {
+    font-size: 22px;
+  }
+
+  .btn-primary,
+  .btn-outline,
+  .btn-navy {
+    min-height: 42px;
+  }
+
+  .search-input {
+    font-size: 14px;
+  }
+
+  .modal-surface {
+    width: calc(100vw - 16px) !important;
+    max-width: calc(100vw - 16px) !important;
+    max-height: calc(100vh - 16px);
+  }
+
+  .drawer {
+    width: 94vw !important;
+    max-width: 94vw !important;
+  }
+
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   VERY SMALL PHONES
+   ≤ 360px
+═══════════════════════════════════════════════════════════ */
+
+@media (max-width: 360px) {
+
+  main,
+  .main-content,
+  .page-content {
+    padding: 8px !important;
+  }
+
+  .page-header-title {
+    font-size: 16px;
+  }
+
+  .kpi-value {
+    font-size: 20px;
+  }
+
+  .btn-primary,
+  .btn-outline,
+  .btn-navy {
+    font-size: 12px;
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   TOUCH DEVICES
+═══════════════════════════════════════════════════════════ */
+
+@media (hover: none) and (pointer: coarse) {
+
+  .sidebar-nav-item {
+    min-height: 44px;
+  }
+
+  button,
+  .btn-primary,
+  .btn-outline,
+  .btn-navy,
+  .tab-item {
+    min-height: 42px;
+  }
+
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   ACCESSIBILITY
+═══════════════════════════════════════════════════════════ */
+
+@media (prefers-reduced-motion: reduce) {
+
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+}
+.ncpor-brand {
+  display: block;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+  .ncpor-brand {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    color: #ffffff !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
+  }
+}
+
+/* =========================================================
+   POLAR MAP RESPONSIVE DESIGN
+   ========================================================= */
+
+/* Desktop */
+.polar-map-layout {
+  display: flex;
+  flex-direction: row;
+}
+
+.polar-map-container {
+  min-width: 0;
+  min-height: 0;
+}
+
+.polar-map-sidebar {
+  width: 220px;
+  min-width: 220px;
+}
+
+
+/* Tablet */
+@media (max-width: 1024px) {
+  .polar-map-sidebar {
+    width: 200px !important;
+    min-width: 200px !important;
+  }
+}
+
+
+/* Mobile */
+@media (max-width: 768px) {
+
+  /* Put map above the cards */
+  .polar-map-layout {
+    flex-direction: column;
+    overflow-y: auto;
+    overflow-x: hidden;
+    gap: 8px;
+  }
+
+  /* Full-width map */
+  .polar-map-container {
+    width: 100%;
+    min-width: 100%;
+    flex: 0 0 55vh;
+    min-height: 360px;
+    max-height: 520px;
+  }
+
+  /* Cards move below map */
+  .polar-map-sidebar {
+    width: 100% !important;
+    min-width: 100% !important;
+    max-width: none !important;
+
+    flex: 0 0 auto;
+
+    overflow: visible;
+  }
+}
