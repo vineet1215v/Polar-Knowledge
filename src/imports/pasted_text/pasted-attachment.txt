@@ -1,0 +1,877 @@
+I want you to redesign my existing Polar Knowledge Portal UI.
+
+I have attached a reference image showing the exact visual direction and layout I want:
+
+Reference image: the uploaded 5b869e2f-8fbf-47d1-ba7e-d006d31a7e6e.png
+
+PRIMARY INSTRUCTION
+
+DO NOT create a new design.
+
+DO NOT interpret the image loosely.
+
+DO NOT make a generic dashboard.
+
+Use the attached image as the primary UI/UX design specification.
+
+I want the actual website to visually reproduce this design as closely as possible while making every section functional.
+
+The final application should feel like the image has been converted from a UI mockup into a real production website.
+
+1. OVERALL DESIGN LANGUAGE
+
+Use the same visual language shown in the reference:
+
+Dark navy blue sidebar
+White / very light blue main content area
+Blue primary accent
+Rounded cards
+Thin subtle borders
+Soft shadows
+Clean scientific/government portal aesthetic
+Modern typography
+Generous whitespace
+Compact but information-rich cards
+Consistent iconography
+Antarctic / polar imagery
+Professional NCPOR appearance
+No excessive gradients
+No flashy startup-style UI
+No unnecessary animations
+No excessive glassmorphism
+No giant empty spaces
+
+The UI should look like a serious national scientific knowledge platform, not a generic SaaS dashboard.
+
+2. APPLICATION STRUCTURE
+
+Create a persistent left sidebar.
+
+The sidebar must contain exactly these major sections:
+
+Dashboard
+Expeditions
+Research Publications
+Scientific Datasets
+Media Gallery
+Polar Map & GIS
+Polar Knowledge (AI)
+Education & Outreach
+News & Announcements
+Events & Activities
+About NCPOR
+
+The selected item must have the same type of blue highlighted state shown in the reference.
+
+Clicking a sidebar item must change the main content area.
+
+Do NOT reload the entire application.
+
+Use proper client-side routing.
+
+3. SIDEBAR DESIGN
+
+Reproduce the sidebar style from the reference image.
+
+Sidebar:
+
+Dark navy background
+NCPOR logo at top
+NCPOR name
+"National Centre for Polar and Ocean Research"
+Ministry of Earth Sciences
+White navigation icons
+White navigation labels
+Blue rounded active navigation item
+Proper spacing between navigation items
+Subtle visual hierarchy
+
+At the bottom include:
+
+Exploring Today
+for a Sustainable Tomorrow
+
+Government of India
+Ministry of Earth Sciences
+NCPOR
+
+Use an Antarctic/polar mountain line-art or subtle polar visual at the bottom if appropriate.
+
+4. TOP HEADER
+
+The main content area should have a clean top header similar to the reference.
+
+Include:
+
+Search
+
+Large horizontal search box:
+
+Search reports, datasets, publications, images, videos...
+
+Search should eventually support global portal search.
+
+Right side
+
+Include:
+
+Notification icon
+User avatar
+"Welcome,"
+"Researcher"
+Dropdown
+
+Keep this visually subtle.
+
+5. DASHBOARD PAGE
+
+The Dashboard must visually match panel 1. Dashboard (Home) from the reference.
+
+Create:
+
+Hero section
+
+Large Antarctic image.
+
+Overlay / integrate:
+
+Polar Knowledge Portal
+
+Discover | Explore | Learn | Share
+
+An integrated platform for polar science research,
+data, expeditions and outreach by NCPOR
+
+Primary button:
+
+Explore Expeditions →
+
+The hero must use a real polar/Antarctic image rather than a plain colored rectangle.
+
+Statistics cards
+
+Four cards:
+
+42
+Expeditions
+
+1,200+
+Publications
+
+350+
+Datasets
+
+5,000+
+Photos & Videos
+
+Each card should have:
+
+Icon
+Large number
+Label
+Small supporting text
+Interactive Polar Map
+
+Large card:
+
+Interactive Polar Map
+
+Explore expedition routes, research locations and environmental data
+
+Include:
+
+Antarctica map
+Research stations
+Expedition routes
+Research locations
+Monitoring sites
+Active vessel
+Zoom controls
+Legend
+Open Map button
+
+The map should look visually similar to the reference.
+
+Use a real map implementation if the project already has one.
+
+Do not fake the interaction with a static image if an actual map can be implemented.
+
+Latest News
+
+Right-side card:
+
+Latest News & Announcements
+
+Display several news items with:
+
+Thumbnail
+Title
+Date
+Arrow
+Upcoming Events
+
+Right-side card:
+
+Upcoming Events
+
+Use the vertical timeline style shown in the reference.
+
+Example:
+
+15 Sep
+Polar Science Webinar Series       Register
+
+02 Oct
+World Polar Day Celebration         Details
+
+18 Nov
+Polar Science Exhibition            Details
+Bottom dashboard section
+
+Three cards:
+
+Recent Publications
+
+Show publication entries with:
+
+Thumbnail
+Title
+Journal
+Authors
+View PDF button
+Media Gallery
+
+Show:
+
+Photos
+Videos
+360° Tour tabs
+
+with polar images.
+
+Polar Knowledge Assistant
+
+Show:
+
+Ask questions, explore insights,
+and learn from NCPOR's knowledge base.
+
+Include example questions:
+
+What is sea ice and why is it important?
+
+Show Antarctic climate trends
+
+List Indian Antarctic expeditions
+
+Explain ocean circulation in simple terms
+
+and an AI input box.
+
+6. EXPEDITIONS PAGE
+
+Reproduce panel 2. Expeditions.
+
+Header:
+
+Expeditions
+
+Explore India's journey through the polar regions
+
+Tabs:
+
+All Expeditions
+Antarctic Expeditions
+Arctic Expeditions
+
+Search/filter row:
+
+Search expeditions...
+Year
+Status
+
+Create expedition cards.
+
+Each card should contain:
+
+Antarctic photograph
+Expedition number
+Year
+Dates
+Short description
+View Details button
+
+Example:
+
+46th IAE (2024)
+
+Nov 2024 – Mar 2025
+
+Continued scientific exploration
+with focus on climate, ocean and
+atmospheric studies.
+
+View Details →
+
+Use a responsive card grid.
+
+7. RESEARCH PUBLICATIONS PAGE
+
+Reproduce panel 3.
+
+Header:
+
+Research Publications
+
+Explore scientific papers, articles and citations by NCPOR researchers.
+
+Search and filters:
+
+Search publications...
+Year
+Author
+Topic
+
+Display publication rows/cards.
+
+Each should contain:
+
+Thumbnail
+Publication title
+Journal
+Year
+Authors
+View PDF
+8. SCIENTIFIC DATASETS PAGE
+
+Reproduce panel 4.
+
+Header:
+
+Scientific Datasets
+
+Access and explore scientific datasets from polar expeditions.
+
+Search:
+
+Search datasets...
+Parameter
+Region
+Year
+
+Dataset cards must show:
+
+Thumbnail
+Dataset name
+Size
+Scientific parameter
+Region/topic
+Year
+View & Download
+
+Example:
+
+Antarctic Sea Ice Concentration (2023)
+
+2.1 GB
+
+Sea Ice
+Remote Sensing
+2023
+
+View & Download
+9. MEDIA GALLERY PAGE
+
+Reproduce panel 5.
+
+Header:
+
+Media Gallery
+
+Explore photos, videos and 360° virtual tours from expeditions.
+
+Tabs:
+
+Photos
+Videos
+360° Virtual Tour
+
+Filters:
+
+All Expeditions
+All Years
+Category
+
+Create a professional image grid.
+
+Each image needs:
+
+Image
+Title
+Location/category
+Expedition/year
+
+Include:
+
+Antarctic landscape
+Research teams
+Aurora
+Penguins
+Research stations
+Ice shelves
+Ships
+Field camps
+10. POLAR MAP & GIS PAGE
+
+Reproduce panel 6.
+
+Header:
+
+Polar Map & GIS
+
+Explore spatial data, research locations and environmental layers.
+
+This page should be map-focused.
+
+Implement:
+
+Antarctica
+Research stations
+Expedition routes
+Monitoring sites
+Geographic locations
+Environmental layers
+
+Add:
+
+Sea Ice
+Glaciers
+Ocean Currents
+Research Stations
+Expedition Routes
+
+Use a real interactive mapping library if appropriate.
+
+11. POLAR KNOWLEDGE AI PAGE
+
+Reproduce panel 7.
+
+This should NOT look like a generic ChatGPT clone.
+
+Title:
+
+Polar Knowledge Assistant
+
+Ask questions, explore insights and learn from NCPOR's knowledge base.
+
+Conversation area.
+
+Example:
+
+User:
+How does sea ice affect climate change?
+
+Assistant:
+Sea ice plays a crucial role in Earth's climate by
+reflecting sunlight, regulating ocean temperatures,
+and influencing atmospheric circulation...
+
+Below the answer:
+
+Key References
+Related Datasets
+Visualize Data
+
+Input:
+
+Ask anything about polar science...
+
+The AI should conceptually be grounded in the portal's:
+
+Reports
+Publications
+Datasets
+Expeditions
+Media metadata
+Educational resources
+
+Clearly show references when answers are generated.
+
+12. EDUCATION & OUTREACH PAGE
+
+Reproduce panel 8.
+
+Title:
+
+Learn About Polar Regions
+
+Interactive learning resources for students,
+teachers and the public.
+
+Tabs:
+
+For Students
+For Teachers
+Interactive Modules
+
+Create educational cards:
+
+Polar Basics
+Climate Change
+Biodiversity
+Quizzes & Activities
+
+Each card should contain:
+
+Image/icon
+Short explanation
+Explore button
+
+This page is extremely important because the official theme is:
+
+Smart Education
+
+13. NEWS & ANNOUNCEMENTS
+
+Reproduce panel 9.
+
+Header:
+
+News & Announcements
+
+Stay updated with the latest news, stories and media content.
+
+Tabs:
+
+Latest News
+Press Releases
+Social Media Highlights
+
+News rows:
+
+Thumbnail
+Title
+Date
+Category
+Arrow
+14. EVENTS & ACTIVITIES
+
+Reproduce panel 10.
+
+Header:
+
+Events & Activities
+
+Explore upcoming events, past activities and institutional initiatives.
+
+Tabs:
+
+Upcoming Events
+Past Events
+
+Use the same clean timeline/card style.
+
+Include:
+
+Date
+Event name
+Location
+Description
+Register
+Details
+15. ABOUT NCPOR
+
+Reproduce panel 11.
+
+Header:
+
+About NCPOR
+
+India's gateway to polar and ocean research.
+
+Tabs:
+
+Overview
+Vision & Mission
+Our Team
+Facilities
+
+Include:
+
+NCPOR image
+Indian flag
+Antarctic imagery
+Description
+Statistics
+Read More
+16. IMPORTANT: DO NOT MAKE EVERY PAGE LOOK IDENTICAL
+
+The visual design system must remain consistent, but each page should have its own content structure.
+
+For example:
+
+Dashboard
+→ overview + map + metrics
+
+Expeditions
+→ expedition cards
+
+Publications
+→ research document list
+
+Datasets
+→ data catalogue
+
+Media
+→ visual gallery
+
+GIS
+→ full-screen map
+
+AI
+→ conversational interface
+
+Education
+→ learning cards
+
+News
+→ news feed
+
+Events
+→ timeline
+
+About
+→ institutional information
+
+This is critical.
+
+17. DESIGN SYSTEM
+
+Create reusable components.
+
+For example:
+
+Sidebar
+Header
+SearchBar
+PageHeader
+StatCard
+ContentCard
+FilterBar
+Tabs
+DataTable
+PublicationCard
+ExpeditionCard
+DatasetCard
+MediaCard
+NewsCard
+EventCard
+MapPanel
+AIChatPanel
+
+Do not duplicate CSS/page structures unnecessarily.
+
+18. RESPONSIVENESS
+
+The reference is desktop-first, but the website must also work on:
+
+1920px
+1440px
+1280px
+1024px
+768px
+mobile
+
+On smaller screens:
+
+Sidebar collapses
+Cards stack
+Tables become responsive
+Map remains usable
+Search adapts
+Navigation becomes a drawer
+19. VISUAL ACCURACY REQUIREMENT
+
+After implementing the UI, compare every page against the attached reference image.
+
+Pay particular attention to:
+
+Sidebar width
+Header height
+Card dimensions
+Card spacing
+Font sizes
+Font weights
+Border radius
+Border colors
+Icon sizes
+Image aspect ratios
+Padding
+Margins
+Blue accent color
+Navy sidebar
+White content background
+Alignment
+Grid proportions
+
+Do not simply say "similar."
+
+The goal is:
+
+Reference image → real website with the same visual composition.
+
+20. CONTENT
+
+Use realistic NCPOR/polar-science sample content.
+
+Do NOT use:
+
+Lorem ipsum
+Test Data
+Card 1
+Example User
+Random Dashboard
+
+Use realistic examples such as:
+
+46th Indian Antarctic Expedition
+Antarctic Sea Ice Concentration
+Southern Ocean observations
+Polar climate research
+Indian Antarctic stations
+Maitri
+Bharati
+Dakshin Gangotri
+Arctic expeditions
+Sea ice
+Glaciology
+Atmospheric science
+Oceanography
+Polar biodiversity
+21. FUNCTIONALITY
+
+Every visible button should do something.
+
+For example:
+
+Explore Expeditions → Expeditions page
+
+View PDF → Publication detail/PDF viewer
+
+View & Download → Dataset detail/download
+
+View All → Relevant listing page
+
+Open Map → GIS page
+
+Details → Detail page/modal
+
+Register → Event registration interaction
+
+Ask AI → AI response
+
+Search → Search results
+
+Do not create dead buttons.
+
+22. GLOBAL SEARCH
+
+Implement a global search interface.
+
+Search across:
+
+Expeditions
+Reports
+Publications
+Datasets
+Photos
+Videos
+Events
+News
+Educational resources
+
+Results should be grouped by content type.
+
+Example:
+
+Search: Antarctic climate
+
+Publications       24 results
+Datasets            8 results
+Expeditions         5 results
+Reports            12 results
+Media              38 results
+Education           6 results
+23. DATA ARCHITECTURE
+
+Do not hardcode everything directly into JSX.
+
+Create structured data such as:
+
+expeditions
+publications
+datasets
+media
+news
+events
+education
+
+Use reusable components to render them.
+
+The architecture should make it easy to replace mock data with real APIs later.
+
+24. IMPORTANT DIFFERENCE FROM MY CURRENT WEBSITE
+
+My current website looks like a generic research/admin dashboard.
+
+I specifically DO NOT want that visual appearance.
+
+Avoid:
+
+Huge generic KPI cards dominating the page
+Excessive empty white space
+Generic SaaS dashboard styling
+Random purple/pink colors
+Overly rounded components
+Excessive floating widgets
+Generic analytics-dashboard appearance
+
+Instead use the reference image's editorial/scientific portal style.
+
+It should feel like:
+
+NCPOR + scientific archive + interactive polar atlas + educational portal
+
+25. FINAL QUALITY CHECK
+
+Before finishing:
+
+Run the application.
+Check every sidebar route.
+Check desktop layout.
+Check responsive layout.
+Check that there are no broken images.
+Check that there are no console errors.
+Check that buttons work.
+Check that navigation works.
+Check that search works.
+Check that cards align correctly.
+Check that the sidebar remains consistent across pages.
+Compare each page against the supplied reference image.
+Fix visual inconsistencies before declaring completion.
+
+Do not stop after creating only the Dashboard.
+
+Implement all 11 sidebar panels.
+
+The final result should look like a complete, polished NCPOR Polar Knowledge Portal, not a prototype with empty pages.
+
+Most important instruction
+
+The attached image is the visual source of truth.
+
+When there is a conflict between your own design preference and the attached reference image, follow the reference image.
+
+Do not redesign it.
+
+Convert the visual design into a real, responsive, functional website.

@@ -1,0 +1,10 @@
+{
+  "description": "Delivers a pixel-perfect website design matching the provided image, enabling users to create visually accurate web pages effortlessly.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}
