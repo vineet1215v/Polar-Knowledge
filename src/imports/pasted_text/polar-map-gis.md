@@ -449,10 +449,10 @@ Maitri Station
 
 Related Sources:
 
-✓ Expedition Report
-✓ Dataset
-✓ Publication
-✓ Media
+ Expedition Report
+ Dataset
+ Publication
+ Media
 
 [Open in Polar Knowledge AI]
 
@@ -631,7 +631,7 @@ Use compact controls.
 Suggested structure:
 
 ┌─────────────────────────────────────────────┐
-│ Search location...              Layers ⚙    │
+│ Search location...              Layers     │
 ├─────────────────────────────────────────────┤
 │                                             │
 │                                             │

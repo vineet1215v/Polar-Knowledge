@@ -3,21 +3,21 @@ import { useState } from "react";
 interface Props { onNavigate?: (p: string) => void; }
 
 const researchDomains = [
-  { name: "Glaciology & Ice Core Science", icon: "🧊", count: { datasets: 42, pubs: 187, researchers: 18 }, dest: "datasets", tags: ["Sea Ice","Ice Cores","Glacier Dynamics","Mass Balance"], desc: "Study of glaciers, ice sheets, ice cores and cryosphere dynamics in polar regions." },
-  { name: "Physical Oceanography", icon: "🌊", count: { datasets: 38, pubs: 214, researchers: 22 }, dest: "datasets", tags: ["Southern Ocean","Water Masses","Currents","Thermohaline"], desc: "Physical properties and dynamics of polar oceans including the Southern Ocean and Arctic." },
-  { name: "Marine Biology & Ecology", icon: "🦭", count: { datasets: 29, pubs: 96, researchers: 14 }, dest: "datasets", tags: ["Phytoplankton","Krill","Benthic","Biodiversity"], desc: "Marine ecosystems, biodiversity, and biological productivity in polar waters." },
-  { name: "Atmospheric & Climate Science", icon: "🌬️", count: { datasets: 31, pubs: 143, researchers: 16 }, dest: "datasets", tags: ["Aerosols","GHG","Ozone","Boundary Layer"], desc: "Atmospheric composition, climate variability, and polar vortex dynamics." },
-  { name: "Seismology & Geoscience", icon: "🗻", count: { datasets: 14, pubs: 57, researchers: 9 }, dest: "datasets", tags: ["Bedrock","Tectonic","Gravity","Permafrost"], desc: "Geological structure, tectonic history and geophysics of polar continental shelves." },
-  { name: "Paleoclimate & Proxies", icon: "📜", count: { datasets: 17, pubs: 88, researchers: 11 }, dest: "publications", tags: ["Ice Core Proxies","Sediment","Climate Reconstruction","Holocene"], desc: "Reconstruction of past climate using ice cores, marine sediment, and other paleoclimate proxies." },
+  { name: "Glaciology & Ice Core Science", icon: "", count: { datasets: 42, pubs: 187, researchers: 18 }, dest: "datasets", tags: ["Sea Ice","Ice Cores","Glacier Dynamics","Mass Balance"], desc: "Study of glaciers, ice sheets, ice cores and cryosphere dynamics in polar regions." },
+  { name: "Physical Oceanography", icon: "", count: { datasets: 38, pubs: 214, researchers: 22 }, dest: "datasets", tags: ["Southern Ocean","Water Masses","Currents","Thermohaline"], desc: "Physical properties and dynamics of polar oceans including the Southern Ocean and Arctic." },
+  { name: "Marine Biology & Ecology", icon: "", count: { datasets: 29, pubs: 96, researchers: 14 }, dest: "datasets", tags: ["Phytoplankton","Krill","Benthic","Biodiversity"], desc: "Marine ecosystems, biodiversity, and biological productivity in polar waters." },
+  { name: "Atmospheric & Climate Science", icon: "", count: { datasets: 31, pubs: 143, researchers: 16 }, dest: "datasets", tags: ["Aerosols","GHG","Ozone","Boundary Layer"], desc: "Atmospheric composition, climate variability, and polar vortex dynamics." },
+  { name: "Seismology & Geoscience", icon: "", count: { datasets: 14, pubs: 57, researchers: 9 }, dest: "datasets", tags: ["Bedrock","Tectonic","Gravity","Permafrost"], desc: "Geological structure, tectonic history and geophysics of polar continental shelves." },
+  { name: "Paleoclimate & Proxies", icon: "", count: { datasets: 17, pubs: 88, researchers: 11 }, dest: "publications", tags: ["Ice Core Proxies","Sediment","Climate Reconstruction","Holocene"], desc: "Reconstruction of past climate using ice cores, marine sediment, and other paleoclimate proxies." },
 ];
 
 const facilities = [
-  { name: "Maitri Station", location: "Antarctica (Schirmacher Oasis, 70°S)", type: "Permanent", since: 1989, icon: "🏔️", desc: "India's second Antarctic station and primary year-round facility. Supports 25+ researchers during winter. Houses meteorology, seismic monitoring, and atmospheric labs.", connected: { expeditions: 32, datasets: 148, pubs: 320 }, dest: "expeditions" },
-  { name: "Bharati Station", location: "Antarctica (Prydz Bay, 69°S)", type: "Permanent", since: 2012, icon: "🧊", desc: "India's third and newest Antarctic station, strategically located near Prydz Bay. Purpose-built for oceanography, sea ice monitoring, and biodiversity studies.", connected: { expeditions: 14, datasets: 89, pubs: 176 }, dest: "expeditions" },
-  { name: "Himadri Station", location: "Svalbard, Arctic (79°N)", type: "Seasonal", since: 2008, icon: "❄️", desc: "India's first Arctic research station, operational during summer months. Focus on atmospheric science, glaciology and Arctic amplification studies.", connected: { expeditions: 16, datasets: 67, pubs: 94 }, dest: "expeditions" },
-  { name: "MV Sagar Nidhi", location: "Southern Ocean operations", type: "Research Vessel", since: 2006, icon: "🚢", desc: "Multi-purpose oceanographic research vessel. Equipped for deep sea coring, acoustic Doppler, CTD rosettes, and underway sampling.", connected: { expeditions: 28, datasets: 203, pubs: 271 }, dest: "expeditions" },
-  { name: "Central Analytical Laboratory", location: "Vasco-da-Gama, Goa", type: "Land Facility", since: 1998, icon: "🔬", desc: "Houses ICP-MS, isotope ratio mass spectrometry, gas chromatography, and scanning electron microscopy. Processes samples from all NCPOR field programmes.", connected: { expeditions: 46, datasets: 0, pubs: 512 }, dest: "datasets" },
-  { name: "Polar Archive & Data Centre", location: "Vasco-da-Gama, Goa", type: "Data Centre", since: 1998, icon: "💾", desc: "Repository for polar ice cores, sediment samples, and scientific data. Maintains over 350 datasets in compliance with SCAR data protocols.", connected: { expeditions: 46, datasets: 352, pubs: 0 }, dest: "datasets" },
+  { name: "Maitri Station", location: "Antarctica (Schirmacher Oasis, 70°S)", type: "Permanent", since: 1989, icon: "", desc: "India's second Antarctic station and primary year-round facility. Supports 25+ researchers during winter. Houses meteorology, seismic monitoring, and atmospheric labs.", connected: { expeditions: 32, datasets: 148, pubs: 320 }, dest: "expeditions" },
+  { name: "Bharati Station", location: "Antarctica (Prydz Bay, 69°S)", type: "Permanent", since: 2012, icon: "", desc: "India's third and newest Antarctic station, strategically located near Prydz Bay. Purpose-built for oceanography, sea ice monitoring, and biodiversity studies.", connected: { expeditions: 14, datasets: 89, pubs: 176 }, dest: "expeditions" },
+  { name: "Himadri Station", location: "Svalbard, Arctic (79°N)", type: "Seasonal", since: 2008, icon: "", desc: "India's first Arctic research station, operational during summer months. Focus on atmospheric science, glaciology and Arctic amplification studies.", connected: { expeditions: 16, datasets: 67, pubs: 94 }, dest: "expeditions" },
+  { name: "MV Sagar Nidhi", location: "Southern Ocean operations", type: "Research Vessel", since: 2006, icon: "", desc: "Multi-purpose oceanographic research vessel. Equipped for deep sea coring, acoustic Doppler, CTD rosettes, and underway sampling.", connected: { expeditions: 28, datasets: 203, pubs: 271 }, dest: "expeditions" },
+  { name: "Central Analytical Laboratory", location: "Vasco-da-Gama, Goa", type: "Land Facility", since: 1998, icon: "", desc: "Houses ICP-MS, isotope ratio mass spectrometry, gas chromatography, and scanning electron microscopy. Processes samples from all NCPOR field programmes.", connected: { expeditions: 46, datasets: 0, pubs: 512 }, dest: "datasets" },
+  { name: "Polar Archive & Data Centre", location: "Vasco-da-Gama, Goa", type: "Data Centre", since: 1998, icon: "", desc: "Repository for polar ice cores, sediment samples, and scientific data. Maintains over 350 datasets in compliance with SCAR data protocols.", connected: { expeditions: 46, datasets: 352, pubs: 0 }, dest: "datasets" },
 ];
 
 const programs = [
@@ -84,7 +84,7 @@ export default function About({ onNavigate }: Props) {
             <div className="lg:col-span-2 space-y-4">
               <div className="card p-6">
                 <div className="flex gap-4 mb-4">
-                  <div className="w-14 h-10 rounded flex items-center justify-center text-2xl flex-shrink-0 border" style={{ borderColor: "var(--border)" }}>🇮🇳</div>
+                  <div className="w-14 h-10 rounded flex items-center justify-center text-2xl flex-shrink-0 border" style={{ borderColor: "var(--border)" }}>IND</div>
                   <div>
                     <h2 className="font-bold text-base" style={{ color: "var(--text-primary)" }}>National Centre for Polar and Ocean Research</h2>
                     <div className="text-xs mt-0.5" style={{ color: "var(--text-secondary)" }}>Autonomous institute · Ministry of Earth Sciences · Vasco-da-Gama, Goa</div>
@@ -117,7 +117,7 @@ export default function About({ onNavigate }: Props) {
                 <div className="space-y-2">
                   {keyPublications.map((p, i) => (
                     <div key={i} className="flex items-start gap-3 p-2.5 rounded-lg hover:bg-slate-50 cursor-pointer" onClick={() => onNavigate?.("publications")}>
-                      <div className="w-8 h-8 rounded flex items-center justify-center flex-shrink-0 text-sm" style={{ background: "var(--accent-light)" }}>📄</div>
+                      <div className="w-8 h-8 rounded flex items-center justify-center flex-shrink-0 text-sm" style={{ background: "var(--accent-light)" }}></div>
                       <div className="flex-1 min-w-0">
                         <div className="text-xs font-medium leading-snug" style={{ color: "var(--text-primary)" }}>{p.title}</div>
                         <div className="text-[10px] mt-0.5" style={{ color: "var(--text-muted)" }}>{p.journal} · {p.year} · {p.domain}</div>
@@ -141,7 +141,7 @@ export default function About({ onNavigate }: Props) {
               <div className="card p-4">
                 <h3 className="font-semibold text-sm mb-3" style={{ color: "var(--text-primary)" }}>Connected Knowledge</h3>
                 <div className="space-y-1.5">
-                  {[["🚢","46 Indian Antarctic Expeditions","expeditions"],["📄","1,200+ Publications indexed","publications"],["💾","350+ Datasets archived","datasets"],["🗺️","Explore station locations","map"],["🎓","Learning resources","education"]].map(([icon, label, dest]) => (
+                  {[["","46 Indian Antarctic Expeditions","expeditions"],["","1,200+ Publications indexed","publications"],["","350+ Datasets archived","datasets"],["","Explore station locations","map"],["","Learning resources","education"]].map(([icon, label, dest]) => (
                     <button key={dest as string} onClick={() => onNavigate?.(dest as string)} className="w-full flex items-center gap-2 text-xs px-2 py-2 rounded-lg hover:bg-slate-50 transition-colors text-left" style={{ color: "var(--text-secondary)" }}>
                       <span className="text-base">{icon as string}</span>
                       <span className="flex-1">{label as string}</span>
@@ -225,17 +225,17 @@ export default function About({ onNavigate }: Props) {
                     <div className="flex gap-3 pt-3 border-t" style={{ borderColor: "var(--border)" }}>
                       {f.connected.expeditions > 0 && (
                         <button className="flex items-center gap-1 text-[10px] hover:underline" style={{ color: "var(--accent)" }} onClick={e => { e.stopPropagation(); onNavigate?.("expeditions"); }}>
-                          🚢 {f.connected.expeditions} expeditions
+                           {f.connected.expeditions} expeditions
                         </button>
                       )}
                       {f.connected.datasets > 0 && (
                         <button className="flex items-center gap-1 text-[10px] hover:underline" style={{ color: "var(--accent)" }} onClick={e => { e.stopPropagation(); onNavigate?.("datasets"); }}>
-                          💾 {f.connected.datasets} datasets
+                           {f.connected.datasets} datasets
                         </button>
                       )}
                       {f.connected.pubs > 0 && (
                         <button className="flex items-center gap-1 text-[10px] hover:underline" style={{ color: "var(--accent)" }} onClick={e => { e.stopPropagation(); onNavigate?.("publications"); }}>
-                          📄 {f.connected.pubs} publications
+                           {f.connected.pubs} publications
                         </button>
                       )}
                     </div>

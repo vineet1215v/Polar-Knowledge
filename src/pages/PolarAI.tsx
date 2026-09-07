@@ -33,15 +33,15 @@ interface Slide { title: string; bullets: string[]; source: string; }
 interface Scene { scene: number; narration: string; visual: string; source: string; }
 
 const STUDIO_TOOLS = [
-  { id: "report",      icon: "📋", label: "Research Report",  desc: "Structured report with executive summary and findings" },
-  { id: "slides",      icon: "🎞️", label: "Slide Deck",       desc: "Presentation-ready slides from source content" },
-  { id: "audio",       icon: "🎙️", label: "Audio Script",     desc: "Narration script for an audio knowledge overview" },
-  { id: "video",       icon: "🎬", label: "Video Storyboard", desc: "Scene-by-scene storyboard with narration text" },
-  { id: "mindmap",     icon: "🧠", label: "Mind Map",         desc: "Visual concept map of source relationships" },
-  { id: "flashcards",  icon: "🃏", label: "Flashcards",       desc: "Study flashcards generated from key findings" },
-  { id: "quiz",        icon: "❓", label: "Quiz",             desc: "Knowledge quiz based on selected sources" },
-  { id: "infographic", icon: "📊", label: "Infographic",      desc: "Key statistics and facts visual layout" },
-  { id: "datatable",   icon: "📈", label: "Data Table",       desc: "Comparative data table from source metadata" },
+  { id: "report",      icon: "", label: "Research Report",  desc: "Structured report with executive summary and findings" },
+  { id: "slides",      icon: "", label: "Slide Deck",       desc: "Presentation-ready slides from source content" },
+  { id: "audio",       icon: "", label: "Audio Script",     desc: "Narration script for an audio knowledge overview" },
+  { id: "video",       icon: "", label: "Video Storyboard", desc: "Scene-by-scene storyboard with narration text" },
+  { id: "mindmap",     icon: "", label: "Mind Map",         desc: "Visual concept map of source relationships" },
+  { id: "flashcards",  icon: "", label: "Flashcards",       desc: "Study flashcards generated from key findings" },
+  { id: "quiz",        icon: "", label: "Quiz",             desc: "Knowledge quiz based on selected sources" },
+  { id: "infographic", icon: "", label: "Infographic",      desc: "Key statistics and facts visual layout" },
+  { id: "datatable",   icon: "", label: "Data Table",       desc: "Comparative data table from source metadata" },
 ];
 
 const RESPONSES: Record<string, Omit<Message, "role">> = {
@@ -498,7 +498,7 @@ function genDataTable(sources: WorkspaceSource[]): { headers: string[]; rows: st
 
   const rows = resolved.map(r => {
     if (r.pub) return [
-      "📄 Publication",
+      " Publication",
       r.pub.title.slice(0, 38) + (r.pub.title.length > 38 ? "…" : ""),
       r.pub.authors.split(",")[0] + " et al.",
       r.pub.journal,
@@ -507,7 +507,7 @@ function genDataTable(sources: WorkspaceSource[]): { headers: string[]; rows: st
       "SOURCE-BACKED",
     ];
     if (r.ds) return [
-      "💾 Dataset",
+      " Dataset",
       r.ds.title.slice(0, 38) + (r.ds.title.length > 38 ? "…" : ""),
       r.ds.parameter,
       r.ds.region,
@@ -516,7 +516,7 @@ function genDataTable(sources: WorkspaceSource[]): { headers: string[]; rows: st
       "OPEN ACCESS",
     ];
     if (r.exp) return [
-      "🚢 Expedition",
+      " Expedition",
       r.exp.title.slice(0, 38) + (r.exp.title.length > 38 ? "…" : ""),
       r.exp.region,
       r.exp.dates,
@@ -787,9 +787,9 @@ export default function PolarAI({
   const [generating, setGenerating] = useState(false);
   const [toolOutput, setToolOutput] = useState<any>(null);
   const [artifacts, setArtifacts] = useState<Artifact[]>([
-    { id: "a1", tool: "report", icon: "📋", title: "Antarctic Climate Synthesis", sourceCount: 3, status: "draft", createdAt: "2024-11-14", content: "" },
-    { id: "a2", tool: "mindmap", icon: "🧠", title: "Sea Ice Knowledge Map", sourceCount: 4, status: "saved", createdAt: "2024-11-10", content: "" },
-    { id: "a3", tool: "quiz", icon: "❓", title: "Expedition History Quiz", sourceCount: 2, status: "approved", createdAt: "2024-11-08", content: "" },
+    { id: "a1", tool: "report", icon: "", title: "Antarctic Climate Synthesis", sourceCount: 3, status: "draft", createdAt: "2024-11-14", content: "" },
+    { id: "a2", tool: "mindmap", icon: "", title: "Sea Ice Knowledge Map", sourceCount: 4, status: "saved", createdAt: "2024-11-10", content: "" },
+    { id: "a3", tool: "quiz", icon: "", title: "Expedition History Quiz", sourceCount: 2, status: "approved", createdAt: "2024-11-08", content: "" },
   ]);
 
   const searchResults = searchAllSources(sourceSearch);
@@ -917,7 +917,7 @@ export default function PolarAI({
                         <div className="text-[10px] font-medium leading-snug" style={{ color: "var(--text-primary)" }}>{r.title.slice(0, 42)}{r.title.length > 42 ? "…" : ""}</div>
                         <div className="text-[9px]" style={{ color: "var(--text-muted)" }}>{r.meta}</div>
                       </div>
-                      <button onClick={() => addSource(r)} disabled={already} className="flex-shrink-0 text-[9px] px-1.5 py-0.5 rounded font-semibold" style={{ background: already ? "var(--success-bg)" : "var(--accent)", color: already ? "var(--success)" : "white", cursor: already ? "default" : "pointer" }}>{already ? "✓" : "Add"}</button>
+                      <button onClick={() => addSource(r)} disabled={already} className="flex-shrink-0 text-[9px] px-1.5 py-0.5 rounded font-semibold" style={{ background: already ? "var(--success-bg)" : "var(--accent)", color: already ? "var(--success)" : "white", cursor: already ? "default" : "pointer" }}>{already ? "OK" : "Add"}</button>
                     </div>
                   );
                 })}
@@ -929,7 +929,7 @@ export default function PolarAI({
         <div className="flex-1 overflow-y-auto p-3">
           {workspaceSources.length === 0 ? (
             <div className="rounded-xl p-5 text-center" style={{ background: "var(--surface-secondary)", border: "1px dashed var(--accent-border)" }}>
-              <div className="text-2xl mb-2">📚</div>
+              <div className="text-2xl mb-2"></div>
               <div className="text-[11px] font-semibold" style={{ color: "var(--text-secondary)" }}>No sources selected</div>
               <div className="text-[9px] leading-relaxed mt-1" style={{ color: "var(--text-muted)" }}>Add publications, datasets or expedition records to ground PolarAI.</div>
             </div>
@@ -947,7 +947,7 @@ export default function PolarAI({
                   </div>
                 </div>
               ))}
-              <div className="text-[9px] text-center pt-1 font-medium" style={{ color: "var(--accent)" }}>✓ AI answers grounded in selected sources</div>
+              <div className="text-[9px] text-center pt-1 font-medium" style={{ color: "var(--accent)" }}>OK AI answers grounded in selected sources</div>
             </div>
           )}
         </div>
@@ -992,7 +992,7 @@ export default function PolarAI({
                   <div className="flex items-center gap-2"><span className="text-[9px] font-semibold px-2 py-0.5 rounded-full" style={{ background: a.status === "approved" ? "var(--success-bg)" : a.status === "saved" ? "var(--accent-light)" : "var(--warning-bg)", color: a.status === "approved" ? "var(--success)" : a.status === "saved" ? "var(--accent)" : "var(--warning)" }}>{a.status}</span><button className="btn-outline btn-sm text-[10px]" onClick={() => { setMainTab("studio"); setSelectedTool(a.tool); if (workspaceSources.length > 0) runTool(a.tool); }}>Open</button></div>
                 </div>
               ))}
-              {artifacts.length === 0 && <div className="card p-8 text-center"><div className="text-3xl mb-2">📋</div><div className="text-sm font-medium" style={{ color: "var(--text-secondary)" }}>No artifacts yet</div><button className="btn-primary btn-sm mt-3" onClick={() => setMainTab("studio")}>Open Studio →</button></div>}
+              {artifacts.length === 0 && <div className="card p-8 text-center"><div className="text-3xl mb-2"></div><div className="text-sm font-medium" style={{ color: "var(--text-secondary)" }}>No artifacts yet</div><button className="btn-primary btn-sm mt-3" onClick={() => setMainTab("studio")}>Open Studio →</button></div>}
             </div>
           ) : (
             <div className="h-full flex flex-col min-h-0">
@@ -1004,17 +1004,17 @@ export default function PolarAI({
                 <div className="flex-1 overflow-y-auto p-5 space-y-4">
                   {messages.map((msg, i) => (
                     <div key={i} className={`flex gap-3 ${msg.role === "user" ? "flex-row-reverse" : ""}`}>
-                      {msg.role === "assistant" ? <div className="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center text-sm" style={{ background: "var(--accent-light)", border: "1px solid var(--accent-border)" }}>{aiAgents.find(a => a.id === msg.agent)?.icon || "🤖"}</div> : <div className="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center font-semibold text-sm" style={{ background: "var(--surface-secondary)", color: "var(--text-secondary)", border: "1px solid var(--border)" }}>R</div>}
+                      {msg.role === "assistant" ? <div className="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center text-sm" style={{ background: "var(--accent-light)", border: "1px solid var(--accent-border)" }}>{aiAgents.find(a => a.id === msg.agent)?.icon || ""}</div> : <div className="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center font-semibold text-sm" style={{ background: "var(--surface-secondary)", color: "var(--text-secondary)", border: "1px solid var(--border)" }}>R</div>}
                       <div className={`max-w-xl flex flex-col gap-1.5 ${msg.role === "user" ? "items-end" : "items-start"}`}>
                         {msg.role === "assistant" && msg.agent && i > 0 && <div className="text-[9px]" style={{ color: "var(--text-muted)" }}>{aiAgents.find(a => a.id === msg.agent)?.name} · {new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</div>}
-                        {msg.role === "user" ? <div className="rounded-2xl rounded-tr-sm px-4 py-2.5 text-sm text-white" style={{ background: "var(--accent)" }}>{msg.text}</div> : <div className="space-y-2 w-full"><div className="rounded-2xl rounded-tl-sm px-4 py-3 text-sm leading-relaxed" style={{ background: "var(--accent-light)", color: "var(--text-primary)", border: "1px solid var(--accent-border)" }}>{msg.text}</div>{msg.evidenceStatus && <EvidenceBadge status={msg.evidenceStatus} confidence={msg.confidence} />}{msg.sources && msg.sources.map((src, si) => <div key={si} className="flex items-start gap-1.5 text-[10px]" style={{ color: "var(--text-muted)" }}><span style={{ color: "var(--accent)" }}>📎</span>{src}</div>)}{msg.evidenceStatus === "insufficient_evidence" && <div className="text-[10px] rounded-lg p-2" style={{ background: "var(--warning-bg)", color: "var(--warning)", border: "1px solid var(--warning-border)" }}>⚠ Insufficient evidence in available NCPOR sources. Absence of records does not indicate absence of work.</div>}{msg.actions && <div className="flex flex-wrap gap-1.5">{msg.actions.map((a, ai) => <button key={ai} onClick={() => handleAction(a)} className="btn-outline btn-sm text-[10px]">{a}</button>)}</div>}{msg.relatedLinks && <div className="flex flex-wrap gap-1.5">{msg.relatedLinks.map((l, li) => <button key={li} onClick={() => onNavigate?.(l.dest)} className="text-[10px] font-semibold px-2 py-0.5 rounded-full border" style={{ borderColor: "var(--accent-border)", color: "var(--accent)" }}>→ {l.label}</button>)}</div>}</div>}
+                        {msg.role === "user" ? <div className="rounded-2xl rounded-tr-sm px-4 py-2.5 text-sm text-white" style={{ background: "var(--accent)" }}>{msg.text}</div> : <div className="space-y-2 w-full"><div className="rounded-2xl rounded-tl-sm px-4 py-3 text-sm leading-relaxed" style={{ background: "var(--accent-light)", color: "var(--text-primary)", border: "1px solid var(--accent-border)" }}>{msg.text}</div>{msg.evidenceStatus && <EvidenceBadge status={msg.evidenceStatus} confidence={msg.confidence} />}{msg.sources && msg.sources.map((src, si) => <div key={si} className="flex items-start gap-1.5 text-[10px]" style={{ color: "var(--text-muted)" }}><span style={{ color: "var(--accent)" }}></span>{src}</div>)}{msg.evidenceStatus === "insufficient_evidence" && <div className="text-[10px] rounded-lg p-2" style={{ background: "var(--warning-bg)", color: "var(--warning)", border: "1px solid var(--warning-border)" }}>Warning: Insufficient evidence in available NCPOR sources. Absence of records does not indicate absence of work.</div>}{msg.actions && <div className="flex flex-wrap gap-1.5">{msg.actions.map((a, ai) => <button key={ai} onClick={() => handleAction(a)} className="btn-outline btn-sm text-[10px]">{a}</button>)}</div>}{msg.relatedLinks && <div className="flex flex-wrap gap-1.5">{msg.relatedLinks.map((l, li) => <button key={li} onClick={() => onNavigate?.(l.dest)} className="text-[10px] font-semibold px-2 py-0.5 rounded-full border" style={{ borderColor: "var(--accent-border)", color: "var(--accent)" }}>→ {l.label}</button>)}</div>}</div>}
                       </div>
                     </div>
                   ))}
                   {actionAnswer && <div className="mx-11 p-3 rounded-xl text-xs leading-relaxed whitespace-pre-wrap" style={{ background: "var(--success-bg)", border: "1px solid var(--success-border)", color: "var(--success)" }}><div className="font-semibold mb-1 text-[10px] uppercase">Action Result · AI Generated · Not Official</div>{actionAnswer}</div>}
                 </div>
                 <div className="p-3 flex-shrink-0" style={{ borderTop: "1px solid var(--border)" }}>
-                  {workspaceSources.length > 0 && <div className="text-[9px] mb-2 flex items-center gap-1.5" style={{ color: "var(--accent)" }}>📚 Grounded in {workspaceSources.length} selected source(s): {workspaceSources.slice(0, 2).map(s => s.title.slice(0, 20)).join(", ")}{workspaceSources.length > 2 ? `…+${workspaceSources.length - 2}` : ""}</div>}
+                  {workspaceSources.length > 0 && <div className="text-[9px] mb-2 flex items-center gap-1.5" style={{ color: "var(--accent)" }}> Grounded in {workspaceSources.length} selected source(s): {workspaceSources.slice(0, 2).map(s => s.title.slice(0, 20)).join(", ")}{workspaceSources.length > 2 ? `…+${workspaceSources.length - 2}` : ""}</div>}
                   <div className="flex gap-2"><input className="search-input flex-1" value={input} onChange={e => setInput(e.target.value)} onKeyDown={e => e.key === "Enter" && input.trim() && ask(input)} placeholder="Ask about polar science..."/><button className="btn-primary px-4" onClick={() => input.trim() && ask(input)}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-4 h-4"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button></div>
                   <div className="mt-2 flex flex-wrap gap-1.5">{EXAMPLE_QUESTIONS.slice(0, 4).map(q => <button key={q} onClick={() => ask(q)} className="text-[10px] px-2 py-0.5 rounded border" style={{ borderColor: "var(--border)", color: "var(--text-secondary)", background: "white" }}>{q}</button>)}</div>
                 </div>

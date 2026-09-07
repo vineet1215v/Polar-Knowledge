@@ -25,7 +25,7 @@ export default function AddToWorkspace({ source, onAdd, compact = false }: Props
         aria-label={added ? "Added to workspace" : "Add to Source Workspace"}
       >
         <span>{typeIcon[source.type]}</span>
-        {added ? "✓ In Workspace" : "+ Workspace"}
+        {added ? "OK In Workspace" : "+ Workspace"}
       </button>
     );
   }

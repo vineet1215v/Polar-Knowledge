@@ -6,7 +6,7 @@ type ContentChannel = "Article" | "Social Post" | "Short Video Script" | "Infogr
 
 const generatedContent: Record<ContentChannel, string> = {
   "Article": "DRAFT — AI Generated — Requires Editorial Review\n\n**46th Indian Antarctic Expedition Underway**\n\nThe National Centre for Polar and Ocean Research (NCPOR) has launched India's 46th Antarctic Expedition (46th IAE), marking a new chapter in the country's commitment to polar science. The expedition includes researchers from multiple disciplines including glaciology, oceanography, atmospheric science and marine biology.\n\nThe team will operate from India's two permanent Antarctic research stations, Maitri and Bharati, conducting multi-year climate observations, sea ice surveys and biodiversity assessments.\n\n[Source: 46th IAE Science Plan · NCPOR Expedition Archive · Status: DRAFT]\n[Review required before publication]",
-  "Social Post": "DRAFT — AI Generated — Not approved for posting\n\n🧊 India's 46th Antarctic Expedition is now underway! Our scientists are heading to Maitri and Bharati stations to study sea ice, climate change and polar biodiversity.\n\nFollow along as we explore one of Earth's most remote frontiers. #NCPOR #AntarcticExploration #PolarScience #India\n\n[Source: NCPOR Expedition Archive · Status: DRAFT · Character count: 243]",
+  "Social Post": "DRAFT — AI Generated — Not approved for posting\n\n India's 46th Antarctic Expedition is now underway! Our scientists are heading to Maitri and Bharati stations to study sea ice, climate change and polar biodiversity.\n\nFollow along as we explore one of Earth's most remote frontiers. #NCPOR #AntarcticExploration #PolarScience #India\n\n[Source: NCPOR Expedition Archive · Status: DRAFT · Character count: 243]",
   "Short Video Script": "DRAFT — AI Generated — Requires Video Team Review\n\n[OPENING SHOT: Antarctic landscape, music builds]\n\nNARRATOR: Every year, Indian scientists venture to one of the most remote places on Earth...\n\n[SHOT: Maitri station exterior]\n\nNARRATOR: Antarctica. Home to India's two research stations — Maitri and Bharati — and the base for 46 scientific expeditions since 1981.\n\n[SHOT: Scientists working]\n\nNARRATOR: The 46th Indian Antarctic Expedition is now underway, studying sea ice, climate change and the mysteries of the Southern Ocean.\n\n[CLOSING SHOT: NCPOR logo]\n\n[Duration: ~60 seconds · Source: NCPOR Expedition Archive]",
   "Infographic Brief": "DRAFT — AI Generated — Requires Design Team Review\n\nINFOGRAPHIC BRIEF: 46th IAE at a Glance\n\nHEADLINE: India's 46th Antarctic Mission\nSUBHEAD: 42 years of polar exploration\n\nKEY STATS:\n• 42 total expeditions conducted\n• 2 permanent stations (Maitri + Bharati)\n• 350+ datasets collected\n• 1,200+ publications\n\nRECOMMENDED VISUALS: Antarctic landscape, station exteriors, map showing expedition routes, researcher photos\n\nSOURCE: NCPOR Expedition Archive · [Review required]",
   "Student Lesson": "DRAFT — AI Generated — Requires Educator Review\n\nLESSON PLAN: India Goes to Antarctica\nAge group: 10–14 years · Duration: 45 minutes\n\nLEARNING OBJECTIVES:\n• Understand why India conducts Antarctic expeditions\n• Identify India's research stations on a map\n• Explain two types of research conducted in Antarctica\n\nACTIVITY 1 (10 min): Map activity — locate Maitri and Bharati stations\nACTIVITY 2 (15 min): Watch the expedition launch video (link)\nACTIVITY 3 (10 min): Class discussion: Why is polar science important?\nQUIZ (10 min): 5 questions from NCPOR Polar Knowledge quiz bank\n\nSource: NCPOR Expedition Archive, Education Module\n[Requires educator review before classroom use]",
@@ -42,13 +42,13 @@ function ContentStudio({ newsItem, onClose }: { newsItem: typeof newsItems[0]; o
               <div className="text-[10px] font-semibold uppercase text-blue-600 mb-0.5">Content Studio — One Source, Many Audiences</div>
               <h2 className="font-bold text-sm" style={{ color: "var(--text-primary)" }}>Create from Source</h2>
             </div>
-            <button onClick={onClose} className="text-slate-400" aria-label="Close">✕</button>
+            <button onClick={onClose} className="text-slate-400" aria-label="Close">x</button>
           </div>
           {generated && (
             <div className="tab-bar mt-2">
-              <button className={`tab-item flex-1 ${studioTab === "create" ? "active" : ""}`} onClick={() => setStudioTab("create")}>✏️ Create</button>
-              <button className={`tab-item flex-1 ${studioTab === "governance" ? "active" : ""}`} onClick={() => setStudioTab("governance")}>📋 Governance</button>
-              <button className={`tab-item flex-1 ${studioTab === "audit" ? "active" : ""}`} onClick={() => setStudioTab("audit")}>🕐 Audit</button>
+              <button className={`tab-item flex-1 ${studioTab === "create" ? "active" : ""}`} onClick={() => setStudioTab("create")}> Create</button>
+              <button className={`tab-item flex-1 ${studioTab === "governance" ? "active" : ""}`} onClick={() => setStudioTab("governance")}> Governance</button>
+              <button className={`tab-item flex-1 ${studioTab === "audit" ? "active" : ""}`} onClick={() => setStudioTab("audit")}> Audit</button>
             </div>
           )}
           <div className="rounded-lg p-2.5 text-xs mt-2" style={{ background: "#f8fafc", border: "1px solid var(--border)" }}>
@@ -82,7 +82,7 @@ function ContentStudio({ newsItem, onClose }: { newsItem: typeof newsItems[0]; o
           {/* Generate button */}
           {!generated && (
             <button className="btn-primary w-full" onClick={() => setGenerated(true)}>
-              ✨ Generate {channel} for {audience}
+               Generate {channel} for {audience}
             </button>
           )}
 
@@ -130,7 +130,7 @@ function ContentStudio({ newsItem, onClose }: { newsItem: typeof newsItems[0]; o
                       <div key={step} className="flex items-center flex-shrink-0">
                         <div className={`flex flex-col items-center`}>
                           <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold ${done ? "bg-green-500 text-white" : active ? "bg-blue-600 text-white" : "bg-slate-200 text-slate-400"}`}>
-                            {done ? "✓" : i + 1}
+                            {done ? "OK" : i + 1}
                           </div>
                           <div className={`text-[9px] mt-1 text-center w-14 ${active ? "font-semibold text-blue-700" : done ? "text-green-700" : ""}`} style={{ color: active ? "#1d4ed8" : done ? "#16a34a" : "var(--text-muted)" }}>
                             {workflowLabels[step]}
@@ -152,7 +152,7 @@ function ContentStudio({ newsItem, onClose }: { newsItem: typeof newsItems[0]; o
                   { rule: "Approval required from designated Reviewer", ok: reviewStatus === "APPROVED" || reviewStatus === "PUBLISHED" },
                 ].map(r => (
                   <div key={r.rule} className="flex items-start gap-2 text-[10px]">
-                    <span className={`flex-shrink-0 ${r.ok ? "text-green-600" : "text-amber-500"}`}>{r.ok ? "✓" : "⏳"}</span>
+                    <span className={`flex-shrink-0 font-bold ${r.ok ? "text-green-600" : "text-amber-500"}`}>{r.ok ? "OK" : "PENDING"}</span>
                     <span style={{ color: "var(--text-secondary)" }}>{r.rule}</span>
                   </div>
                 ))}
@@ -175,17 +175,16 @@ function ContentStudio({ newsItem, onClose }: { newsItem: typeof newsItems[0]; o
                   </button>
                 )}
                 {reviewStatus === "PUBLISHED" && (
-                  <div className="text-xs font-semibold text-green-700 bg-green-50 px-3 py-1.5 rounded-lg">✓ Published — content is live</div>
+                  <div className="text-xs font-semibold text-green-700 bg-green-50 px-3 py-1.5 rounded-lg">OK Published — content is live</div>
                 )}
                 <button className="btn-outline btn-sm">Request Changes</button>
-                <button className="btn-outline btn-sm text-red-600 border-red-200">Reject</button>
               </div>
             </div>
           )}
 
           {generated && studioTab === "audit" && (
             <div className="space-y-3">
-              <div className="text-xs font-semibold" style={{ color: "var(--text-primary)" }}>Audit History</div>
+              <div className="text-xs font-semibold mb-2" style={{ color: "var(--text-primary)" }}>Editorial Audit Trail</div>
               <div className="space-y-2">
                 {auditLog.map((entry, i) => (
                   <div key={i} className="flex items-start gap-3 p-2.5 rounded-lg" style={{ background: "#f8fafc" }}>
@@ -214,7 +213,11 @@ function ContentStudio({ newsItem, onClose }: { newsItem: typeof newsItems[0]; o
   );
 }
 
-export default function News() {
+interface NewsProps {
+  onOpenSocial?: (initialTopic?: string, initialContent?: string) => void;
+}
+
+export default function News({ onOpenSocial }: NewsProps = {}) {
   const [tab, setTab] = useState("latest");
   const [contentStudio, setContentStudio] = useState<typeof newsItems[0] | null>(null);
 
@@ -225,8 +228,8 @@ export default function News() {
   ];
 
   const socialHighlights = [
-    { title: "Our scientists just witnessed a stunning Aurora Australis from Maitri station! 🌌", date: "10 Aug 2024", platform: "Twitter/X", image: "https://images.unsplash.com/photo-1504858700536-882c978a3464?w=300&q=80", likes: "2.4K", shares: "847" },
-    { title: "46th IAE team reaches Antarctica safely. Expedition begins! 🐧🧊", date: "5 Aug 2024", platform: "Twitter/X", image: "https://images.unsplash.com/photo-1551415923-a2297c7fda79?w=300&q=80", likes: "5.1K", shares: "1.2K" },
+    { title: "Our scientists just witnessed a stunning Aurora Australis from Maitri station! ", date: "10 Aug 2024", platform: "Twitter/X", image: "https://images.unsplash.com/photo-1504858700536-882c978a3464?w=300&q=80", likes: "2.4K", shares: "847" },
+    { title: "46th IAE team reaches Antarctica safely. Expedition begins! EXP", date: "5 Aug 2024", platform: "Twitter/X", image: "https://images.unsplash.com/photo-1551415923-a2297c7fda79?w=300&q=80", likes: "5.1K", shares: "1.2K" },
     { title: "New sea ice dataset released on our open data portal. Download now!", date: "1 Aug 2024", platform: "LinkedIn", image: "https://images.unsplash.com/photo-1486566584569-b9319dc74315?w=300&q=80", likes: "342", shares: "89" },
   ];
 
@@ -235,9 +238,19 @@ export default function News() {
   return (
     <div className="h-full overflow-y-auto" style={{ background: "var(--content-bg)" }}>
       <div className="p-6">
-        <div className="mb-5">
-          <h1 className="page-header-title">News & Announcements</h1>
-          <p className="page-header-sub">Stay updated with the latest news, stories and media content.</p>
+        <div className="mb-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h1 className="page-header-title">Content Creation</h1>
+            <p className="page-header-sub">Stay updated with the latest news, stories and media content.</p>
+          </div>
+          <button
+            onClick={() => onOpenSocial?.()}
+            className="btn-primary btn-sm flex items-center gap-1.5 self-start sm:self-auto shadow-sm"
+            style={{ background: "linear-gradient(135deg, #1e40af 0%, #2563eb 100%)" }}
+          >
+            <span></span>
+            <span>Syndicate to Socials</span>
+          </button>
         </div>
 
         <div className="tab-bar w-fit mb-5">
@@ -259,10 +272,17 @@ export default function News() {
                   {"excerpt" in item && <p className="text-xs mt-1 leading-relaxed" style={{ color: "var(--text-secondary)" }}>{(item as any).excerpt}</p>}
                   <div className="text-[10px] mt-1" style={{ color: "var(--text-muted)" }}>{item.date}</div>
                 </div>
-                <div className="flex gap-2 flex-shrink-0">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth={2} className="w-4 h-4 mt-1 cursor-pointer"><polyline points="9 18 15 12 9 6"/></svg>
+                <div className="flex gap-2 flex-shrink-0 items-center">
+                  <button
+                    className="btn-outline btn-sm text-blue-600 border-blue-200 hover:bg-blue-50 flex items-center gap-1"
+                    onClick={() => onOpenSocial?.(item.title, "excerpt" in item ? (item as any).excerpt : item.title)}
+                    title="Syndicate this news to Twitter, Facebook, Instagram, LinkedIn, etc."
+                  >
+                    <span></span>
+                    <span>Syndicate</span>
+                  </button>
                   <button className="btn-outline btn-sm" onClick={() => setContentStudio(newsItems[Math.min(i, newsItems.length - 1)])}>
-                    ✨ Create
+                     Create
                   </button>
                 </div>
               </div>
@@ -282,7 +302,7 @@ export default function News() {
                   </div>
                   <p className="text-xs leading-relaxed mb-3" style={{ color: "var(--text-primary)" }}>{item.title}</p>
                   <div className="flex items-center gap-4 text-[11px]" style={{ color: "var(--text-muted)" }}>
-                    <span>❤️ {item.likes}</span><span>🔁 {item.shares}</span><span className="ml-auto">{item.date}</span>
+                    <span> {item.likes}</span><span> {item.shares}</span><span className="ml-auto">{item.date}</span>
                   </div>
                 </div>
               </div>

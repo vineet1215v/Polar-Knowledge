@@ -11,11 +11,11 @@ export interface WorkspaceSource {
 }
 
 export const typeIcon: Record<SourceType, string> = {
-  publication: "📄",
-  dataset: "💾",
-  expedition: "🚢",
-  media: "📸",
-  event: "📅",
-  station: "🏔️",
-  researcher: "🔬",
+  publication: "",
+  dataset: "",
+  expedition: "",
+  media: "",
+  event: "",
+  station: "",
+  researcher: "",
 };

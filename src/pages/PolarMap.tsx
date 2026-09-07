@@ -140,7 +140,7 @@ function stationLabelHtml(station: Station, rich: boolean) {
       <div class="station-label-name">${station.name}</div>
       <div class="station-label-meta">${station.type} · ${station.status} · Est. ${station.established}</div>
       ${station.expeditions || station.datasets || station.publications
-        ? `<div class="station-label-stats">🚢 ${station.expeditions} · 💾 ${station.datasets} · 📄 ${station.publications}</div>`
+        ? `<div class="station-label-stats"> ${station.expeditions} ·  ${station.datasets} ·  ${station.publications}</div>`
         : ""}
     </div>`;
 }
@@ -267,7 +267,7 @@ export default function PolarMap({
 
         // Permanent label at the route's midpoint
         poly.bindTooltip(
-          `<span class="route-label-name" style="color:${route.color}">🚢 ${route.label}</span>`,
+          `<span class="route-label-name" style="color:${route.color}"> ${route.label}</span>`,
           { permanent: true, direction: "right", offset: [6, 0], className: "route-tooltip-permanent", opacity: 1 }
         );
 
@@ -442,7 +442,7 @@ export default function PolarMap({
               <div className="absolute top-full left-0 right-0 mt-1 rounded-lg overflow-hidden z-50" style={{ background: "white", border: "1px solid var(--border)", boxShadow: "var(--shadow-xl)" }}>
                 {searchResults.map((r, i) => (
                   <button key={i} onClick={() => flyTo(r)} className="w-full text-left px-3 py-2 text-[11px] hover:bg-blue-50 flex items-center gap-2" style={{ borderBottom: "1px solid var(--border)", color: "var(--text-primary)" }}>
-                    <span>{"lat" in r ? "📍" : "🚢"}</span>
+                    <span>{"lat" in r ? "" : ""}</span>
                     <div>
                       <div className="font-medium">{"lat" in r ? (r as Station).name : (r as Route).label}</div>
                       <div className="text-[9px]" style={{ color: "var(--text-muted)" }}>{"lat" in r ? (r as Station).desc.slice(0, 50) : `${(r as Route).year} · ${(r as Route).duration}`}</div>
@@ -506,7 +506,7 @@ export default function PolarMap({
           {mapError && (
             <div className="absolute inset-0 flex items-center justify-center z-10" style={{ background: "#f8fafc" }}>
               <div className="text-center">
-                <div className="text-3xl mb-2">🗺️</div>
+                <div className="text-3xl mb-2"></div>
                 <div className="text-sm font-medium" style={{ color: "var(--text-primary)" }}>Tile service unavailable</div>
                 <div className="text-[10px] mt-1" style={{ color: "var(--text-muted)" }}>Check network connection or try another basemap</div>
               </div>
@@ -549,13 +549,13 @@ export default function PolarMap({
                   <div className="text-[10px] leading-snug mt-0.5" style={{ color: "var(--text-secondary)" }}>{selectedStation.desc}</div>
                   <div className="text-[9px] mt-1" style={{ color: "var(--text-muted)" }}>Est. {selectedStation.established}</div>
                 </div>
-                <button onClick={() => { setSelectedStation(null); stationMarkersRef.current.forEach((m, id) => m.setIcon(makeStationIcon(STATIONS.find(s => s.id === id)!, false))); }} className="text-slate-400 hover:text-slate-600">✕</button>
+                <button onClick={() => { setSelectedStation(null); stationMarkersRef.current.forEach((m, id) => m.setIcon(makeStationIcon(STATIONS.find(s => s.id === id)!, false))); }} className="text-slate-400 hover:text-slate-600">x</button>
               </div>
 
               {(selectedStation.type === "Indian" || selectedStation.type === "Indian Arctic") && (
                 <>
                   <div className="grid grid-cols-3 gap-1 mb-3">
-                    {[["🚢", selectedStation.expeditions, "Exped."], ["💾", selectedStation.datasets, "Datasets"], ["📄", selectedStation.publications, "Pubs"]].map(([icon, val, label]) => (
+                    {[["", selectedStation.expeditions, "Exped."], ["", selectedStation.datasets, "Datasets"], ["", selectedStation.publications, "Pubs"]].map(([icon, val, label]) => (
                       <div key={label as string} className="text-center p-1.5 rounded" style={{ background: "var(--accent-light)" }}>
                         <div className="text-sm">{icon as string}</div>
                         <div className="font-bold text-xs" style={{ color: "var(--accent)" }}>{val as number}</div>
@@ -568,7 +568,7 @@ export default function PolarMap({
                     <div className="text-[9px] font-semibold mb-1" style={{ color: "var(--text-muted)" }}>RELATED EXPEDITIONS</div>
                     {selectedStation.relatedExpeditions.map(e => (
                       <div key={e} className="text-[10px] flex items-center gap-1.5 py-0.5" style={{ color: "var(--text-secondary)" }}>
-                        <span style={{ color: "var(--accent)" }}>🚢</span>{e}
+                        <span style={{ color: "var(--accent)" }}></span>{e}
                       </div>
                     ))}
                   </div>
@@ -577,10 +577,10 @@ export default function PolarMap({
 
                   <div className="space-y-1.5 mt-3">
                     <button className="btn-primary btn-sm w-full" onClick={() => onNavigate?.("ai")}>
-                      🤖 Ask Polar about {selectedStation.name.split(" ")[0]}
+                       Ask Polar about {selectedStation.name.split(" ")[0]}
                     </button>
                     <button className="btn-outline btn-sm w-full" onClick={() => addStationSources(selectedStation)}>
-                      📚 Add Related Sources
+                       Add Related Sources
                     </button>
                     <button className="btn-outline btn-sm w-full" onClick={() => onNavigate?.("expeditions")}>
                       View Expeditions →
@@ -608,16 +608,16 @@ export default function PolarMap({
                   <div className="text-[9px] uppercase font-semibold" style={{ color: "var(--text-muted)" }}>Expedition Route · {selectedRoute.year}</div>
                   <h3 className="font-bold text-sm mt-0.5" style={{ color: "var(--text-primary)" }}>{selectedRoute.label}</h3>
                 </div>
-                <button onClick={() => setSelectedRoute(null)} className="text-slate-400">✕</button>
+                <button onClick={() => setSelectedRoute(null)} className="text-slate-400">x</button>
               </div>
               <div className="space-y-1 text-[10px] mb-3" style={{ color: "var(--text-secondary)" }}>
-                <div>📅 Duration: {selectedRoute.duration}</div>
-                <div>💾 Datasets: {selectedRoute.datasets}</div>
-                <div>📄 Publications: {selectedRoute.publications}</div>
-                <div>🔍 Findings: {selectedRoute.findings}</div>
+                <div> Duration: {selectedRoute.duration}</div>
+                <div> Datasets: {selectedRoute.datasets}</div>
+                <div> Publications: {selectedRoute.publications}</div>
+                <div> Findings: {selectedRoute.findings}</div>
               </div>
               <div className="space-y-1.5">
-                <button className="btn-primary btn-sm w-full" onClick={() => onNavigate?.("ai")}>🤖 Ask Polar about this Route</button>
+                <button className="btn-primary btn-sm w-full" onClick={() => onNavigate?.("ai")}> Ask Polar about this Route</button>
                 <button className="btn-outline btn-sm w-full" onClick={() => onNavigate?.("expeditions")}>Open Expedition →</button>
               </div>
             </div>
@@ -658,7 +658,7 @@ export default function PolarMap({
           <div className="card p-3">
             <h3 className="font-semibold text-[10px] mb-2" style={{ color: "var(--text-primary)" }}>Repository Coverage</h3>
             <div className="space-y-1.5">
-              {[["📍 Stations", "6 total · 4 NCPOR"], ["🚢 Routes", `${ROUTES.length} mapped`], ["📄 Publications", "320+"], ["💾 Datasets", "120+"], ["🌊 Sea Region", "Southern Ocean / Arctic"]].map(([k, v]) => (
+              {[[" Stations", "6 total · 4 NCPOR"], [" Routes", `${ROUTES.length} mapped`], [" Publications", "320+"], [" Datasets", "120+"], [" Sea Region", "Southern Ocean / Arctic"]].map(([k, v]) => (
                 <div key={k as string} className="flex justify-between text-[10px]">
                   <span style={{ color: "var(--text-muted)" }}>{k as string}</span>
                   <span className="font-semibold" style={{ color: "var(--text-primary)" }}>{v as string}</span>

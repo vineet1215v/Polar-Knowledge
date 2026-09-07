@@ -22,6 +22,7 @@ interface SidebarProps {
 const navItems: {
   id: Page;
   label: string;
+  badge?: string;
   icon: React.ReactNode;
 }[] = [
   {
@@ -153,7 +154,7 @@ const navItems: {
 
   {
     id: "education",
-    label: "Education & Outreach",
+    label: "Gaming Academy",
     icon: (
       <svg
         viewBox="0 0 24 24"
@@ -170,7 +171,7 @@ const navItems: {
 
   {
     id: "news",
-    label: "News & Announcements",
+    label: "Content Creation",
     icon: (
       <svg
         viewBox="0 0 24 24"
@@ -316,8 +317,13 @@ export default function Sidebar({
 
             {/* Hide text when collapsed */}
             {!collapsed && (
-              <span className="truncate">
-                {item.label}
+              <span className="truncate flex-1 text-left flex items-center justify-between">
+                <span>{item.label}</span>
+                {item.badge && (
+                  <span className="ml-1.5 px-1.5 py-0.5 rounded text-[9px] font-bold bg-blue-100 text-blue-800 border border-blue-200">
+                    {item.badge}
+                  </span>
+                )}
               </span>
             )}
           </button>

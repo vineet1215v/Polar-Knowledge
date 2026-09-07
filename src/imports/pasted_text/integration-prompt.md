@@ -494,7 +494,7 @@ CLAIM
 "Sea-ice concentration decreased..."
 
 Status:
-✓ Supported
+ Supported
 
 Sources:
 Publication A
@@ -914,12 +914,12 @@ Show processing status.
 
 Example:
 
-✓ Uploaded
-✓ Parsed
-✓ Metadata extracted
-✓ Indexed
-⚠ Relationship review required
-✓ Published
+ Uploaded
+ Parsed
+ Metadata extracted
+ Indexed
+ Relationship review required
+ Published
 
 Failures must be visible and retryable.
 
@@ -931,9 +931,9 @@ Do NOT create another sidebar item called "My Workspace."
 
 Instead, add contextual actions:
 
-☆ Save
-☆ Bookmark
-☆ Add to Collection
+ Save
+ Bookmark
+ Add to Collection
 Follow
 
 Allow users to save:

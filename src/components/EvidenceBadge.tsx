@@ -7,7 +7,7 @@ interface Props {
 }
 
 const config: Record<EvidenceStatus, { label: string; bg: string; color: string; icon: string }> = {
-  source_backed:       { label: "Source-Backed",       bg: "#f0fdf4", color: "#16a34a", icon: "✓" },
+  source_backed:       { label: "Source-Backed",       bg: "#f0fdf4", color: "#16a34a", icon: "OK" },
   synthesis:           { label: "Synthesis",            bg: "#eff6ff", color: "#2563eb", icon: "⊕" },
   insufficient_evidence: { label: "Insufficient Evidence", bg: "#fefce8", color: "#ca8a04", icon: "?" },
   conflicting:         { label: "Conflicting Sources",  bg: "#fff1f2", color: "#dc2626", icon: "!" },

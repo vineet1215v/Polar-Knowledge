@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, Component, type ReactNode, type ErrorInfo } from "react";
 import Sidebar from "./components/Sidebar";
 import Header from "./components/Header";
 import PolarStudio from "./components/PolarStudio";
+import SocialAutomationModal from "./components/SocialAutomationModal";
 import Dashboard from "./pages/Dashboard";
 import Expeditions from "./pages/Expeditions";
 import Publications from "./pages/Publications";
@@ -14,6 +15,55 @@ import News from "./pages/News";
 import Events from "./pages/Events";
 import About from "./pages/About";
 import { WorkspaceSource, typeIcon } from "./workspaceStore";
+
+interface ErrorBoundaryProps {
+  children: ReactNode;
+  onReset?: () => void;
+}
+
+interface ErrorBoundaryState {
+  hasError: boolean;
+  error: Error | null;
+}
+
+class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
+  constructor(props: ErrorBoundaryProps) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+
+  static getDerivedStateFromError(error: Error): ErrorBoundaryState {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+    console.error("Caught error in ErrorBoundary:", error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="p-8 max-w-xl mx-auto my-12 card border border-slate-200 bg-white shadow-lg text-center rounded-2xl">
+          <div className="text-4xl mb-3"></div>
+          <h2 className="text-base font-bold text-slate-900 mb-2">View Render Encountered an Issue</h2>
+          <p className="text-xs text-slate-600 mb-4 leading-relaxed">
+            {this.state.error?.message || "An unexpected error occurred while rendering this polar science module."}
+          </p>
+          <button
+            onClick={() => {
+              this.setState({ hasError: false, error: null });
+              this.props.onReset?.();
+            }}
+            className="btn-primary btn-sm text-xs"
+          >
+             Reload View
+          </button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
 // AddToWorkspaceButton lives in components/AddToWorkspace to avoid circular imports
 
 
@@ -56,7 +106,7 @@ function SearchResults({ query, onClose, onNavigate }: { query: string; onClose:
             <span className="font-semibold text-sm" style={{ color: "var(--text-primary)" }}>Search results for: </span>
             <span className="font-bold text-sm" style={{ color: "var(--accent)" }}>"{query}"</span>
           </div>
-          <button onClick={onClose} className="text-slate-400 hover:text-slate-600 text-lg">✕</button>
+          <button onClick={onClose} className="text-slate-400 hover:text-slate-600 text-lg">x</button>
         </div>
         <div className="p-4 space-y-5">
           {results.map(r => (
@@ -111,15 +161,15 @@ function WorkspaceTray({ sources, onRemove, onClear, onOpenAI, onOpenStudio }: {
       {/* Collapsed bar */}
       <div className="flex items-center gap-3 px-4 py-3">
         <button onClick={() => setExpanded(e => !e)} className="flex items-center gap-2 flex-1 text-left">
-          <span className="text-base">📚</span>
+          <span className="text-base"></span>
           <span className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>Sources</span>
           <span className="text-[10px] px-2 py-0.5 rounded-full font-bold" style={{ background: "var(--accent)", color: "white" }}>{sources.length}</span>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className={`w-3.5 h-3.5 ml-auto transition-transform ${expanded ? "rotate-180" : ""}`} style={{ color: "var(--text-muted)" }}><polyline points="6 9 12 15 18 9"/></svg>
         </button>
         <div className="flex items-center gap-2">
           <button onClick={onOpenAI} className="btn-outline btn-sm" style={{ fontSize: "11px" }}>Ask AI</button>
-          <button onClick={onOpenStudio} className="btn-primary btn-sm" style={{ fontSize: "11px" }}>✨ Studio</button>
-          <button onClick={onClear} title="Clear all" className="w-6 h-6 rounded flex items-center justify-center transition-colors" style={{ color: "var(--text-muted)" }} onMouseEnter={e => (e.currentTarget.style.background = "var(--surface-secondary)")} onMouseLeave={e => (e.currentTarget.style.background = "transparent")} aria-label="Clear workspace">✕</button>
+          <button onClick={onOpenStudio} className="btn-primary btn-sm" style={{ fontSize: "11px" }}>Studio</button>
+          <button onClick={onClear} title="Clear all" className="w-6 h-6 rounded flex items-center justify-center transition-colors" style={{ color: "var(--text-muted)" }} onMouseEnter={e => (e.currentTarget.style.background = "var(--surface-secondary)")} onMouseLeave={e => (e.currentTarget.style.background = "transparent")} aria-label="Clear workspace">x</button>
         </div>
       </div>
 
@@ -149,10 +199,18 @@ export default function App() {
   const [searchQuery, setSearchQuery] = useState("");
   const [workspace, setWorkspace] = useState<WorkspaceSource[]>([]);
   const [studioOpen, setStudioOpen] = useState(false);
+  const [socialModalOpen, setSocialModalOpen] = useState(false);
+  const [socialInitialTopic, setSocialInitialTopic] = useState("");
+  const [socialInitialContent, setSocialInitialContent] = useState("");
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
-
   const navigate = (p: string) => { setPage(p as Page); setSearchQuery(""); };
+
+  function openSocial(initialTopic?: string, initialContent?: string) {
+    setSocialInitialTopic(initialTopic || "");
+    setSocialInitialContent(initialContent || "");
+    setSocialModalOpen(true);
+  }
 
   function addToWorkspace(source: WorkspaceSource) {
     setWorkspace(ws => ws.find(s => s.id === source.id) ? ws : [...ws, source]);
@@ -161,7 +219,12 @@ export default function App() {
     setWorkspace(ws => ws.filter(s => s.id !== id));
   }
 
-  const sharedProps = { onNavigate: navigate, onAddToWorkspace: addToWorkspace, onOpenStudio: () => setStudioOpen(true) };
+  const sharedProps = {
+    onNavigate: navigate,
+    onAddToWorkspace: addToWorkspace,
+    onOpenStudio: () => setStudioOpen(true),
+    onOpenSocial: openSocial,
+  };
 
   function renderPage() {
     switch (page) {
@@ -173,7 +236,7 @@ export default function App() {
       case "map":          return <PolarMap {...sharedProps}/>;
       case "ai":           return <PolarAI {...sharedProps} workspaceSources={workspace} onAddToWorkspace={addToWorkspace}/>;
       case "education":    return <Education {...sharedProps}/>;
-      case "news":         return <News/>;
+      case "news":         return <News onOpenSocial={openSocial}/>;
       case "events":       return <Events onNavigate={navigate}/>;
       case "about":        return <About onNavigate={navigate}/>;
       default:             return <Dashboard {...sharedProps}/>;
@@ -188,6 +251,7 @@ export default function App() {
       onNavigate={navigate}
       workspaceCount={workspace.length}
       onOpenWorkspace={() => setStudioOpen(true)}
+      onOpenSocial={() => openSocial()}
       onToggleSidebar={() =>
         setSidebarCollapsed(prev => !prev)
       }
@@ -213,7 +277,9 @@ export default function App() {
     background: "var(--page-bg)",
   }}
 >
-  {renderPage()}
+  <ErrorBoundary key={page}>
+    {renderPage()}
+  </ErrorBoundary>
 </main>
 
     {searchQuery && (
@@ -241,6 +307,17 @@ export default function App() {
       <PolarStudio
         sources={workspace}
         onClose={() => setStudioOpen(false)}
+        onNavigate={navigate}
+        onOpenSocial={openSocial}
+      />
+    )}
+
+    {socialModalOpen && (
+      <SocialAutomationModal
+        sources={workspace}
+        initialTopic={socialInitialTopic}
+        initialContent={socialInitialContent}
+        onClose={() => setSocialModalOpen(false)}
         onNavigate={navigate}
       />
     )}

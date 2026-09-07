@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { datasets } from "../data";
 import { datasetProvenance } from "../knowledgeData";
+import { gameStore } from "../gameStore";
 import RelatedKnowledge from "../components/RelatedKnowledge";
 import SaveFollowButton from "../components/SaveFollowButton";
 import AddToWorkspace from "../components/AddToWorkspace";
+import DatasetInspectorModal from "../components/DatasetInspectorModal";
 import type { WorkspaceSource } from "../workspaceStore";
 
 type DatasetType = typeof datasets[0];
@@ -40,7 +42,7 @@ function QualityBar({ label, pct, issues }: { label: string; pct: number; issues
         <div className="space-y-0.5">
           {issues.map(issue => (
             <div key={issue} className="flex items-start gap-1 text-[10px]" style={{ color: "#d97706" }}>
-              <span className="flex-shrink-0">⚠</span>{issue}
+              <span className="flex-shrink-0">Warning:</span>{issue}
             </div>
           ))}
         </div>
@@ -54,13 +56,13 @@ function IngestionPipeline({ onClose }: { onClose: () => void }) {
   const [submitted, setSubmitted] = useState(false);
 
   const pipelineSteps = [
-    { label: "Upload / Import", desc: "Upload dataset file(s) or provide repository URL", icon: "📤", status: step > 0 ? "done" : step === 0 ? "active" : "pending" },
-    { label: "Parse & Validate", desc: "Detect format (NetCDF, CSV, HDF5), verify structure", icon: "🔍", status: step > 1 ? "done" : step === 1 ? "active" : "pending" },
-    { label: "Metadata Extraction", desc: "Extract variables, temporal/spatial coverage, instrument details", icon: "📋", status: step > 2 ? "done" : step === 2 ? "active" : "pending" },
-    { label: "Chunking & Indexing", desc: "Segment and embed dataset for semantic search", icon: "🧩", status: step > 3 ? "done" : step === 3 ? "active" : "pending" },
-    { label: "Relationship Extraction", desc: "Link to expeditions, publications, researchers", icon: "🔗", status: step > 4 ? "done" : step === 4 ? "active" : "pending" },
-    { label: "Quality Review", desc: "Metadata completeness scored — manual review if <70%", icon: "✅", status: step > 5 ? "done" : step === 5 ? "active" : "pending" },
-    { label: "Repository Publication", desc: "Dataset visible in Scientific Datasets after approval", icon: "🌐", status: step > 6 ? "done" : step === 6 ? "active" : "pending" },
+    { label: "Upload / Import", desc: "Upload dataset file(s) or provide repository URL", icon: "", status: step > 0 ? "done" : step === 0 ? "active" : "pending" },
+    { label: "Parse & Validate", desc: "Detect format (NetCDF, CSV, HDF5), verify structure", icon: "", status: step > 1 ? "done" : step === 1 ? "active" : "pending" },
+    { label: "Metadata Extraction", desc: "Extract variables, temporal/spatial coverage, instrument details", icon: "", status: step > 2 ? "done" : step === 2 ? "active" : "pending" },
+    { label: "Chunking & Indexing", desc: "Segment and embed dataset for semantic search", icon: "", status: step > 3 ? "done" : step === 3 ? "active" : "pending" },
+    { label: "Relationship Extraction", desc: "Link to expeditions, publications, researchers", icon: "", status: step > 4 ? "done" : step === 4 ? "active" : "pending" },
+    { label: "Quality Review", desc: "Metadata completeness scored — manual review if <70%", icon: "OK", status: step > 5 ? "done" : step === 5 ? "active" : "pending" },
+    { label: "Repository Publication", desc: "Dataset visible in Scientific Datasets after approval", icon: "", status: step > 6 ? "done" : step === 6 ? "active" : "pending" },
   ];
 
   const statusColor = { done: "#16a34a", active: "var(--accent)", pending: "#94a3b8" };
@@ -75,7 +77,7 @@ function IngestionPipeline({ onClose }: { onClose: () => void }) {
               <div className="text-[10px] font-semibold uppercase text-blue-600 mb-0.5">Knowledge Ingestion Pipeline</div>
               <h2 className="font-bold text-sm" style={{ color: "var(--text-primary)" }}>Submit a Dataset</h2>
             </div>
-            <button onClick={onClose} className="text-slate-400 text-lg" aria-label="Close">✕</button>
+            <button onClick={onClose} className="text-slate-400 text-lg" aria-label="Close">x</button>
           </div>
         </div>
 
@@ -107,7 +109,7 @@ function IngestionPipeline({ onClose }: { onClose: () => void }) {
                 </div>
               </div>
               <div className="border-2 border-dashed rounded-xl p-6 text-center" style={{ borderColor: "var(--border)" }}>
-                <div className="text-2xl mb-1">📁</div>
+                <div className="text-2xl mb-1"></div>
                 <div className="text-xs font-medium" style={{ color: "var(--text-primary)" }}>Drop dataset files here</div>
                 <div className="text-[10px]" style={{ color: "var(--text-muted)" }}>NetCDF, CSV, HDF5, GeoTIFF · Max 5GB</div>
                 <button className="btn-outline btn-sm mt-2">Browse Files</button>
@@ -119,7 +121,7 @@ function IngestionPipeline({ onClose }: { onClose: () => void }) {
           ) : (
             <>
               <div className="text-xs p-3 rounded-lg font-medium" style={{ background: "#f0fdf4", color: "#166534" }}>
-                ✓ Dataset submitted — pipeline running. Review required before publication.
+                OK Dataset submitted — pipeline running. Review required before publication.
               </div>
               <div className="space-y-2">
                 {pipelineSteps.map((s, i) => {
@@ -127,14 +129,14 @@ function IngestionPipeline({ onClose }: { onClose: () => void }) {
                   return (
                     <div key={s.label} className="flex items-start gap-3 p-3 rounded-lg" style={{ background: statusBg[st] }}>
                       <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 text-sm" style={{ background: statusColor[st], color: "white" }}>
-                        {st === "done" ? "✓" : st === "active" ? "…" : i + 1}
+                        {st === "done" ? "OK" : st === "active" ? "…" : i + 1}
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="text-xs font-semibold" style={{ color: st === "pending" ? "var(--text-muted)" : "var(--text-primary)" }}>{s.label}</div>
                         <div className="text-[10px]" style={{ color: "var(--text-muted)" }}>{s.desc}</div>
                         {i === 4 && st === "done" && (
                           <div className="mt-1 text-[10px] font-semibold" style={{ color: "#d97706" }}>
-                            ⚠ Relationship review required — 2 suggested links need confirmation
+                            Warning: Relationship review required — 2 suggested links need confirmation
                           </div>
                         )}
                       </div>
@@ -162,7 +164,21 @@ function IngestionPipeline({ onClose }: { onClose: () => void }) {
   );
 }
 
-function DatasetDetail({ dataset, onClose, onNavigate, onAddToWorkspace, onOpenStudio }: { dataset: DatasetType; onClose: () => void; onNavigate?: (p: string) => void; onAddToWorkspace?: (s: WorkspaceSource) => void; onOpenStudio?: () => void }) {
+function DatasetDetail({
+  dataset,
+  onClose,
+  onNavigate,
+  onAddToWorkspace,
+  onOpenStudio,
+  onInspectDataset,
+}: {
+  dataset: DatasetType;
+  onClose: () => void;
+  onNavigate?: (p: string) => void;
+  onAddToWorkspace?: (s: WorkspaceSource) => void;
+  onOpenStudio?: () => void;
+  onInspectDataset?: (d: DatasetType) => void;
+}) {
   const [tab, setTab] = useState<"overview" | "quality" | "provenance" | "related">("overview");
   const prov = datasetProvenance[dataset.id];
 
@@ -184,24 +200,28 @@ function DatasetDetail({ dataset, onClose, onNavigate, onAddToWorkspace, onOpenS
                 <span className="tag">{dataset.parameter}</span>
                 <span className="tag tag-green">{dataset.region}</span>
                 <span className="text-[10px] font-medium" style={{ color: prov?.access === "open" ? "#16a34a" : "#dc2626" }}>
-                  {prov?.access === "open" ? "🔓 Open Access" : "🔒 Restricted"}
+                  {prov?.access === "open" ? " Open Access" : " Restricted"}
                 </span>
               </div>
               <h2 className="font-bold text-sm" style={{ color: "var(--text-primary)" }}>{dataset.title}</h2>
               <div className="text-xs mt-1 flex gap-3" style={{ color: "var(--text-muted)" }}>
-                <span>📦 {dataset.size}</span>
+                <span> {dataset.size}</span>
                 <span>Format: {dataset.format}</span>
                 <span>{dataset.year}</span>
               </div>
             </div>
-            <button onClick={onClose} className="text-slate-400 text-lg focus-visible:outline-2 focus-visible:outline-blue-500" aria-label="Close">✕</button>
+            <button onClick={onClose} className="text-slate-400 text-lg focus-visible:outline-2 focus-visible:outline-blue-500" aria-label="Close">x</button>
           </div>
           <div className="flex flex-wrap gap-2 mb-3">
-            <button className="btn-primary btn-sm">View & Download</button>
+            <button
+              className="btn-primary btn-sm flex items-center gap-1.5"
+              onClick={() => onInspectDataset?.(dataset)}
+            >
+              <span></span> Telemetry & Download
+            </button>
             <button className="btn-outline btn-sm" onClick={() => { onClose(); onNavigate?.("ai"); }}>Ask Polar</button>
-            <button className="btn-outline btn-sm">Compare</button>
             <AddToWorkspace source={{ id: `ds-${dataset.id}`, type: "dataset", title: dataset.title, meta: `${dataset.size} · ${dataset.region}`, version: datasetProvenance[dataset.id]?.version || "v1.0", date: `${dataset.year}`, origin: "NCPOR Repository" }} onAdd={onAddToWorkspace || (() => {})}/>
-            <button className="btn-outline btn-sm" onClick={() => { onClose(); onOpenStudio?.(); }}>✨ Studio</button>
+            <button className="btn-outline btn-sm" onClick={() => { onClose(); onOpenStudio?.(); }}>Studio</button>
             <SaveFollowButton entityId={dataset.id.toString()} entityType="dataset" label="Dataset"/>
           </div>
           <div className="tab-bar">
@@ -233,7 +253,7 @@ function DatasetDetail({ dataset, onClose, onNavigate, onAddToWorkspace, onOpenS
                 </div>
               )}
               <div className="text-[10px] rounded p-2" style={{ background: "#fefce8", color: "#92400e" }}>
-                ⚠️ Demo data — not verified NCPOR measurements. Provenance and access labels are illustrative.
+                Warning: Demo data — not verified NCPOR measurements. Provenance and access labels are illustrative.
               </div>
             </>
           )}
@@ -259,7 +279,7 @@ function DatasetDetail({ dataset, onClose, onNavigate, onAddToWorkspace, onOpenS
                     { sev: "low", label: "Partial spatial coverage descriptor", detail: "Bounding box defined but projection not specified" },
                   ].map(q => (
                     <div key={q.label} className="flex items-start gap-2 p-2 rounded" style={{ background: q.sev === "medium" ? "#fffbeb" : "#f8fafc" }}>
-                      <span className="text-sm flex-shrink-0">{q.sev === "medium" ? "🟡" : "🔵"}</span>
+                      <span className="text-sm flex-shrink-0">{q.sev === "medium" ? "" : ""}</span>
                       <div>
                         <div className="text-xs font-medium" style={{ color: "var(--text-primary)" }}>{q.label}</div>
                         <div className="text-[10px]" style={{ color: "var(--text-muted)" }}>{q.detail}</div>
@@ -279,12 +299,12 @@ function DatasetDetail({ dataset, onClose, onNavigate, onAddToWorkspace, onOpenS
             <div className="space-y-3">
               <div className="font-semibold text-xs mb-1" style={{ color: "var(--text-primary)" }}>Data Provenance Chain</div>
               {[
-                { icon: "📤", label: "Source", value: prov.source, note: "Original collector" },
-                { icon: "🚢", label: "Expedition", value: prov.expedition, note: "Collection campaign" },
-                { icon: "🔬", label: "Collection Context", value: prov.collectionContext, note: "Instruments & method" },
-                { icon: "⚙️", label: "Processing", value: "NCPOR Central Analytical Laboratory · Level 2", note: "Quality-controlled, gap-filled" },
-                { icon: "📦", label: "Version", value: prov.version, note: `Last updated ${prov.lastUpdated}` },
-                { icon: "🌐", label: "Access & Rights", value: `${prov.rights} · ${prov.access}`, note: "License" },
+                { icon: "", label: "Source", value: prov.source, note: "Original collector" },
+                { icon: "", label: "Expedition", value: prov.expedition, note: "Collection campaign" },
+                { icon: "", label: "Collection Context", value: prov.collectionContext, note: "Instruments & method" },
+                { icon: "", label: "Processing", value: "NCPOR Central Analytical Laboratory · Level 2", note: "Quality-controlled, gap-filled" },
+                { icon: "", label: "Version", value: prov.version, note: `Last updated ${prov.lastUpdated}` },
+                { icon: "", label: "Access & Rights", value: `${prov.rights} · ${prov.access}`, note: "License" },
               ].map((row, i) => (
                 <div key={row.label} className="flex items-start gap-3">
                   {i < 5 && <div className="absolute w-px h-8 bg-slate-200 ml-3 mt-8" aria-hidden="true"/>}
@@ -313,13 +333,23 @@ function DatasetDetail({ dataset, onClose, onNavigate, onAddToWorkspace, onOpenS
   );
 }
 
-export default function Datasets({ onNavigate, onAddToWorkspace, onOpenStudio }: { onNavigate?: (p: string) => void; onAddToWorkspace?: (s: WorkspaceSource) => void; onOpenStudio?: () => void }) {
+export default function Datasets({
+  onNavigate,
+  onAddToWorkspace,
+  onOpenStudio,
+}: {
+  onNavigate?: (p: string) => void;
+  onAddToWorkspace?: (s: WorkspaceSource) => void;
+  onOpenStudio?: () => void;
+}) {
   const [search, setSearch] = useState("");
   const [param, setParam] = useState("");
   const [region, setRegion] = useState("");
   const [year, setYear] = useState("");
   const [selected, setSelected] = useState<DatasetType | null>(null);
   const [showIngestion, setShowIngestion] = useState(false);
+  const [inspectModalDataset, setInspectModalDataset] = useState<DatasetType | null>(null);
+  const [viewMode, setViewMode] = useState<"cards" | "table">("cards");
 
   const filtered = datasets.filter(d => {
     if (search && !d.title.toLowerCase().includes(search.toLowerCase())) return false;
@@ -329,79 +359,365 @@ export default function Datasets({ onNavigate, onAddToWorkspace, onOpenStudio }:
     return true;
   });
 
+  const handleOpenInspector = (d: DatasetType) => {
+    setInspectModalDataset(d);
+    gameStore.addXP(25, `Launched Telemetry Visualizer: ${d.title.slice(0, 30)}...`);
+  };
+
+  const handleQuickDownload = (d: DatasetType, e: React.MouseEvent) => {
+    e.stopPropagation();
+    gameStore.addXP(20, `Downloaded Dataset: ${d.title.slice(0, 30)}...`);
+    const dummy = `ID,Parameter,Region,Year,Size\n${d.id},${d.parameter},${d.region},${d.year},${d.size}`;
+    const blob = new Blob([dummy], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `${d.title.replace(/[^a-zA-Z0-9]/g, "_")}.csv`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  };
+
   return (
     <div className="h-full overflow-y-auto" style={{ background: "var(--content-bg)" }}>
-      <div className="p-6">
-        <div className="mb-5 flex items-start justify-between">
+      <div className="p-6 max-w-7xl mx-auto space-y-5">
+        {/* Header Ribbon */}
+        <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
-            <h1 className="page-header-title">Scientific Datasets</h1>
-            <p className="page-header-sub">Access and explore scientific datasets from polar expeditions.</p>
-          </div>
-          <button className="btn-primary btn-sm" onClick={() => setShowIngestion(true)}>
-            📤 Submit Dataset
-          </button>
-        </div>
-
-        <div className="card p-4 mb-5 flex flex-wrap gap-3">
-          <div className="relative flex-1 min-w-[200px]">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth={2} className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            <input className="search-input" value={search} onChange={e => setSearch(e.target.value)} placeholder="Search datasets..." aria-label="Search datasets"/>
-          </div>
-          <select className="filter-select" value={param} onChange={e => setParam(e.target.value)} aria-label="Filter by parameter">
-            <option value="">Parameter</option>
-            <option>Sea Ice</option><option>Atmosphere</option><option>Oceanography</option><option>Cryosphere</option>
-          </select>
-          <select className="filter-select" value={region} onChange={e => setRegion(e.target.value)} aria-label="Filter by region">
-            <option value="">Region</option>
-            <option>Antarctica</option><option>Arctic</option><option>Southern Ocean</option>
-          </select>
-          <select className="filter-select" value={year} onChange={e => setYear(e.target.value)} aria-label="Filter by year">
-            <option value="">Year</option>
-            {[2023,2022,2021,2020].map(y => <option key={y} value={y}>{y}</option>)}
-          </select>
-        </div>
-
-        <div className="space-y-3" role="list">
-          {filtered.map(d => (
-            <div key={d.id} className="card p-4 flex items-center gap-4 hover:shadow-md transition-shadow cursor-pointer" onClick={() => setSelected(d)} role="listitem">
-              <div className="relative w-20 h-14 rounded-lg overflow-hidden flex-shrink-0" aria-hidden="true">
-                <img src={d.thumb} alt="" className="w-full h-full object-cover"/>
-                <div className="absolute inset-0 flex items-center justify-center" style={{ background: "rgba(14,31,61,0.5)" }}>
-                  <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth={1.5} className="w-6 h-6"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4.03 3-9 3S3 13.66 3 12"/><path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5"/></svg>
-                </div>
-              </div>
-              <div className="flex-1 min-w-0">
-                <h3 className="text-sm font-semibold mb-1 hover:text-blue-600" style={{ color: "var(--text-primary)" }}>{d.title}</h3>
-                <div className="flex flex-wrap gap-2 items-center">
-                  <span className="text-xs" style={{ color: "var(--text-muted)" }}>📦 {d.size}</span>
-                  <span className="tag">{d.parameter}</span>
-                  <span className="tag tag-green">{d.region}</span>
-                  <span className="tag tag-orange">{d.category}</span>
-                  <span className="text-xs" style={{ color: "var(--text-muted)" }}>{d.year}</span>
-                  {datasetProvenance[d.id] && <span className="text-[10px] font-semibold text-green-600">🔓 Open</span>}
-                </div>
-              </div>
-              <div className="flex-shrink-0 flex flex-col gap-2 items-end">
-                <div className="flex gap-2">
-                  <button className="btn-primary btn-sm" onClick={e => { e.stopPropagation(); }}>Download</button>
-                  <button className="btn-outline btn-sm" onClick={e => { e.stopPropagation(); setSelected(d); }}>Details →</button>
-                </div>
-                <SaveFollowButton entityId={d.id.toString()} entityType="dataset" compact/>
-              </div>
+            <div className="flex items-center gap-2">
+              <span className="text-2xl"></span>
+              <h1 className="page-header-title text-2xl font-bold text-slate-900">
+                Scientific Datasets & Telemetry
+              </h1>
             </div>
-          ))}
+            <p className="page-header-sub text-xs text-slate-500 mt-1">
+              Curated Level-2 observational polar feeds, in-situ sensor logs, and NetCDF archives.
+            </p>
+          </div>
+
+          <div className="flex items-center gap-3">
+            {/* Dual View Modes Switcher */}
+            <div className="flex items-center gap-1 bg-slate-200/90 p-1 rounded-xl border border-slate-300/70 text-xs font-bold">
+              <button
+                onClick={() => setViewMode("cards")}
+                className={`px-3 py-1.5 rounded-lg transition flex items-center gap-1.5 ${
+                  viewMode === "cards" ? "bg-white text-blue-700 shadow-2xs" : "text-slate-600 hover:text-slate-900"
+                }`}
+              >
+                <span></span> Cards
+              </button>
+              <button
+                onClick={() => setViewMode("table")}
+                className={`px-3 py-1.5 rounded-lg transition flex items-center gap-1.5 ${
+                  viewMode === "table" ? "bg-white text-blue-700 shadow-2xs" : "text-slate-600 hover:text-slate-900"
+                }`}
+              >
+                <span></span> Sensor Matrix
+              </button>
+            </div>
+
+            <button className="btn-primary btn-sm flex items-center gap-1.5" onClick={() => setShowIngestion(true)}>
+              <span></span> Submit Dataset
+            </button>
+          </div>
         </div>
+
+        {/* Scientific Observational Metrics HUD (No Maps!) */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <div className="card p-3.5 border border-slate-200 flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center text-lg font-bold border border-blue-100 flex-shrink-0">
+              
+            </div>
+            <div>
+              <div className="text-lg font-black text-slate-900">128.4 GB</div>
+              <div className="text-[11px] text-slate-500 font-medium">Curated Telemetry</div>
+            </div>
+          </div>
+
+          <div className="card p-3.5 border border-slate-200 flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center text-lg font-bold border border-emerald-100 flex-shrink-0">
+              
+            </div>
+            <div>
+              <div className="text-lg font-black text-emerald-700">99.2%</div>
+              <div className="text-[11px] text-slate-500 font-medium">Calibration Integrity</div>
+            </div>
+          </div>
+
+          <div className="card p-3.5 border border-slate-200 flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-purple-50 text-purple-700 flex items-center justify-center text-lg font-bold border border-purple-100 flex-shrink-0">
+              
+            </div>
+            <div>
+              <div className="text-lg font-black text-purple-700">100% Open</div>
+              <div className="text-[11px] text-slate-500 font-medium">Fair Data Standard</div>
+            </div>
+          </div>
+
+          <div className="card p-3.5 border border-slate-200 flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-cyan-50 text-cyan-700 flex items-center justify-center text-lg font-bold border border-cyan-100 flex-shrink-0">
+              
+            </div>
+            <div>
+              <div className="text-lg font-black text-cyan-700">Level-2 / L3</div>
+              <div className="text-[11px] text-slate-500 font-medium">Science-Ready Formats</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Filter Controls Bar */}
+        <div className="card p-4 flex flex-wrap items-center justify-between gap-3 border border-slate-200">
+          {/* Quick Domain Filter Chips */}
+          <div className="flex flex-wrap items-center gap-1.5">
+            {[
+              { id: "", label: "All Parameters" },
+              { id: "Sea Ice", label: " Sea Ice" },
+              { id: "Atmosphere", label: " Atmosphere" },
+              { id: "Oceanography", label: " Oceanography" },
+              { id: "Cryosphere", label: " Cryosphere" },
+            ].map(t => (
+              <button
+                key={t.id}
+                onClick={() => setParam(t.id)}
+                className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition ${
+                  param === t.id
+                    ? "bg-blue-600 text-white shadow-2xs"
+                    : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                }`}
+              >
+                {t.label}
+              </button>
+            ))}
+          </div>
+
+          {/* Search and Secondary Filters */}
+          <div className="flex flex-wrap items-center gap-2">
+            <div className="relative w-48">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth={2} className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2" aria-hidden="true">
+                <circle cx="11" cy="11" r="8" />
+                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+              </svg>
+              <input
+                className="search-input text-xs pl-8 py-1.5"
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+                placeholder="Search telemetry..."
+                aria-label="Search datasets"
+              />
+            </div>
+            <select
+              className="filter-select text-xs py-1.5"
+              value={region}
+              onChange={e => setRegion(e.target.value)}
+              aria-label="Filter by region"
+            >
+              <option value="">Region (All)</option>
+              <option value="Antarctica">Antarctica</option>
+              <option value="Arctic">Arctic</option>
+              <option value="Southern Ocean">Southern Ocean</option>
+            </select>
+            <select
+              className="filter-select text-xs py-1.5"
+              value={year}
+              onChange={e => setYear(e.target.value)}
+              aria-label="Filter by year"
+            >
+              <option value="">Year (All)</option>
+              {[2023, 2022, 2021, 2020].map(y => (
+                <option key={y} value={y}>
+                  {y}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        {/* View Mode 1: Interactive Cards */}
+        {viewMode === "cards" && (
+          <div className="space-y-3" role="list">
+            {filtered.map(d => (
+              <div
+                key={d.id}
+                className="card p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 hover:border-blue-300 hover:shadow-md transition-all cursor-pointer border border-slate-200"
+                onClick={() => setSelected(d)}
+                role="listitem"
+              >
+                <div className="flex items-start gap-3.5 min-w-0 flex-1">
+                  <div className="relative w-20 h-16 rounded-xl overflow-hidden flex-shrink-0 shadow-2xs border border-slate-200">
+                    <img src={d.thumb} alt="" className="w-full h-full object-cover" />
+                    <div className="absolute inset-0 bg-slate-900/40 flex items-center justify-center">
+                      <span className="text-white text-base"></span>
+                    </div>
+                  </div>
+
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-2 mb-1 flex-wrap">
+                      <span className="text-xs font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-100">
+                        {d.format}
+                      </span>
+                      <span className="text-xs font-semibold text-slate-600 bg-slate-100 px-2 py-0.5 rounded">
+                         {d.size}
+                      </span>
+                      <span className="tag tag-green">{d.region}</span>
+                      <span className="tag tag-orange">{d.category}</span>
+                      <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">
+                         Open Access
+                      </span>
+                    </div>
+
+                    <h3 className="text-sm font-bold text-slate-900 hover:text-blue-600 transition truncate">
+                      {d.title}
+                    </h3>
+                    <p className="text-xs text-slate-500 line-clamp-1 mt-0.5">
+                      Temporal coverage: {datasetProvenance[d.id]?.temporalCoverage || `${d.year}`} · Variables: {datasetProvenance[d.id]?.variables.slice(0, 3).join(", ") || d.parameter}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2 self-end sm:self-center flex-shrink-0">
+                  {/* Interactive Visualizer & Telemetry Trigger */}
+                  <button
+                    className="btn-primary btn-sm text-xs font-bold flex items-center gap-1.5 shadow-2xs"
+                    onClick={e => {
+                      e.stopPropagation();
+                      handleOpenInspector(d);
+                    }}
+                  >
+                    <span></span> Visualize & Inspect
+                  </button>
+
+                  <button
+                    className="btn-outline btn-sm text-xs font-medium"
+                    onClick={e => handleQuickDownload(d, e)}
+                    title="Export CSV Telemetry"
+                  >
+                     CSV
+                  </button>
+
+                  <button
+                    className="btn-outline btn-sm text-xs font-medium"
+                    onClick={e => {
+                      e.stopPropagation();
+                      setSelected(d);
+                    }}
+                  >
+                    Details →
+                  </button>
+
+                  <SaveFollowButton entityId={d.id.toString()} entityType="dataset" compact />
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* View Mode 2: High-Density Sensor Matrix Table View */}
+        {viewMode === "table" && (
+          <div className="card overflow-hidden border border-slate-200">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs">
+                <thead className="bg-slate-50 text-slate-600 font-semibold border-b border-slate-200">
+                  <tr>
+                    <th className="py-3 px-4">Dataset Title</th>
+                    <th className="py-3 px-4">Parameter</th>
+                    <th className="py-3 px-4">Format & Size</th>
+                    <th className="py-3 px-4">Region</th>
+                    <th className="py-3 px-4">Year</th>
+                    <th className="py-3 px-4 text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {filtered.map(d => (
+                    <tr
+                      key={d.id}
+                      onClick={() => setSelected(d)}
+                      className="hover:bg-slate-50/80 cursor-pointer transition"
+                    >
+                      <td className="py-3 px-4">
+                        <div className="font-bold text-slate-900 line-clamp-1">{d.title}</div>
+                        <div className="font-mono text-[10px] text-slate-400">
+                          {datasetProvenance[d.id]?.source || "NCPOR Sensor Feed"}
+                        </div>
+                      </td>
+                      <td className="py-3 px-4">
+                        <span className="font-medium text-blue-700 bg-blue-50 px-2 py-0.5 rounded text-[11px]">
+                          {d.parameter}
+                        </span>
+                      </td>
+                      <td className="py-3 px-4 font-mono font-semibold text-slate-700">
+                        {d.format} · {d.size}
+                      </td>
+                      <td className="py-3 px-4 text-slate-600">{d.region}</td>
+                      <td className="py-3 px-4 font-mono font-bold text-slate-800">{d.year}</td>
+                      <td className="py-3 px-4 text-right">
+                        <div className="flex items-center justify-end gap-2" onClick={e => e.stopPropagation()}>
+                          <button
+                            onClick={() => handleOpenInspector(d)}
+                            className="px-2.5 py-1 bg-blue-600 hover:bg-blue-500 text-white rounded text-xs font-bold transition flex items-center gap-1"
+                          >
+                            <span></span> Inspect
+                          </button>
+                          <button
+                            onClick={e => handleQuickDownload(d, e)}
+                            className="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded text-xs font-medium transition"
+                          >
+                            CSV
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
 
         {filtered.length === 0 && (
-          <div className="card p-8 text-center" style={{ color: "var(--text-muted)" }}>
-            <div className="text-2xl mb-2" aria-hidden="true">💾</div>
-            <div className="text-sm">No datasets found.</div>
+          <div className="card p-8 text-center text-slate-500 border border-slate-200">
+            <div className="text-2xl mb-2" aria-hidden="true">
+              
+            </div>
+            <div className="text-sm font-semibold">No datasets found matching your filters.</div>
+            <button
+              onClick={() => {
+                setSearch("");
+                setParam("");
+                setRegion("");
+                setYear("");
+              }}
+              className="mt-3 btn-outline btn-sm text-xs"
+            >
+              Clear Filters
+            </button>
           </div>
         )}
       </div>
 
-      {selected && <DatasetDetail dataset={selected} onClose={() => setSelected(null)} onNavigate={onNavigate} onAddToWorkspace={onAddToWorkspace} onOpenStudio={onOpenStudio}/>}
-      {showIngestion && <IngestionPipeline onClose={() => setShowIngestion(false)}/>}
+      {selected && (
+        <DatasetDetail
+          dataset={selected}
+          onClose={() => setSelected(null)}
+          onNavigate={onNavigate}
+          onAddToWorkspace={onAddToWorkspace}
+          onOpenStudio={onOpenStudio}
+          onInspectDataset={d => {
+            setSelected(null);
+            handleOpenInspector(d);
+          }}
+        />
+      )}
+
+      {inspectModalDataset && (
+        <DatasetInspectorModal
+          dataset={inspectModalDataset}
+          onClose={() => setInspectModalDataset(null)}
+          onAddToWorkspace={onAddToWorkspace}
+        />
+      )}
+
+      {showIngestion && <IngestionPipeline onClose={() => setShowIngestion(false)} />}
     </div>
   );
 }

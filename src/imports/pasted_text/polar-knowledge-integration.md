@@ -197,11 +197,11 @@ Example:
 
 SELECTED SOURCES
 
-☑ Expedition Report 2025
-☑ Antarctic Sea Ice Dataset
-☑ Publication: Southern Ocean Study
-☑ Station Maitri Observation Report
-☑ NCPOR Research Photograph
+ Expedition Report 2025
+ Antarctic Sea Ice Dataset
+ Publication: Southern Ocean Study
+ Station Maitri Observation Report
+ NCPOR Research Photograph
 
 Users should be able to:
 
@@ -315,13 +315,13 @@ EVIDENCE
 
 Possible statuses:
 
-✓ Source-backed
+ Source-backed
 ≈ Synthesized from sources
-⚠ Insufficient evidence
+ Insufficient evidence
 
 If sources disagree:
 
-⚠ Conflicting evidence detected
+ Conflicting evidence detected
 
 Show:
 
@@ -1128,7 +1128,7 @@ If a generated artifact was created from v2.0:
 
 show:
 
-⚠ Source updated since this artifact was generated.
+ Source updated since this artifact was generated.
 
 Actions:
 
@@ -1148,7 +1148,7 @@ DO NOT silently merge them.
 
 Show:
 
-⚠ Potential Source Conflict
+ Potential Source Conflict
 
 Source A:
 Value / statement

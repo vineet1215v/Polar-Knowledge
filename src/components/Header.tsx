@@ -1,44 +1,39 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { gameStore, type PlayerStats, type Quest, type Badge } from "../gameStore";
 
 interface HeaderProps {
   onSearch?: (q: string) => void;
   onNavigate?: (p: string) => void;
   workspaceCount?: number;
   onOpenWorkspace?: () => void;
+  onOpenSocial?: () => void;
   onToggleSidebar?: () => void;
 }
 
 const notificationFeed = [
-  { id: "n1", type: "new_dataset",     icon: "💾", title: "New dataset published",      body: "Antarctic Sea Ice Concentration (2024) is now available", time: "2h ago",  dest: "datasets",     unread: true },
-  { id: "n2", type: "expedition_update",icon: "🚢", title: "46th IAE update",            body: "Team has reached Bharati Station. Field observations begun.", time: "4h ago",  dest: "expeditions",  unread: true },
-  { id: "n3", type: "new_publication",  icon: "📄", title: "New publication indexed",    body: "Sea ice variability in Prydz Bay (2024) — added to repository", time: "1d ago",  dest: "publications", unread: true },
-  { id: "n4", type: "knowledge_gap",    icon: "⚠️", title: "Coverage gap detected",      body: "Arctic methane flux — potential repository coverage gap identified", time: "1d ago",  dest: "dashboard",    unread: false },
-  { id: "n5", type: "review_needed",    icon: "📋", title: "Draft awaiting review",      body: "AI-generated outreach article requires editorial approval", time: "2d ago",  dest: "news",         unread: false },
-  { id: "n6", type: "new_media",        icon: "📸", title: "New media added",            body: "18 photos from 46th IAE added to Media Gallery", time: "3d ago",  dest: "media",        unread: false },
-  { id: "n7", type: "follow_update",    icon: "🔔", title: "Expedition you follow updated", body: "45th IAE final datasets released to public repository", time: "4d ago",  dest: "datasets",     unread: false },
-];
-
-const recentlyViewed = [
-  { icon: "🚢", label: "46th IAE (2024)",              type: "Expedition",  dest: "expeditions" },
-  { icon: "📄", label: "Sea ice dynamics (2024)",       type: "Publication", dest: "publications" },
-  { icon: "💾", label: "Ocean Temperature Profiles",    type: "Dataset",     dest: "datasets" },
-  { icon: "🗺️", label: "Bharati Station",               type: "Station",     dest: "map" },
-  { icon: "📸", label: "Aurora Australis IAE 2023",     type: "Media",       dest: "media" },
+  { id: "n1", type: "new_dataset",     icon: "", title: "New dataset published",      body: "Antarctic Sea Ice Concentration (2024) is now available", time: "2h ago",  dest: "datasets",     unread: true },
+  { id: "n2", type: "expedition_update",icon: "", title: "46th IAE update",            body: "Team has reached Bharati Station. Field observations begun.", time: "4h ago",  dest: "expeditions",  unread: true },
+  { id: "n3", type: "new_publication",  icon: "", title: "New publication indexed",    body: "Sea ice variability in Prydz Bay (2024) — added to repository", time: "1d ago",  dest: "publications", unread: true },
+  { id: "n4", type: "knowledge_gap",    icon: "Warning:", title: "Coverage gap detected",      body: "Arctic methane flux — potential repository coverage gap identified", time: "1d ago",  dest: "dashboard",    unread: false },
+  { id: "n5", type: "review_needed",    icon: "", title: "Draft awaiting review",      body: "AI-generated outreach article requires editorial approval", time: "2d ago",  dest: "news",         unread: false },
+  { id: "n6", type: "new_media",        icon: "", title: "New media added",            body: "18 photos from 46th IAE added to Media Gallery", time: "3d ago",  dest: "media",        unread: false },
+  { id: "n7", type: "follow_update",    icon: "", title: "Expedition you follow updated", body: "45th IAE final datasets released to public repository", time: "4d ago",  dest: "datasets",     unread: false },
 ];
 
 const savedKnowledge = [
-  { icon: "📄", label: "Sea ice dynamics in Southern Ocean",     type: "Publication" },
-  { icon: "💾", label: "Antarctic Sea Ice Concentration 2023",   type: "Dataset" },
-  { icon: "🚢", label: "45th Indian Antarctic Expedition",       type: "Expedition" },
+  { icon: "", label: "Sea ice dynamics in Southern Ocean",     type: "Publication" },
+  { icon: "", label: "Antarctic Sea Ice Concentration 2023",   type: "Dataset" },
+  { icon: "", label: "45th Indian Antarctic Expedition",       type: "Expedition" },
 ];
 
-const followedEntities = [
-  { icon: "🚢", label: "46th IAE",          type: "Expedition", updates: 3 },
-  { icon: "🔬", label: "Dr. Rahul Mohan",   type: "Researcher", updates: 1 },
-  { icon: "🏷️", label: "Sea Ice Science",   type: "Topic",      updates: 5 },
+const leaderboard = [
+  { rank: 1, name: "Dr. Rahul Mohan", title: "Chief Glaciologist", xp: 1420, level: 8, badge: "1st" },
+  { rank: 2, name: "Priya Sharma", title: "Ocean Mooring Specialist", xp: 980, level: 5, badge: "2nd" },
+  { rank: 3, name: "You (Explorer)", title: "Active Polar Scout", xp: 380, level: 2, badge: "3rd", isUser: true },
+  { rank: 4, name: "Vikram Das", title: "Maitri Atmospheric Tech", xp: 320, level: 2, badge: "*" },
+  { rank: 5, name: "Ananya Iyer", title: "Polar Biologist", xp: 290, level: 2, badge: "*" },
 ];
 
-// Icon button for header — white/muted on navy
 function HeaderIconBtn({ label, onClick, children, badge }: { label: string; onClick: () => void; children: React.ReactNode; badge?: number }) {
   return (
     <button
@@ -57,129 +52,132 @@ function HeaderIconBtn({ label, onClick, children, badge }: { label: string; onC
   );
 }
 
-export default function Header({ onSearch, onNavigate, workspaceCount = 0, onOpenWorkspace,onToggleSidebar, }: HeaderProps) {
-  const [query, setQuery] = useState("");
+export default function Header({ onSearch, onNavigate, workspaceCount = 0, onOpenWorkspace, onOpenSocial, onToggleSidebar }: HeaderProps) {
   const [notifOpen, setNotifOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
-  const [profileTab, setProfileTab] = useState<"saved" | "recent" | "following">("saved");
+  const [questDrawerOpen, setQuestDrawerOpen] = useState(false);
+  const [gameTab, setGameTab] = useState<"quests" | "badges" | "leaderboard">("quests");
   const [readAll, setReadAll] = useState(false);
 
+  // Gamification Reactive State
+  const [stats, setStats] = useState<PlayerStats>(gameStore.getStats());
+  const [quests, setQuests] = useState<Quest[]>(gameStore.getQuests());
+  const [badges, setBadges] = useState<Badge[]>(gameStore.getBadges());
+  const [notification, setNotification] = useState(gameStore.getNotification());
+
+  useEffect(() => {
+    return gameStore.subscribe(() => {
+      setStats(gameStore.getStats());
+      setQuests([...gameStore.getQuests()]);
+      setBadges([...gameStore.getBadges()]);
+      setNotification(gameStore.getNotification());
+    });
+  }, []);
+
   const unreadCount = readAll ? 0 : notificationFeed.filter(n => n.unread).length;
+  const unclaimedQuests = quests.filter(q => q.completed && !q.claimed).length;
 
-  function handleSearch(e: React.FormEvent) {
-    e.preventDefault();
-    if (query.trim() && onSearch) onSearch(query);
-  }
+  const currentLevelXp = stats.xp % 200;
+  const xpPercent = Math.min(100, Math.round((currentLevelXp / 200) * 100));
 
-  function handleNotifClick(dest: string) {
-    setNotifOpen(false);
-    onNavigate?.(dest);
-  }
+  const handleClaim = (questId: string) => {
+    gameStore.claimQuest(questId);
+  };
 
   return (
     <>
+
       {/* ── Navy Header ──────────────────────────────────── */}
       <div
-        className="flex items-center gap-3 px-5 flex-shrink-0 relative z-30"
+        className="flex items-center justify-between gap-3 px-4 sm:px-5 flex-shrink-0 relative z-30"
         style={{
           height: "var(--header-height)",
           background: "var(--header-bg)",
           borderBottom: "1px solid var(--header-border)",
-          boxShadow: "0 1px 4px rgba(0,0,0,0.2)",
+          boxShadow: "0 2px 8px rgba(0,0,0,0.25)",
         }}
       >
-        <button
-  type="button"
-  onClick={onToggleSidebar}
-  aria-label="Toggle sidebar"
-  className="flex items-center justify-center flex-shrink-0 rounded-md transition-colors"
-  style={{
-    width: 34,
-    height: 34,
-    color: "white",
-    background: "rgba(255,255,255,0.08)",
-    border: "1px solid rgba(255,255,255,0.15)",
-  }}
-  onMouseEnter={(e) => {
-    e.currentTarget.style.background = "rgba(255,255,255,0.16)";
-  }}
-  onMouseLeave={(e) => {
-    e.currentTarget.style.background = "rgba(255,255,255,0.08)";
-  }}
->
-  <svg
-    width="18"
-    height="18"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-  >
-    <line x1="4" y1="6" x2="20" y2="6" />
-    <line x1="4" y1="12" x2="20" y2="12" />
-    <line x1="4" y1="18" x2="20" y2="18" />
-  </svg>
-</button>
-        {/* Brand */}
-<div className="flex items-center gap-2.5 flex-shrink-0">
+        {/* Left: Brand & Sidebar Toggle */}
+        <div className="flex items-center gap-2.5 flex-shrink-0">
+          <button
+            type="button"
+            onClick={onToggleSidebar}
+            aria-label="Toggle sidebar"
+            className="flex items-center justify-center flex-shrink-0 rounded-lg transition-colors hover:bg-white/15"
+            style={{
+              width: 34,
+              height: 34,
+              color: "white",
+              background: "rgba(255,255,255,0.08)",
+            }}
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <line x1="4" y1="6" x2="20" y2="6"/>
+              <line x1="4" y1="12" x2="20" y2="12"/>
+              <line x1="4" y1="18" x2="20" y2="18"/>
+            </svg>
+          </button>
 
-  {/* Logo */}
-  <div
-    className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
-    style={{
-      background:
-        "linear-gradient(135deg, var(--accent) 0%, var(--primary-blue) 100%)",
-    }}
-  >
-    <svg
-      viewBox="0 0 24 24"
-      fill="white"
-      style={{
-        width: 18,
-        height: 18,
-      }}
-    >
-      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" />
-    </svg>
-  </div>
+          {/* Logo & NCPOR brand */}
+          <div className="flex items-center gap-2 cursor-pointer" onClick={() => onNavigate?.("dashboard")}>
+            <div
+              className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 shadow-xs"
+              style={{ background: "linear-gradient(135deg, #2563eb 0%, #1e40af 100%)" }}
+            >
+              <svg viewBox="0 0 24 24" fill="white" className="w-4 h-4">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" />
+              </svg>
+            </div>
+            <div>
+              <div className="text-white font-bold text-sm tracking-wide leading-none flex items-center gap-1.5">
+                NCPOR
+                <span className="text-[9px] px-1.5 py-0.2 rounded bg-cyan-500/20 text-cyan-300 font-mono font-normal">POLAR ACADEMY</span>
+              </div>
+              <div className="text-[10px] text-slate-400 leading-tight mt-0.5 hidden sm:block">
+                Interactive Polar Science
+              </div>
+            </div>
+          </div>
+        </div>
 
-  {/* NCPOR text */}
-  <div className="block">
-    <div className="ncpor-brand">
-      NCPOR
-    </div>
+        {/* Center: Institutional Search Input */}
+        <div className="flex-1 max-w-md mx-4 hidden md:block">
+          <div className="relative">
+            <svg
+              className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <circle cx="11" cy="11" r="8" />
+              <line x1="21" y1="21" x2="16.65" y2="16.65" />
+            </svg>
+            <input
+              type="text"
+              placeholder="Search expeditions, datasets, publications..."
+              onChange={(e) => onSearch?.(e.target.value)}
+              className="w-full pl-9 pr-4 py-1.5 rounded-xl bg-white/10 text-white placeholder-slate-400 text-xs border border-white/15 focus:outline-none focus:ring-1 focus:ring-blue-400 focus:bg-white/15 transition-all"
+            />
+          </div>
+        </div>
 
-    <div
-      className="hidden md:block text-[9px] mt-1"
-      style={{ color: "rgba(255,255,255,0.55)" }}
-    >
-      Polar Knowledge Portal
-    </div>
-  </div>
-
-</div>
-
-        <div className="flex items-center gap-1.5 ml-auto">
-          {/* Workspace Sources button */}
+        {/* Right: Workspace & Notifications */}
+        <div className="flex items-center gap-1.5">
+          {/* Workspace Sources */}
           {workspaceCount > 0 && (
             <button
               onClick={onOpenWorkspace}
-              aria-label={`Open Polar Studio — ${workspaceCount} sources selected`}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11.5px] font-semibold transition-all"
-              style={{ background: "rgba(255,255,255,0.12)", color: "#93c5fd", border: "1px solid rgba(255,255,255,0.2)" }}
-              onMouseEnter={e => (e.currentTarget.style.background = "rgba(255,255,255,0.18)")}
-              onMouseLeave={e => (e.currentTarget.style.background = "rgba(255,255,255,0.12)")}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-blue-300 bg-white/10 hover:bg-white/20 border border-white/20 transition-all"
             >
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-3 h-3"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
-              Sources ({workspaceCount}) · Studio ✨
+              <span></span> Sources ({workspaceCount})
             </button>
           )}
 
           {/* Notifications */}
           <HeaderIconBtn
             label={`Notifications${unreadCount > 0 ? ` — ${unreadCount} unread` : ""}`}
-            onClick={() => { setNotifOpen(!notifOpen); setProfileOpen(false); }}
+            onClick={() => { setNotifOpen(!notifOpen); setProfileOpen(false); setQuestDrawerOpen(false); }}
             badge={unreadCount}
           >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} style={{ width: 17, height: 17 }}>
@@ -187,155 +185,246 @@ export default function Header({ onSearch, onNavigate, workspaceCount = 0, onOpe
             </svg>
           </HeaderIconBtn>
 
-          {/* Divider */}
-          <div className="w-px h-5 mx-1" style={{ background: "rgba(255,255,255,0.15)" }}/>
-
           {/* Profile */}
           <button
-            onClick={() => { setProfileOpen(!profileOpen); setNotifOpen(false); }}
-            aria-label="Open profile and saved knowledge"
-            aria-expanded={profileOpen}
-            className="flex items-center gap-2 px-2 py-1 rounded-lg transition-colors"
-            style={{ color: "rgba(255,255,255,0.85)" }}
-            onMouseEnter={e => (e.currentTarget.style.background = "rgba(255,255,255,0.1)")}
-            onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
+            onClick={() => { setProfileOpen(!profileOpen); setNotifOpen(false); setQuestDrawerOpen(false); }}
+            className="flex items-center gap-2 px-2 py-1 rounded-lg hover:bg-white/10 text-white transition-colors"
           >
-            <div
-              className="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
-              style={{ background: "rgba(255,255,255,0.2)", border: "1px solid rgba(255,255,255,0.3)" }}
-            >R</div>
-            <div className="hidden sm:block text-left">
-              <div className="text-[10px] leading-none" style={{ color: "rgba(255,255,255,0.5)" }}>Researcher</div>
-              <div className="text-[12px] font-semibold leading-none mt-0.5" style={{ color: "rgba(255,255,255,0.9)" }}>NCPOR</div>
+            <div className="w-7 h-7 rounded-full bg-blue-600 border border-blue-400 flex items-center justify-center text-xs font-bold">
+              EXP
             </div>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className={`w-3 h-3 flex-shrink-0 transition-transform ${profileOpen ? "rotate-180" : ""}`} style={{ color: "rgba(255,255,255,0.4)" }}>
-              <polyline points="6 9 12 15 18 9"/>
-            </svg>
+            <div className="hidden sm:block text-left">
+              <div className="text-[10px] text-slate-400 leading-none">Explorer</div>
+              <div className="text-xs font-semibold text-white leading-none mt-0.5">{stats.rank.split(" ")[0]}</div>
+            </div>
           </button>
         </div>
       </div>
 
       {/* Backdrop */}
-      {(notifOpen || profileOpen) && (
-        <div className="fixed inset-0 z-20" onClick={() => { setNotifOpen(false); setProfileOpen(false); }}/>
+      {(notifOpen || profileOpen || questDrawerOpen) && (
+        <div
+          className="fixed inset-0 z-40 bg-black/40 backdrop-blur-2xs"
+          onClick={() => { setNotifOpen(false); setProfileOpen(false); setQuestDrawerOpen(false); }}
+        />
       )}
 
-      {/* ── Notification Dropdown ─────────────────────────── */}
-      {notifOpen && (
-        <div
-          className="fixed right-4 z-30 w-80 bg-white overflow-hidden animate-slide-up"
-          style={{ top: "calc(var(--header-height) + 6px)", borderRadius: "var(--radius-lg)", boxShadow: "var(--shadow-xl)", border: "1px solid var(--border)" }}
-          role="region"
-          aria-label="Notifications"
-        >
-          <div className="flex items-center justify-between px-4 py-3" style={{ borderBottom: "1px solid var(--border)" }}>
+      {/* ── GAMIFICATION QUESTS & TROPHY DRAWER ─────────────────────── */}
+      {questDrawerOpen && (
+        <div className="fixed top-16 right-4 sm:right-6 z-50 w-full max-w-md bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden animate-in fade-in zoom-in-95 text-xs flex flex-col max-h-[85vh]">
+          {/* Header */}
+          <div className="p-4 bg-slate-950 text-white flex items-center justify-between border-b border-slate-800">
             <div className="flex items-center gap-2">
-              <span className="font-semibold text-sm" style={{ color: "var(--text-primary)" }}>Notifications</span>
-              {unreadCount > 0 && <span className="text-[10px] px-1.5 py-0.5 rounded-full font-semibold" style={{ background: "#fee2e2", color: "#dc2626" }}>{unreadCount} new</span>}
+              <span className="text-xl"></span>
+              <div>
+                <h3 className="font-bold text-sm">Polar Explorer Mission Command</h3>
+                <p className="text-[10px] text-slate-400">Level {stats.level} {stats.rank} · {stats.crystals} Crystals</p>
+              </div>
             </div>
-            <button className="text-[10px] font-semibold" style={{ color: "var(--accent)" }} onClick={() => setReadAll(true)}>Mark all read</button>
+            <button onClick={() => setQuestDrawerOpen(false)} className="w-6 h-6 rounded-full hover:bg-white/20 flex items-center justify-center text-slate-400 hover:text-white">x</button>
           </div>
-          <div className="overflow-y-auto" style={{ maxHeight: 380 }}>
-            {notificationFeed.map(n => (
+
+          {/* Navigation Tabs */}
+          <div className="flex border-b border-slate-200 bg-slate-50 p-1">
+            {[["quests", "Daily Quests"], ["badges", "Badges & Trophies"], ["leaderboard", "Leaderboard"]].map(([key, label]) => (
               <button
-                key={n.id}
-                className="w-full text-left flex items-start gap-5 px-4 py-3 transition-colors"
-                style={{ borderBottom: "1px solid var(--border)", background: n.unread && !readAll ? "#f8faff" : "transparent" }}
-                onMouseEnter={e => (e.currentTarget.style.background = "#f8fafc")}
-                onMouseLeave={e => (e.currentTarget.style.background = n.unread && !readAll ? "#f8faff" : "transparent")}
-                onClick={() => handleNotifClick(n.dest)}
+                key={key}
+                onClick={() => setGameTab(key as any)}
+                className={`flex-1 py-1.5 rounded-lg text-xs font-semibold transition-all ${gameTab === key ? "bg-white text-blue-700 shadow-2xs" : "text-slate-500 hover:text-slate-900"}`}
               >
-                <span className="text-base flex-shrink-0 mt-0.5">{n.icon}</span>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-1.5">
-                    <span className="font-semibold text-xs" style={{ color: "var(--text-primary)" }}>{n.title}</span>
-                    {n.unread && !readAll && <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: "var(--accent)" }}/>}
-                  </div>
-                  <div className="text-[11px] mt-0.5 leading-snug" style={{ color: "var(--text-secondary)" }}>{n.body}</div>
-                  <div className="text-[10px] mt-1" style={{ color: "var(--text-muted)" }}>{n.time}</div>
-                </div>
+                {label}
               </button>
             ))}
           </div>
-          <div className="px-4 py-2.5 text-center" style={{ background: "var(--surface-secondary)", borderTop: "1px solid var(--border)" }}>
-            <button className="text-[11px] font-semibold" style={{ color: "var(--accent)" }} onClick={() => { setNotifOpen(false); onNavigate?.("dashboard"); }}>
-              View all activity in Dashboard →
-            </button>
+
+          {/* Drawer Body */}
+          <div className="p-4 overflow-y-auto space-y-3 flex-1">
+            {gameTab === "quests" && (
+              <div className="space-y-2.5">
+                <div className="flex items-center justify-between text-[11px] text-slate-500 font-semibold uppercase">
+                  <span>Active Missions</span>
+                  <span>{quests.filter(q => q.completed).length} / {quests.length} Completed</span>
+                </div>
+
+                {quests.map(q => (
+                  <div
+                    key={q.id}
+                    className={`p-3 rounded-xl border flex items-center justify-between gap-3 transition-all ${q.completed ? "bg-emerald-50/60 border-emerald-200" : "bg-white border-slate-200"}`}
+                  >
+                    <div className="flex items-start gap-2.5">
+                      <span className="text-xl">{q.icon}</span>
+                      <div>
+                        <div className="font-bold text-slate-900 leading-tight">{q.title}</div>
+                        <div className="text-[11px] text-slate-500 leading-snug mt-0.5">{q.desc}</div>
+                        <div className="flex items-center gap-2 mt-1 font-mono text-[10px] font-bold">
+                          <span className="text-blue-600">+{q.xpReward} XP</span>
+                          <span className="text-cyan-600">+{q.crystalReward} </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex-shrink-0">
+                      {q.completed ? (
+                        q.claimed ? (
+                          <span className="text-[10px] font-bold text-emerald-700 bg-emerald-100 px-2 py-1 rounded-full">
+                            OK Claimed
+                          </span>
+                        ) : (
+                          <button
+                            onClick={() => handleClaim(q.id)}
+                            className="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-[11px] shadow-xs animate-bounce"
+                          >
+                            Claim Reward!
+                          </button>
+                        )
+                      ) : (
+                        <span className="text-[10px] font-medium text-slate-400 bg-slate-100 px-2 py-1 rounded-full">
+                          In Progress
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                ))}
+
+                <button
+                  onClick={() => {
+                    setQuestDrawerOpen(false);
+                    onNavigate?.("education");
+                  }}
+                  className="w-full py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold text-xs rounded-xl shadow-sm hover:from-blue-700 hover:to-indigo-700 transition-all flex items-center justify-center gap-1.5"
+                >
+                  <span></span> Open Gaming Learning Arena →
+                </button>
+              </div>
+            )}
+
+            {gameTab === "badges" && (
+              <div className="space-y-3">
+                <div className="text-[11px] text-slate-500 font-semibold uppercase">
+                  Unlocked Achievements ({badges.filter(b => b.unlocked).length} / {badges.length})
+                </div>
+
+                <div className="grid grid-cols-2 gap-2.5">
+                  {badges.map(b => (
+                    <div
+                      key={b.id}
+                      className={`p-3 rounded-xl border flex flex-col justify-between transition-all ${b.unlocked ? "bg-gradient-to-br from-amber-50/50 to-white border-amber-200 shadow-2xs" : "bg-slate-50/60 border-slate-200 opacity-60 grayscale"}`}
+                    >
+                      <div>
+                        <div className="flex items-center justify-between mb-1">
+                          <span className="text-2xl">{b.icon}</span>
+                          <span className="text-[8px] font-bold uppercase px-1.5 py-0.2 rounded bg-slate-200 text-slate-700">
+                            {b.rarity}
+                          </span>
+                        </div>
+                        <div className="font-bold text-slate-900 leading-tight">{b.name}</div>
+                        <div className="text-[10px] text-slate-500 leading-snug mt-1">{b.desc}</div>
+                      </div>
+                      <div className="mt-2 text-[9px] font-mono font-semibold text-amber-700">
+                        {b.unlocked ? "OK Unlocked" : " Locked"}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {gameTab === "leaderboard" && (
+              <div className="space-y-2.5">
+                <div className="text-[11px] text-slate-500 font-semibold uppercase">
+                  NCPOR Polar Science Academy Leaderboard
+                </div>
+
+                <div className="space-y-1.5">
+                  {leaderboard.map(u => (
+                    <div
+                      key={u.rank}
+                      className={`p-2.5 rounded-xl border flex items-center justify-between ${u.isUser ? "bg-blue-50 border-blue-300 shadow-2xs" : "bg-white border-slate-200"}`}
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <span className="w-5 text-center font-bold text-slate-500 text-sm">{u.badge}</span>
+                        <div>
+                          <div className="font-bold text-slate-900 leading-tight flex items-center gap-1.5">
+                            {u.name}
+                            {u.isUser && <span className="text-[9px] px-1.5 py-0.2 rounded bg-blue-600 text-white font-bold">YOU</span>}
+                          </div>
+                          <div className="text-[10px] text-slate-500">{u.title}</div>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <div className="font-bold text-blue-700 font-mono text-xs">{u.xp} XP</div>
+                        <div className="text-[9px] text-slate-400 font-mono">Level {u.level}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}
 
-      {/* ── Profile Dropdown ──────────────────────────────── */}
+      {/* ── Notification Dropdown ─────────────────────────── */}
+      {notifOpen && (
+        <div className="fixed right-4 z-50 w-80 bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden animate-in fade-in zoom-in-95 text-xs">
+          <div className="p-3 bg-slate-900 text-white flex items-center justify-between">
+            <h4 className="font-bold text-xs">Notifications</h4>
+            <button onClick={() => setReadAll(true)} className="text-[10px] text-blue-300 hover:underline">Mark all read</button>
+          </div>
+          <div className="p-2 divide-y divide-slate-100 max-h-72 overflow-y-auto">
+            {notificationFeed.map(n => (
+              <div
+                key={n.id}
+                onClick={() => {
+                  setNotifOpen(false);
+                  onNavigate?.(n.dest);
+                }}
+                className={`p-2.5 rounded-lg cursor-pointer hover:bg-slate-50 flex items-start gap-2.5 transition-colors ${!readAll && n.unread ? "bg-blue-50/60" : ""}`}
+              >
+                <span className="text-lg">{n.icon}</span>
+                <div className="min-w-0 flex-1">
+                  <div className="font-semibold text-slate-900 leading-tight">{n.title}</div>
+                  <div className="text-[10px] text-slate-500 line-clamp-1 mt-0.5">{n.body}</div>
+                  <div className="text-[9px] text-slate-400 mt-1">{n.time}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* ── Profile Dropdown ─────────────────────────────── */}
       {profileOpen && (
-        <div
-          className="fixed right-4 z-30 w-80 bg-white overflow-hidden animate-slide-up"
-          style={{ top: "calc(var(--header-height) + 6px)", borderRadius: "var(--radius-lg)", boxShadow: "var(--shadow-xl)", border: "1px solid var(--border)" }}
-          role="region"
-          aria-label="Your knowledge space"
-        >
-          {/* Profile header — navy strip */}
-          <div className="px-4 py-4" style={{ background: "var(--primary-navy)", borderBottom: "1px solid rgba(255,255,255,0.1)" }}>
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0" style={{ background: "rgba(255,255,255,0.15)", border: "1px solid rgba(255,255,255,0.2)" }}>R</div>
-              <div>
-                <div className="text-white font-semibold text-sm">Researcher</div>
-                <div className="text-[10px]" style={{ color: "rgba(255,255,255,0.55)" }}>NCPOR · Glaciology Division</div>
-              </div>
+        <div className="fixed right-4 z-50 w-72 bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden animate-in fade-in zoom-in-95 text-xs p-4 space-y-3">
+          <div className="flex items-center gap-3 pb-3 border-b border-slate-100">
+            <div className="w-10 h-10 rounded-full bg-blue-600 text-white text-lg flex items-center justify-center font-bold">
+              EXP
             </div>
-            <div className="flex gap-3 mt-3">
-              {[["3","Saved"],["3","Following"],["5","Viewed"]].map(([count, label]) => (
-                <div key={label} className="flex-1 text-center">
-                  <div className="text-white font-bold text-sm">{count}</div>
-                  <div className="text-[9px]" style={{ color: "rgba(255,255,255,0.45)" }}>{label}</div>
-                </div>
-              ))}
+            <div>
+              <div className="font-bold text-sm text-slate-900">Polar Explorer</div>
+              <div className="text-[10px] text-blue-600 font-semibold">{stats.rank} · Level {stats.level}</div>
             </div>
           </div>
 
-          {/* Tabs */}
-          <div className="tab-bar m-3 mb-0">
-            {([["saved","💾 Saved"],["recent","🕐 Recent"],["following","🔔 Following"]] as const).map(([id, label]) => (
-              <button key={id} className={`tab-item flex-1 text-[10px] ${profileTab === id ? "active" : ""}`} onClick={() => setProfileTab(id)}>{label}</button>
-            ))}
-          </div>
-
-          <div className="overflow-y-auto p-3 space-y-0.5" style={{ maxHeight: 240 }}>
-            {profileTab === "saved" && savedKnowledge.map((item, i) => (
-              <div key={i} className="flex items-center gap-2.5 px-3 py-2 rounded-lg cursor-pointer transition-colors group" onMouseEnter={e => (e.currentTarget.style.background = "var(--surface-secondary)")} onMouseLeave={e => (e.currentTarget.style.background = "transparent")}>
-                <span className="text-base flex-shrink-0">{item.icon}</span>
-                <div className="flex-1 min-w-0">
-                  <div className="text-xs font-medium truncate" style={{ color: "var(--text-primary)" }}>{item.label}</div>
-                  <div className="text-[10px]" style={{ color: "var(--text-muted)" }}>{item.type}</div>
-                </div>
-              </div>
-            ))}
-
-            {profileTab === "recent" && recentlyViewed.map((item, i) => (
-              <button key={i} className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-left transition-colors" onMouseEnter={e => (e.currentTarget.style.background = "var(--surface-secondary)")} onMouseLeave={e => (e.currentTarget.style.background = "transparent")} onClick={() => { setProfileOpen(false); onNavigate?.(item.dest); }}>
-                <span className="text-base flex-shrink-0">{item.icon}</span>
-                <div className="flex-1 min-w-0">
-                  <div className="text-xs font-medium truncate" style={{ color: "var(--text-primary)" }}>{item.label}</div>
-                  <div className="text-[10px]" style={{ color: "var(--text-muted)" }}>{item.type}</div>
-                </div>
-              </button>
-            ))}
-
-            {profileTab === "following" && followedEntities.map((item, i) => (
-              <div key={i} className="flex items-center gap-2.5 px-3 py-2 rounded-lg cursor-pointer transition-colors" onMouseEnter={e => (e.currentTarget.style.background = "var(--surface-secondary)")} onMouseLeave={e => (e.currentTarget.style.background = "transparent")}>
-                <span className="text-base flex-shrink-0">{item.icon}</span>
-                <div className="flex-1 min-w-0">
-                  <div className="text-xs font-medium truncate" style={{ color: "var(--text-primary)" }}>{item.label}</div>
-                  <div className="text-[10px]" style={{ color: "var(--text-muted)" }}>{item.type}</div>
-                </div>
-                {item.updates > 0 && <span className="text-[9px] px-1.5 py-0.5 rounded-full font-semibold flex-shrink-0" style={{ background: "var(--accent-light)", color: "var(--accent)", border: "1px solid var(--accent-border)" }}>{item.updates} new</span>}
+          <div className="space-y-1">
+            <div className="text-[10px] uppercase font-bold text-slate-400">Saved Sources</div>
+            {savedKnowledge.map(s => (
+              <div key={s.label} className="p-1.5 rounded hover:bg-slate-50 flex items-center justify-between text-slate-700">
+                <span className="truncate">{s.icon} {s.label}</span>
+                <span className="text-[9px] text-slate-400">{s.type}</span>
               </div>
             ))}
           </div>
 
-          <div className="px-4 py-3 flex gap-2" style={{ background: "var(--surface-secondary)", borderTop: "1px solid var(--border)" }}>
-            <button className="flex-1 btn-outline btn-sm" style={{ fontSize: "10px" }} onClick={() => { setProfileOpen(false); onNavigate?.("ai"); }}>Ask Polar →</button>
-            <button className="flex-1 btn-outline btn-sm" style={{ fontSize: "10px" }} onClick={() => { setProfileOpen(false); onNavigate?.("about"); }}>My Profile →</button>
-          </div>
+          <button
+            onClick={() => {
+              setProfileOpen(false);
+              onNavigate?.("education");
+            }}
+            className="w-full py-1.5 rounded-lg bg-blue-50 text-blue-700 font-semibold hover:bg-blue-100 transition-colors text-center"
+          >
+            Go to Academy Game Arena →
+          </button>
         </div>
       )}
     </>

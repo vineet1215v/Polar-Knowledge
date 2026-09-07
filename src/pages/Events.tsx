@@ -40,14 +40,14 @@ export default function Events({ onNavigate }: Props) {
 
                       {/* Connected knowledge */}
                       <div className="mt-2 flex flex-wrap gap-1.5">
-                        <button className="text-[10px] px-2 py-0.5 rounded-full border hover:bg-blue-50 transition-colors" style={{ borderColor: "var(--border)", color: "var(--text-muted)" }} onClick={() => onNavigate?.("publications")}>📄 Related Publications</button>
-                        <button className="text-[10px] px-2 py-0.5 rounded-full border hover:bg-blue-50 transition-colors" style={{ borderColor: "var(--border)", color: "var(--text-muted)" }} onClick={() => onNavigate?.("expeditions")}>🚢 Related Expeditions</button>
-                        <button className="text-[10px] px-2 py-0.5 rounded-full border hover:bg-blue-50 transition-colors" style={{ borderColor: "var(--border)", color: "var(--text-muted)" }} onClick={() => onNavigate?.("education")}>🎓 Educational Materials</button>
+                        <button className="text-[10px] px-2 py-0.5 rounded-full border hover:bg-blue-50 transition-colors" style={{ borderColor: "var(--border)", color: "var(--text-muted)" }} onClick={() => onNavigate?.("publications")}> Related Publications</button>
+                        <button className="text-[10px] px-2 py-0.5 rounded-full border hover:bg-blue-50 transition-colors" style={{ borderColor: "var(--border)", color: "var(--text-muted)" }} onClick={() => onNavigate?.("expeditions")}> Related Expeditions</button>
+                        <button className="text-[10px] px-2 py-0.5 rounded-full border hover:bg-blue-50 transition-colors" style={{ borderColor: "var(--border)", color: "var(--text-muted)" }} onClick={() => onNavigate?.("education")}> Educational Materials</button>
                       </div>
                     </div>
                     <div className="flex-shrink-0 flex flex-col gap-1.5">
                       <button className={ev.action === "Register" ? "btn-primary btn-sm" : "btn-outline btn-sm"}>{ev.action}</button>
-                      {tab === "past" && <button className="btn-outline btn-sm text-[10px]">✨ Create Summary</button>}
+                      {tab === "past" && <button className="btn-outline btn-sm text-[10px]"> Create Summary</button>}
                     </div>
                   </div>
                 </div>
@@ -84,7 +84,7 @@ export default function Events({ onNavigate }: Props) {
               <h3 className="font-semibold text-xs mb-2" style={{ color: "var(--text-primary)" }}>Knowledge Hub</h3>
               <p className="text-[10px] mb-2" style={{ color: "var(--text-secondary)" }}>Events are connected to the NCPOR knowledge ecosystem.</p>
               <div className="space-y-1.5">
-                {[["📄","Browse Publications", "publications"],["🎓","Educational Resources","education"],["💾","Related Datasets","datasets"]].map(([icon, label, dest]) => (
+                {[["","Browse Publications", "publications"],["","Educational Resources","education"],["","Related Datasets","datasets"]].map(([icon, label, dest]) => (
                   <button key={dest as string} onClick={() => onNavigate?.(dest as string)} className="w-full flex items-center gap-2 text-[10px] px-2 py-1.5 rounded hover:bg-slate-50 transition-colors" style={{ color: "var(--text-secondary)" }}>
                     <span>{icon as string}</span>{label as string} →
                   </button>

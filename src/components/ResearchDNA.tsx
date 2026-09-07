@@ -10,13 +10,13 @@ export default function ResearchDNA({ expeditionId, onNavigate }: Props) {
   if (!dna) return null;
 
   const cells = [
-    { label: "Researchers", value: dna.researchers, icon: "👤", dest: "about", color: "#d97706" },
-    { label: "Projects",    value: dna.projects,    icon: "📋", dest: "about", color: "#7c3aed" },
-    { label: "Datasets",    value: dna.datasets,    icon: "💾", dest: "datasets", color: "#0891b2" },
-    { label: "Publications",value: dna.publications, icon: "📄", dest: "publications", color: "#2563eb" },
-    { label: "Findings",    value: dna.findings,    icon: "🔍", dest: "publications", color: "#16a34a" },
-    { label: "Media Assets",value: dna.media,       icon: "🖼️", dest: "media", color: "#db2777" },
-    { label: "Educational", value: dna.educational, icon: "🎓", dest: "education", color: "#ea580c" },
+    { label: "Researchers", value: dna.researchers, icon: "", dest: "about", color: "#d97706" },
+    { label: "Projects",    value: dna.projects,    icon: "", dest: "about", color: "#7c3aed" },
+    { label: "Datasets",    value: dna.datasets,    icon: "", dest: "datasets", color: "#0891b2" },
+    { label: "Publications",value: dna.publications, icon: "", dest: "publications", color: "#2563eb" },
+    { label: "Findings",    value: dna.findings,    icon: "", dest: "publications", color: "#16a34a" },
+    { label: "Media Assets",value: dna.media,       icon: "", dest: "media", color: "#db2777" },
+    { label: "Educational", value: dna.educational, icon: "", dest: "education", color: "#ea580c" },
   ];
 
   const researcherDetails = dna.researcherList.slice(0, 4).map(id => researchers.find(r => r.id === id)).filter(Boolean);

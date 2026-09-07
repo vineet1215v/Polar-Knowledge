@@ -180,10 +180,10 @@ Example:
 
 Selected Sources: 4
 
-✓ Antarctic Expedition Report 2025
-✓ Southern Ocean Dataset
-✓ Antarctic Climate Publication
-✓ Maitri Station Report
+ Antarctic Expedition Report 2025
+ Southern Ocean Dataset
+ Antarctic Climate Publication
+ Maitri Station Report
 
 These selected sources become the context for the AI.
 
@@ -258,7 +258,7 @@ Each result should have:
 
 Once added:
 
-[✓ Added]
+[ Added]
 
 Do not use fake hardcoded results if real application data already exists.
 
@@ -348,11 +348,11 @@ Confidence/status
 
 Use labels such as:
 
-✓ Source-backed
+ Source-backed
 
 ≈ Synthesized from selected sources
 
-⚠ Insufficient evidence
+ Insufficient evidence
 
 If the system cannot support an answer from the available sources:
 
@@ -401,7 +401,7 @@ do not silently combine them.
 
 Show:
 
-⚠ Potential source conflict
+ Potential source conflict
 
 Source A:
 ...
@@ -824,7 +824,7 @@ If an artifact was generated from Version 2.0:
 
 show:
 
-⚠ Source updated since this artifact was created.
+ Source updated since this artifact was created.
 
 Allow:
 

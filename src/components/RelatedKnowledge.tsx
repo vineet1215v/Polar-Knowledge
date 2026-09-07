@@ -5,14 +5,14 @@ interface RelatedEntity {
 }
 
 const typeConfig: Record<RelatedEntity["type"], { icon: string; color: string; bg: string }> = {
-  publication:  { icon: "📄", color: "#2563eb", bg: "#eff6ff" },
-  dataset:      { icon: "💾", color: "#7c3aed", bg: "#faf5ff" },
-  expedition:   { icon: "🚢", color: "#0891b2", bg: "#ecfeff" },
-  finding:      { icon: "🔍", color: "#16a34a", bg: "#f0fdf4" },
-  researcher:   { icon: "👤", color: "#d97706", bg: "#fffbeb" },
-  station:      { icon: "🏔️", color: "#ea580c", bg: "#fff7ed" },
-  media:        { icon: "🖼️", color: "#db2777", bg: "#fdf2f8" },
-  project:      { icon: "📋", color: "#64748b", bg: "#f8fafc" },
+  publication:  { icon: "", color: "#2563eb", bg: "#eff6ff" },
+  dataset:      { icon: "", color: "#7c3aed", bg: "#faf5ff" },
+  expedition:   { icon: "", color: "#0891b2", bg: "#ecfeff" },
+  finding:      { icon: "", color: "#16a34a", bg: "#f0fdf4" },
+  researcher:   { icon: "", color: "#d97706", bg: "#fffbeb" },
+  station:      { icon: "", color: "#ea580c", bg: "#fff7ed" },
+  media:        { icon: "", color: "#db2777", bg: "#fdf2f8" },
+  project:      { icon: "", color: "#64748b", bg: "#f8fafc" },
 };
 
 interface Props {
