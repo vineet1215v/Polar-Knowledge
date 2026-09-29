@@ -4,7 +4,7 @@ interface Props {
   onNavigate: (p: string) => void
 }
 
-type ParameterType = "Temperature" | "Salinity" | "pH" | "Fish"
+type ParameterType = "Temperature" | "SnowCover" | "GlacierFlow" | "Permafrost"
 
 interface ParamConfig {
   label: string
@@ -30,12 +30,18 @@ export default function DynamicAnalytics({ onNavigate }: Props) {
   // Hover & selection states
   const [hoveredWaveIndex, setHoveredWaveIndex] = useState<number | null>(null)
   const [hoveredTempIndex, setHoveredTempIndex] = useState<number | null>(null)
-  const [selectedPieSlice, setSelectedPieSlice] = useState<{
+  const [selectedGasSlice, setSelectedGasSlice] = useState<{
     name: string
+    formula: string
     pct: number
-  } | null>({
-    name: "Lutjanus argentimaculatus",
-    pct: 45,
+    concentration: string
+    source: string
+  }>({
+    name: "Permafrost Thaw Degassing",
+    formula: "CH₄",
+    pct: 42,
+    concentration: "1,942 ppb",
+    source: "Thermokarst tundra fen & active layer microbial methanogenesis",
   })
   const [activeRadarNode, setActiveRadarNode] = useState<{
     id: number
@@ -96,79 +102,79 @@ export default function DynamicAnalytics({ onNavigate }: Props) {
         { x: 840, y: 30, label: "Now", val: "31.43°C" },
       ],
     },
-    Salinity: {
-      label: "Salinity Concentration",
-      unit: "PSU",
-      currentVal: "34.30 PSU",
-      changePct: "+17.2% vs avg",
-      isPositive: true,
-      strokeColor: "#0284C7",
-      fillGradId: "paramSalinityGrad",
-      fillColor: "#0284C7",
-      yAxisLabel: "34.30",
-      yAxisLineY: 45,
-      wavePoints: [
-        { x: 40, y: 150, label: "00:00", val: "33.8 PSU" },
-        { x: 120, y: 120, label: "03:00", val: "34.1 PSU" },
-        { x: 200, y: 135, label: "06:00", val: "33.9 PSU" },
-        { x: 280, y: 110, label: "09:00", val: "34.2 PSU" },
-        { x: 360, y: 70, label: "12:00", val: "34.5 PSU" },
-        { x: 440, y: 105, label: "15:00", val: "34.3 PSU" },
-        { x: 520, y: 140, label: "18:00", val: "33.9 PSU" },
-        { x: 600, y: 115, label: "21:00", val: "34.2 PSU" },
-        { x: 680, y: 85, label: "00:00", val: "34.4 PSU" },
-        { x: 760, y: 120, label: "03:00", val: "34.1 PSU" },
-        { x: 840, y: 45, label: "Now", val: "34.30 PSU" },
-      ],
-    },
-    pH: {
-      label: "Ocean Acidity / pH Level",
-      unit: "pH",
-      currentVal: "8.12 pH",
-      changePct: "-1.8% vs avg",
-      isPositive: false,
-      strokeColor: "#9333EA",
-      fillGradId: "paramPhGrad",
-      fillColor: "#9333EA",
-      yAxisLabel: "8.12",
-      yAxisLineY: 60,
-      wavePoints: [
-        { x: 40, y: 130, label: "00:00", val: "8.18 pH" },
-        { x: 120, y: 115, label: "03:00", val: "8.20 pH" },
-        { x: 200, y: 125, label: "06:00", val: "8.19 pH" },
-        { x: 280, y: 100, label: "09:00", val: "8.22 pH" },
-        { x: 360, y: 85, label: "12:00", val: "8.16 pH" },
-        { x: 440, y: 110, label: "15:00", val: "8.14 pH" },
-        { x: 520, y: 135, label: "18:00", val: "8.11 pH" },
-        { x: 600, y: 105, label: "21:00", val: "8.15 pH" },
-        { x: 680, y: 90, label: "00:00", val: "8.13 pH" },
-        { x: 760, y: 115, label: "03:00", val: "8.16 pH" },
-        { x: 840, y: 60, label: "Now", val: "8.12 pH" },
-      ],
-    },
-    Fish: {
-      label: "Acoustic Fish Biomass Density",
-      unit: "Count",
-      currentVal: "3,524",
+    Permafrost: {
+      label: "Permafrost Thaw Rate",
+      unit: "cm/yr",
+      currentVal: "14.8 cm/yr",
       changePct: "+12.5% vs avg",
       isPositive: true,
       strokeColor: "#059669",
-      fillGradId: "paramFishGrad",
+      fillGradId: "paramPermafrostGrad",
       fillColor: "#059669",
-      yAxisLabel: "3,524",
+      yAxisLabel: "14.8",
       yAxisLineY: 40,
       wavePoints: [
-        { x: 40, y: 160, label: "00:00", val: "2,640" },
-        { x: 120, y: 140, label: "03:00", val: "2,910" },
-        { x: 200, y: 130, label: "06:00", val: "3,120" },
-        { x: 280, y: 110, label: "09:00", val: "3,350" },
-        { x: 360, y: 75, label: "12:00", val: "3,480" },
-        { x: 440, y: 95, label: "15:00", val: "3,300" },
-        { x: 520, y: 120, label: "18:00", val: "3,150" },
-        { x: 600, y: 100, label: "21:00", val: "3,280" },
-        { x: 680, y: 70, label: "00:00", val: "3,440" },
-        { x: 760, y: 105, label: "03:00", val: "3,220" },
-        { x: 840, y: 40, label: "Now", val: "3,524" },
+        { x: 40, y: 160, label: "00:00", val: "11.2 cm/yr" },
+        { x: 120, y: 140, label: "03:00", val: "11.8 cm/yr" },
+        { x: 200, y: 130, label: "06:00", val: "12.4 cm/yr" },
+        { x: 280, y: 110, label: "09:00", val: "13.1 cm/yr" },
+        { x: 360, y: 75, label: "12:00", val: "13.9 cm/yr" },
+        { x: 440, y: 95, label: "15:00", val: "14.2 cm/yr" },
+        { x: 520, y: 120, label: "18:00", val: "14.0 cm/yr" },
+        { x: 600, y: 100, label: "21:00", val: "14.4 cm/yr" },
+        { x: 680, y: 70, label: "00:00", val: "14.6 cm/yr" },
+        { x: 760, y: 105, label: "03:00", val: "14.7 cm/yr" },
+        { x: 840, y: 40, label: "Now", val: "14.8 cm/yr" },
+      ],
+    },
+    GlacierFlow: {
+      label: "Glacier Flow Velocity",
+      unit: "m/yr",
+      currentVal: "142.6 m/yr",
+      changePct: "+18.5% vs avg",
+      isPositive: true,
+      strokeColor: "#2563EB",
+      fillGradId: "paramGlacierGrad",
+      fillColor: "#2563EB",
+      yAxisLabel: "142.6",
+      yAxisLineY: 50,
+      wavePoints: [
+        { x: 40, y: 130, label: "00:00", val: "122 m/yr" },
+        { x: 120, y: 115, label: "03:00", val: "128 m/yr" },
+        { x: 200, y: 125, label: "06:00", val: "131 m/yr" },
+        { x: 280, y: 100, label: "09:00", val: "135 m/yr" },
+        { x: 360, y: 85, label: "12:00", val: "139 m/yr" },
+        { x: 440, y: 110, label: "15:00", val: "141 m/yr" },
+        { x: 520, y: 135, label: "18:00", val: "140 m/yr" },
+        { x: 600, y: 105, label: "21:00", val: "142 m/yr" },
+        { x: 680, y: 90, label: "00:00", val: "141 m/yr" },
+        { x: 760, y: 115, label: "03:00", val: "142 m/yr" },
+        { x: 840, y: 50, label: "Now", val: "142.6 m/yr" },
+      ],
+    },
+    SnowCover: {
+      label: "Snow Cover Duration",
+      unit: "Days",
+      currentVal: "184 Days",
+      changePct: "-12.4% vs avg",
+      isPositive: false,
+      strokeColor: "#0284C7",
+      fillGradId: "paramSnowCoverGrad",
+      fillColor: "#0284C7",
+      yAxisLabel: "184 d",
+      yAxisLineY: 45,
+      wavePoints: [
+        { x: 40, y: 150, label: "00:00", val: "212 d" },
+        { x: 120, y: 120, label: "03:00", val: "208 d" },
+        { x: 200, y: 135, label: "06:00", val: "205 d" },
+        { x: 280, y: 110, label: "09:00", val: "198 d" },
+        { x: 360, y: 70, label: "12:00", val: "192 d" },
+        { x: 440, y: 105, label: "15:00", val: "190 d" },
+        { x: 520, y: 140, label: "18:00", val: "187 d" },
+        { x: 600, y: 115, label: "21:00", val: "185 d" },
+        { x: 680, y: 85, label: "00:00", val: "186 d" },
+        { x: 760, y: 120, label: "03:00", val: "185 d" },
+        { x: 840, y: 45, label: "Now", val: "184 Days" },
       ],
     },
   }
@@ -185,42 +191,43 @@ export default function DynamicAnalytics({ onNavigate }: Props) {
     { x: 435, y: 100, temp: "26.2°C", label: "26.2°C" },
   ]
 
-  // Species Pie Data
-  const speciesData = [
+  // Greenhouse Gas Distribution Data: Methane (CH4) & Carbon (CO2)
+  const greenhouseGasData = [
     {
-      name: "Lutjanus argentimaculatus",
-      common: "Red Snapper",
-      pct: 45,
-      color: "#8B5CF6",
-      bgPill: "bg-purple-50 text-purple-700 border-purple-200",
+      name: "Permafrost Thaw Degassing",
+      formula: "CH₄ (Methane)",
+      pct: 42,
+      concentration: "1,942 ppb",
+      color: "#059669",
+      bgPill: "bg-emerald-50 text-emerald-700 border-emerald-200",
+      source: "Thermokarst tundra fen & active layer microbial methanogenesis",
     },
     {
-      name: "Scomberomorus commersoni",
-      common: "King Mackerel",
-      pct: 18,
+      name: "Sub-ice Polar Shelf Venting",
+      formula: "CH₄ Hydrate Flux",
+      pct: 24,
+      concentration: "1,885 ppb",
+      color: "#0284C7",
+      bgPill: "bg-sky-50 text-sky-700 border-sky-200",
+      source: "Subsea permafrost & benthic methane clathrate dissociation",
+    },
+    {
+      name: "Atmospheric Background Advection",
+      formula: "CO₂ (Carbon Dioxide)",
+      pct: 20,
+      concentration: "422.8 ppm",
       color: "#2563EB",
       bgPill: "bg-blue-50 text-blue-700 border-blue-200",
+      source: "Synoptic hemispheric background atmospheric transport",
     },
     {
-      name: "Sardinella longiceps",
-      common: "Indian Oil Sardine",
-      pct: 15,
-      color: "#10B981",
-      bgPill: "bg-emerald-50 text-emerald-700 border-emerald-200",
-    },
-    {
-      name: "Rastrelliger kanagurta",
-      common: "Indian Mackerel",
-      pct: 12,
+      name: "Cryoconite & Microbial Respiration",
+      formula: "CO₂ Biological Respiration",
+      pct: 14,
+      concentration: "419.5 ppm",
       color: "#EA580C",
       bgPill: "bg-orange-50 text-orange-700 border-orange-200",
-    },
-    {
-      name: "Others",
-      common: "Pelagic & Demersal Mix",
-      pct: 10,
-      color: "#64748B",
-      bgPill: "bg-slate-100 text-slate-700 border-slate-200",
+      source: "Supraglacial cryoconite holes & active microbial respiration",
     },
   ]
 
@@ -230,7 +237,7 @@ export default function DynamicAnalytics({ onNavigate }: Props) {
     { id: 1, label: "Water Quality", score: 92, x: 275, y: 108 },
     { id: 2, label: "Biodiversity", score: 86, x: 270, y: 190 },
     { id: 3, label: "Dissolved O2", score: 94, x: 200, y: 235 },
-    { id: 4, label: "Salinity Index", score: 90, x: 125, y: 190 },
+    { id: 4, label: "Snow Cover Index", score: 90, x: 125, y: 190 },
     { id: 5, label: "Benthic Shelf", score: 85, x: 128, y: 108 },
   ]
 
@@ -246,7 +253,7 @@ export default function DynamicAnalytics({ onNavigate }: Props) {
             <div className="flex items-center gap-2 mb-1">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
               <span className="text-[11px] font-mono tracking-widest text-[#1D4ED8] font-bold uppercase">
-                CMLRE &middot; REAL-TIME OCEANOGRAPHIC TELEMETRY
+                NCPOR &middot; REAL-TIME POLAR TELEMETRY
               </span>
               <span className="text-[10px] px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 font-bold border border-blue-200">
                 ACTIVE
@@ -369,11 +376,11 @@ export default function DynamicAnalytics({ onNavigate }: Props) {
             </div>
           </div>
 
-          {/* Card 2: Fish Population */}
+          {/* Card 2: Permafrost Thaw Rate */}
           <div
-            onClick={() => setSelectedParam("Fish")}
+            onClick={() => setSelectedParam("Permafrost")}
             className={`bg-white rounded-2xl border p-5 shadow-xs hover:shadow-md transition-all cursor-pointer flex flex-col justify-between group ${
-              selectedParam === "Fish"
+              selectedParam === "Permafrost"
                 ? "border-emerald-500 ring-2 ring-emerald-500/20"
                 : "border-slate-200/90 hover:border-slate-300"
             }`}
@@ -388,13 +395,12 @@ export default function DynamicAnalytics({ onNavigate }: Props) {
                     strokeWidth={2}
                     className="w-4 h-4"
                   >
-                    <path d="M18 12c-4 3-8 3-12 0 4-3 8-3 12 0z" />
-                    <path d="M18 12l4-3v6l-4-3z" />
-                    <circle cx="9" cy="12" r="1" fill="currentColor" />
+                    <path d="M3 20h18M3 16h18M3 12h18" />
+                    <path d="M4 12l4-6 4 4 5-7 4 9" />
                   </svg>
                 </div>
                 <span className="text-xs font-semibold text-slate-600">
-                  Fish Population
+                  Permafrost Thaw Rate
                 </span>
               </div>
               <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center gap-0.5">
@@ -403,68 +409,23 @@ export default function DynamicAnalytics({ onNavigate }: Props) {
             </div>
             <div className="mt-4">
               <div className="text-2xl sm:text-3xl font-extrabold text-slate-900 font-mono tracking-tight">
-                3,524
+                14.8 cm/yr
               </div>
               <div className="text-[10px] text-slate-400 mt-1 flex items-center justify-between">
-                <span>Baseline: 3,132 /km²</span>
+                <span>Baseline: 12.1 cm/yr</span>
                 <span className="text-emerald-600 font-semibold group-hover:underline">
-                  View Biomass &rarr;
+                  View Thaw Rate &rarr;
                 </span>
               </div>
             </div>
           </div>
 
-          {/* Card 3: pH Level */}
+          {/* Card 3: Glacier Flow Velocity */}
           <div
-            onClick={() => setSelectedParam("pH")}
+            onClick={() => setSelectedParam("GlacierFlow")}
             className={`bg-white rounded-2xl border p-5 shadow-xs hover:shadow-md transition-all cursor-pointer flex flex-col justify-between group ${
-              selectedParam === "pH"
-                ? "border-purple-500 ring-2 ring-purple-500/20"
-                : "border-slate-200/90 hover:border-slate-300"
-            }`}
-          >
-            <div className="flex items-start justify-between">
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-xl bg-purple-50 text-purple-600 border border-purple-100 flex items-center justify-center group-hover:scale-105 transition-transform">
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth={2}
-                    className="w-4 h-4"
-                  >
-                    <path d="M10 2v7.31L4.62 18.5A2 2 0 0 0 6.35 22h11.3a2 2 0 0 0 1.73-3.5L14 9.31V2" />
-                    <line x1="8.5" y1="2" x2="15.5" y2="2" />
-                    <line x1="7" y1="16" x2="17" y2="16" />
-                  </svg>
-                </div>
-                <span className="text-xs font-semibold text-slate-600">
-                  pH Level
-                </span>
-              </div>
-              <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200 flex items-center gap-0.5">
-                <span>&darr;</span> 1.8%
-              </span>
-            </div>
-            <div className="mt-4">
-              <div className="text-2xl sm:text-3xl font-extrabold text-slate-900 font-mono tracking-tight">
-                8.1
-              </div>
-              <div className="text-[10px] text-slate-400 mt-1 flex items-center justify-between">
-                <span>Optimal: 8.0 - 8.3</span>
-                <span className="text-purple-600 font-semibold group-hover:underline">
-                  View Acidity &rarr;
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* Card 4: Salinity */}
-          <div
-            onClick={() => setSelectedParam("Salinity")}
-            className={`bg-white rounded-2xl border p-5 shadow-xs hover:shadow-md transition-all cursor-pointer flex flex-col justify-between group ${
-              selectedParam === "Salinity"
-                ? "border-sky-500 ring-2 ring-sky-500/20"
+              selectedParam === "GlacierFlow"
+                ? "border-blue-500 ring-2 ring-blue-500/20"
                 : "border-slate-200/90 hover:border-slate-300"
             }`}
           >
@@ -478,26 +439,68 @@ export default function DynamicAnalytics({ onNavigate }: Props) {
                     strokeWidth={2}
                     className="w-4 h-4"
                   >
-                    <path d="M2 12c2.5 0 2.5-3 5-3s2.5 3 5 3 2.5-3 5-3 2.5 3 5 3" />
-                    <path d="M2 17c2.5 0 2.5-3 5-3s2.5 3 5 3 2.5-3 5-3 2.5 3 5 3" />
+                    <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
                   </svg>
                 </div>
                 <span className="text-xs font-semibold text-slate-600">
-                  Salinity
+                  Glacier Flow Velocity
                 </span>
               </div>
               <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200 flex items-center gap-0.5">
-                <span>&uarr;</span> 17.2%
+                <span>&uarr;</span> 18.5%
               </span>
             </div>
             <div className="mt-4">
               <div className="text-2xl sm:text-3xl font-extrabold text-slate-900 font-mono tracking-tight">
-                34.3 PSU
+                142.6 m/yr
               </div>
               <div className="text-[10px] text-slate-400 mt-1 flex items-center justify-between">
-                <span>Standard Sea: 35.0 PSU</span>
+                <span>Baseline: 118.2 m/yr</span>
                 <span className="text-blue-600 font-semibold group-hover:underline">
-                  View Salinity &rarr;
+                  View Velocity &rarr;
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Card 4: Snow Cover Duration */}
+          <div
+            onClick={() => setSelectedParam("SnowCover")}
+            className={`bg-white rounded-2xl border p-5 shadow-xs hover:shadow-md transition-all cursor-pointer flex flex-col justify-between group ${
+              selectedParam === "SnowCover"
+                ? "border-sky-500 ring-2 ring-sky-500/20"
+                : "border-slate-200/90 hover:border-slate-300"
+            }`}
+          >
+            <div className="flex items-start justify-between">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-sky-50 text-sky-600 border border-sky-100 flex items-center justify-center group-hover:scale-105 transition-transform">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                    className="w-4 h-4"
+                  >
+                    <path d="M12 2v20M17 5l-5 5-5-5M17 19l-5-5-5 5M2 12h20M5 7l5 5-5 5M19 7l-5 5 5 5" />
+                  </svg>
+                </div>
+                <span className="text-xs font-semibold text-slate-600">
+                  Snow Cover Duration
+                </span>
+              </div>
+              <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200 flex items-center gap-0.5">
+                <span>&darr;</span> 12.4%
+              </span>
+            </div>
+            <div className="mt-4">
+              <div className="text-2xl sm:text-3xl font-extrabold text-slate-900 font-mono tracking-tight">
+                184 Days
+              </div>
+              <div className="text-[10px] text-slate-400 mt-1 flex items-center justify-between">
+                <span>Baseline: 210 Days/yr</span>
+                <span className="text-sky-600 font-semibold group-hover:underline">
+                  View Duration &rarr;
                 </span>
               </div>
             </div>
@@ -559,9 +562,9 @@ export default function DynamicAnalytics({ onNavigate }: Props) {
                   className="bg-white border border-slate-300 hover:border-slate-400 text-slate-800 rounded-xl px-3 py-1.5 pr-8 text-xs font-semibold focus:outline-blue-500 shadow-2xs cursor-pointer"
                 >
                   <option value="Temperature">Temperature (°C)</option>
-                  <option value="Salinity">Salinity (PSU)</option>
-                  <option value="pH">pH Level</option>
-                  <option value="Fish">Fish Population</option>
+                  <option value="Permafrost">Permafrost Thaw Rate (cm/yr)</option>
+                  <option value="GlacierFlow">Glacier Flow Velocity (m/yr)</option>
+                  <option value="SnowCover">Snow Cover Duration (Days)</option>
                 </select>
               </div>
 
@@ -718,7 +721,7 @@ export default function DynamicAnalytics({ onNavigate }: Props) {
           </div>
         </div>
 
-        {/* ── ROW OF 2 CARDS: TEMPERATURE READINGS & SPECIES DISTRIBUTION ──────── */}
+        {/* ── ROW OF 2 CARDS: TEMPERATURE READINGS & METHANE (CH4) & CARBON (CO2) DISTRIBUTION ──────── */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Card: Temperature Readings */}
           <div className="bg-white rounded-2xl border border-slate-200/90 p-5 sm:p-6 shadow-xs space-y-4">
@@ -838,106 +841,84 @@ export default function DynamicAnalytics({ onNavigate }: Props) {
             </div>
           </div>
 
-          {/* Card: Species Distribution */}
+          {/* Card: Methane (CH4) & Carbon Distribution (CO2) */}
           <div className="bg-white rounded-2xl border border-slate-200/90 p-5 sm:p-6 shadow-xs flex flex-col justify-between space-y-4">
-            <div className="flex items-center gap-2.5 pb-2 border-b border-slate-100">
-              <div className="w-8 h-8 rounded-xl bg-purple-50 text-purple-600 border border-purple-100 flex items-center justify-center">
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                  className="w-4 h-4"
-                >
-                  <path d="M18 12c-4 3-8 3-12 0 4-3 8-3 12 0z" />
-                  <path d="M18 12l4-3v6l-4-3z" />
-                  <circle cx="9" cy="12" r="1" fill="currentColor" />
-                </svg>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-slate-100">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100 flex items-center justify-center flex-shrink-0">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                    className="w-4 h-4"
+                  >
+                    <path d="M12 3v18M3 12h18M5.5 5.5l13 13M18.5 5.5l-13 13" strokeLinecap="round" />
+                    <circle cx="12" cy="12" r="3" fill="currentColor" fillOpacity="0.2" />
+                  </svg>
+                </div>
+                <div>
+                  <h3 className="font-bold text-base text-slate-900 tracking-tight">
+                    Methane (CH₄) &amp; Carbon Distribution (CO₂)
+                  </h3>
+                  <p className="text-xs text-slate-500">
+                    Atmospheric cryospheric flux, permafrost ebullition &amp; mixing ratios
+                  </p>
+                </div>
               </div>
-              <div>
-                <h3 className="font-bold text-base text-slate-900 tracking-tight">
-                  Species Distribution
-                </h3>
-                <p className="text-xs text-slate-500">
-                  Taxonomic biodiversity &amp; relative population composition
-                </p>
+              <div className="flex items-center gap-1.5 self-start sm:self-auto">
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 font-bold whitespace-nowrap">
+                  CH₄: 1,942 ppb
+                </span>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200 font-bold whitespace-nowrap">
+                  CO₂: 422.8 ppm
+                </span>
               </div>
             </div>
 
-            {/* Pie & Legend Row */}
+            {/* Donut Chart & Legend Row */}
             <div className="flex flex-col sm:flex-row items-center justify-around gap-4 pt-1">
               {/* Donut Chart SVG */}
-              <div className="relative flex items-center justify-center">
+              <div className="relative flex items-center justify-center flex-shrink-0">
                 <svg
                   className="w-44 h-44 overflow-visible"
                   viewBox="0 0 160 160"
                 >
-                  {/* Slice 1: Purple 45% */}
+                  {/* Slice 1: Emerald 42% (CH4 Permafrost Degassing) */}
                   <path
-                    d="M 80 80 L 80 10 A 70 70 0 0 1 146.6 101.6 Z"
-                    fill="#8B5CF6"
+                    d="M 80 80 L 80 10 A 70 70 0 0 1 113.7 141.3 Z"
+                    fill="#059669"
                     stroke="#FFFFFF"
                     strokeWidth={2}
                     className="hover:opacity-90 cursor-pointer transition-opacity"
-                    onClick={() =>
-                      setSelectedPieSlice({
-                        name: "Lutjanus argentimaculatus",
-                        pct: 45,
-                      })
-                    }
+                    onClick={() => setSelectedGasSlice(greenhouseGasData[0])}
                   />
-                  {/* Slice 2: Blue 18% */}
+                  {/* Slice 2: Sky Blue 24% (CH4 Polar Shelf Venting) */}
                   <path
-                    d="M 80 80 L 146.6 101.6 A 70 70 0 0 1 101.6 146.6 Z"
+                    d="M 80 80 L 113.7 141.3 A 70 70 0 0 1 20.9 117.5 Z"
+                    fill="#0284C7"
+                    stroke="#FFFFFF"
+                    strokeWidth={2}
+                    className="hover:opacity-90 cursor-pointer transition-opacity"
+                    onClick={() => setSelectedGasSlice(greenhouseGasData[1])}
+                  />
+                  {/* Slice 3: Royal Blue 20% (CO2 Background Transport) */}
+                  <path
+                    d="M 80 80 L 20.9 117.5 A 70 70 0 0 1 26.1 35.4 Z"
                     fill="#2563EB"
                     stroke="#FFFFFF"
                     strokeWidth={2}
                     className="hover:opacity-90 cursor-pointer transition-opacity"
-                    onClick={() =>
-                      setSelectedPieSlice({
-                        name: "Scomberomorus commersoni",
-                        pct: 18,
-                      })
-                    }
+                    onClick={() => setSelectedGasSlice(greenhouseGasData[2])}
                   />
-                  {/* Slice 3: Green 15% */}
+                  {/* Slice 4: Amber/Orange 14% (CO2 Cryoconite Respiration) */}
                   <path
-                    d="M 80 80 L 101.6 146.6 A 70 70 0 0 1 43.4 139.7 Z"
-                    fill="#10B981"
-                    stroke="#FFFFFF"
-                    strokeWidth={2}
-                    className="hover:opacity-90 cursor-pointer transition-opacity"
-                    onClick={() =>
-                      setSelectedPieSlice({
-                        name: "Sardinella longiceps",
-                        pct: 15,
-                      })
-                    }
-                  />
-                  {/* Slice 4: Orange 12% */}
-                  <path
-                    d="M 80 80 L 43.4 139.7 A 70 70 0 0 1 13.4 101.6 Z"
+                    d="M 80 80 L 26.1 35.4 A 70 70 0 0 1 80 10 Z"
                     fill="#EA580C"
                     stroke="#FFFFFF"
                     strokeWidth={2}
                     className="hover:opacity-90 cursor-pointer transition-opacity"
-                    onClick={() =>
-                      setSelectedPieSlice({
-                        name: "Rastrelliger kanagurta",
-                        pct: 12,
-                      })
-                    }
-                  />
-                  {/* Slice 5: Slate 10% */}
-                  <path
-                    d="M 80 80 L 13.4 101.6 A 70 70 0 0 1 80 10 Z"
-                    fill="#64748B"
-                    stroke="#FFFFFF"
-                    strokeWidth={2}
-                    className="hover:opacity-90 cursor-pointer transition-opacity"
-                    onClick={() =>
-                      setSelectedPieSlice({ name: "Others", pct: 10 })
-                    }
+                    onClick={() => setSelectedGasSlice(greenhouseGasData[3])}
                   />
 
                   {/* Clean Doughnut Hole */}
@@ -951,38 +932,46 @@ export default function DynamicAnalytics({ onNavigate }: Props) {
                   />
                   <text
                     x="80"
-                    y="76"
+                    y="72"
                     fill="#0F172A"
-                    fontSize="13"
+                    fontSize="14"
                     fontWeight="bold"
                     textAnchor="middle"
                   >
-                    {selectedPieSlice?.pct || 45}%
+                    {selectedGasSlice?.pct || 42}%
                   </text>
                   <text
                     x="80"
-                    y="90"
-                    fill="#64748B"
-                    fontSize="8"
+                    y="86"
+                    fill="#059669"
+                    fontSize="10"
+                    fontFamily="monospace"
+                    fontWeight="bold"
                     textAnchor="middle"
                   >
-                    {selectedPieSlice?.name
-                      ? selectedPieSlice.name.split(" ")[0]
-                      : "Dominant"}
+                    {selectedGasSlice?.formula.split(" ")[0]}
+                  </text>
+                  <text
+                    x="80"
+                    y="98"
+                    fill="#64748B"
+                    fontSize="8"
+                    fontFamily="monospace"
+                    textAnchor="middle"
+                  >
+                    {selectedGasSlice?.concentration}
                   </text>
                 </svg>
               </div>
 
               {/* Legend List */}
               <div className="flex-1 space-y-1.5 w-full">
-                {speciesData.map((sp) => (
+                {greenhouseGasData.map((item) => (
                   <div
-                    key={sp.name}
-                    onClick={() =>
-                      setSelectedPieSlice({ name: sp.name, pct: sp.pct })
-                    }
+                    key={item.name}
+                    onClick={() => setSelectedGasSlice(item)}
                     className={`flex items-center justify-between p-2 rounded-xl border transition-all cursor-pointer ${
-                      selectedPieSlice?.name === sp.name
+                      selectedGasSlice?.name === item.name
                         ? "bg-slate-100 border-slate-300 shadow-2xs"
                         : "bg-slate-50/70 hover:bg-slate-50 border-slate-200/60"
                     }`}
@@ -990,37 +979,39 @@ export default function DynamicAnalytics({ onNavigate }: Props) {
                     <div className="flex items-center gap-2 min-w-0">
                       <span
                         className="w-2.5 h-2.5 rounded-full flex-shrink-0"
-                        style={{ background: sp.color }}
+                        style={{ background: item.color }}
                       />
                       <div className="truncate">
-                        <div className="text-xs font-semibold text-slate-800 italic truncate">
-                          {sp.name}
+                        <div className="text-xs font-semibold text-slate-800 truncate">
+                          {item.name}
                         </div>
-                        <div className="text-[10px] text-slate-500 truncate">
-                          {sp.common}
+                        <div className="text-[10px] text-slate-500 font-mono truncate flex items-center gap-1.5">
+                          <span className="font-semibold text-slate-700">{item.formula}</span>
+                          <span>&middot;</span>
+                          <span className="text-emerald-700 font-bold">{item.concentration}</span>
                         </div>
                       </div>
                     </div>
                     <span className="font-mono text-xs font-bold text-slate-900 ml-2">
-                      {sp.pct}%
+                      {item.pct}%
                     </span>
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* Selected Species Summary Banner */}
-            {selectedPieSlice && (
+            {/* Selected Greenhouse Gas Summary Banner */}
+            {selectedGasSlice && (
               <div className="bg-slate-50 rounded-xl p-2.5 border border-slate-200 text-center text-xs text-slate-600">
-                Selected Species:{" "}
-                <span className="font-bold text-slate-900 italic">
-                  {selectedPieSlice.name}
+                Selected Flux:{" "}
+                <span className="font-bold text-slate-900">
+                  {selectedGasSlice.name} ({selectedGasSlice.formula})
                 </span>{" "}
                 &mdash;{" "}
-                <span className="font-bold text-slate-900">
-                  {selectedPieSlice.pct}%
+                <span className="font-bold text-emerald-700 font-mono">
+                  {selectedGasSlice.concentration}
                 </span>{" "}
-                of surveyed biomass transect
+                ({selectedGasSlice.pct}% of active polar emission plume)
               </div>
             )}
           </div>
@@ -1179,7 +1170,7 @@ export default function DynamicAnalytics({ onNavigate }: Props) {
                     Environmental Health Index
                   </h3>
                   <p className="text-xs text-slate-500">
-                    Comprehensive multi-axial marine ecosystem health
+                    Comprehensive multi-axial polar ecosystem health
                   </p>
                 </div>
               </div>
@@ -1362,7 +1353,7 @@ export default function DynamicAnalytics({ onNavigate }: Props) {
               </h3>
             </div>
             <p className="text-xs sm:text-sm text-slate-500 mt-1">
-              Analyze your data with advanced marine research and polar
+              Analyze your data with advanced polar research and cryospheric
               visualization tools
             </p>
           </div>
@@ -1447,7 +1438,7 @@ export default function DynamicAnalytics({ onNavigate }: Props) {
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
               <div>
                 <h3 className="font-bold text-base text-slate-900">
-                  Dynamic Marine Research Report
+                  Dynamic Polar Research Report
                 </h3>
                 <p className="text-xs text-slate-500">
                   Automated synthesized summary of active telemetry sensors
@@ -1464,19 +1455,19 @@ export default function DynamicAnalytics({ onNavigate }: Props) {
             <div className="space-y-3 text-xs text-slate-600">
               <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-1">
                 <div className="text-slate-900 font-bold">
-                  MoES CMLRE / NCPOR Telemetry Synthesis
+                  MoES NCPOR Polar Telemetry Synthesis
                 </div>
                 <div>
                   Recorded Period: 2020 - 2024 (Active In-Situ Sensor Stations)
                 </div>
                 <div className="text-emerald-700 font-semibold">
-                  Mean SST: 28.5°C &middot; Mean Salinity: 34.3 PSU &middot;
-                  Overall Health: 92%
+                  Mean SST: 28.5°C &middot; Snow Cover: 184 Days &middot;
+                  Glacier Velocity: 142.6 m/yr &middot; Health: 92%
                 </div>
               </div>
               <p>
-                Includes depth profile CTD stratification, automated teleost
-                species composition ratios, and ecosystem vulnerability
+                Includes depth profile CTD stratification, automated greenhouse gas
+                flux dynamics (CH₄ &amp; CO₂), and cryospheric ecosystem vulnerability
                 indicators compiled in accordance with Ministry standards.
               </p>
             </div>
@@ -1517,7 +1508,7 @@ export default function DynamicAnalytics({ onNavigate }: Props) {
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
               <div>
                 <h3 className="font-bold text-base text-slate-900">
-                  Marine AI Species Classifier
+                  Polar AI Taxonomy &amp; Cryo Classifier
                 </h3>
                 <p className="text-xs text-slate-500">
                   Deep learning otolith and eDNA taxonomic verification
@@ -1570,13 +1561,13 @@ export default function DynamicAnalytics({ onNavigate }: Props) {
         </div>
       )}
 
-      {/* ── FLOATING MARINE AI BUTTON (BOTTOM RIGHT) ───────────────────────── */}
+      {/* ── FLOATING POLAR AI BUTTON (BOTTOM RIGHT) ───────────────────────── */}
       <aside className="fixed bottom-6 right-6 z-40">
         <button
           onClick={() => onNavigate("ai")}
           className="group flex flex-col items-center gap-1 focus:outline-hidden cursor-pointer"
-          title="Open Marine AI Assistant"
-          aria-label="Open Marine AI Assistant"
+          title="Open Polar AI Assistant"
+          aria-label="Open Polar AI Assistant"
         >
           <div className="w-13 h-13 rounded-full bg-[#0C1E3C] border-2 border-sky-400/80 shadow-2xl flex items-center justify-center text-white relative transition-transform duration-200 group-hover:scale-110">
             <div className="absolute inset-0 rounded-full border border-sky-400 animate-ping opacity-25 pointer-events-none" />
@@ -1592,7 +1583,7 @@ export default function DynamicAnalytics({ onNavigate }: Props) {
             </svg>
           </div>
           <span className="bg-[#002855] text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-md border border-sky-300/40 tracking-wide">
-            Marine AI
+            Polar AI
           </span>
         </button>
       </aside>

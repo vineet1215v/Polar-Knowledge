@@ -135,12 +135,12 @@ export default function PublicationExploreModal({
           {/* Understand in Notebook / Plain English Assistant */}
           <button
             onClick={handleSimplifyInNotebook}
-            className="bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white px-3.5 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-sm cursor-pointer border border-purple-400/40"
+            className="bg-gradient-to-r from-[#003366] via-blue-700 to-[#002244] hover:from-[#002244] hover:to-blue-800 text-white px-3.5 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-sm cursor-pointer border border-blue-400/40"
             title="Complex academic terminology? Click to understand in Notebook AI with plain English, simple analogies, and audio discussion."
           >
-            <span className="text-amber-300">✨</span>
+            <span className="text-cyan-300">✨</span>
             <span>Understand in Notebook</span>
-            <span className="hidden sm:inline text-[9px] px-1.5 py-0.2 rounded-full bg-white/20 text-white font-mono uppercase tracking-wider font-semibold">
+            <span className="hidden sm:inline text-[9px] px-1.5 py-0.5 rounded-full bg-cyan-950/60 text-cyan-200 border border-cyan-800/60 font-mono uppercase tracking-wider font-semibold">
               Plain English
             </span>
           </button>
@@ -209,15 +209,15 @@ export default function PublicationExploreModal({
           {activeTab === "overview" && (
             <div className="space-y-5">
               {/* Plain-English Assistant Banner */}
-              <div className="card p-4 bg-gradient-to-r from-slate-900 via-indigo-950 to-purple-950 text-white rounded-2xl border border-purple-500/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-md">
+              <div className="card p-4 bg-gradient-to-r from-[#003366] via-slate-900 to-[#002244] text-white rounded-2xl border border-cyan-900/60 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-md">
                 <div className="flex items-start sm:items-center gap-3">
-                  <div className="w-9 h-9 rounded-xl bg-purple-500/20 border border-purple-400/30 flex items-center justify-center text-xl flex-shrink-0">
+                  <div className="w-9 h-9 rounded-xl bg-cyan-950/80 border border-cyan-700/50 flex items-center justify-center text-xl flex-shrink-0 text-cyan-400">
                     💡
                   </div>
                   <div>
                     <div className="text-xs font-bold text-white flex items-center gap-2">
                       <span>Difficult or dense scientific manuscript?</span>
-                      <span className="text-[10px] font-semibold bg-purple-500/30 text-purple-200 px-2 py-0.5 rounded-full border border-purple-400/30">
+                      <span className="text-[10px] font-semibold bg-cyan-950/80 text-cyan-200 px-2 py-0.5 rounded-full border border-cyan-700/50">
                         Notebook AI Explainer
                       </span>
                     </div>
@@ -228,7 +228,7 @@ export default function PublicationExploreModal({
                 </div>
                 <button
                   onClick={handleSimplifyInNotebook}
-                  className="px-3.5 py-2 bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-400 hover:to-indigo-400 text-white rounded-xl text-xs font-black transition flex items-center gap-1.5 shadow-sm flex-shrink-0 cursor-pointer self-stretch sm:self-auto justify-center"
+                  className="px-3.5 py-2 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white rounded-xl text-xs font-black transition flex items-center gap-1.5 shadow-sm flex-shrink-0 cursor-pointer self-stretch sm:self-auto justify-center"
                 >
                   <span>✨</span>
                   <span>Simplify in Notebook</span>
@@ -492,7 +492,7 @@ export default function PublicationExploreModal({
                   <div className="text-xs font-semibold text-slate-500 mb-1">
                     Repository Downloads
                   </div>
-                  <div className="text-2xl font-black text-purple-700">
+                  <div className="text-2xl font-black text-[#003366]">
                     1,420+
                   </div>
                   <div className="text-[11px] text-slate-500 mt-1">
@@ -525,7 +525,7 @@ export default function PublicationExploreModal({
           <div className="flex items-center gap-2">
             <button
               onClick={handleSimplifyInNotebook}
-              className="px-3 py-1.5 rounded-lg border border-purple-300 bg-purple-50 hover:bg-purple-100 text-purple-700 text-xs font-bold transition flex items-center gap-1.5 cursor-pointer shadow-2xs"
+              className="px-3 py-1.5 rounded-lg border border-blue-300 bg-blue-50 hover:bg-blue-100 text-[#003366] text-xs font-bold transition flex items-center gap-1.5 cursor-pointer shadow-2xs"
               title="Understand this paper with plain-English summaries and audio overview in Notebook AI"
             >
               <span>✨</span>

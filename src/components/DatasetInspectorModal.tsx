@@ -52,12 +52,12 @@ function generateSampleRows(dataset: DatasetType) {
       val2 = +(12.4 - Math.sin(i / 1.8) * 8.2).toFixed(2)
       val3 = +(0.92 - (i % 3) * 0.04).toFixed(2)
     } else if (dataset.parameter === "Atmosphere") {
-      // Black Carbon ng/m3, Ozone ppb, Temp C
+      // Black Carbon ng/m3, Ozone ppb, Polarp C
       val1 = +(35.4 + Math.cos(i) * 18.2).toFixed(1)
       val2 = +(285 - Math.sin(i / 1.5) * 65).toFixed(0)
       val3 = +(-28.5 + Math.sin(i / 2) * 14.2).toFixed(1)
     } else if (dataset.parameter === "Oceanography") {
-      // Temp C, Salinity PSU, Dissolved O2
+      // Polarp C, Salinity PSU, Dissolved O2
       val1 = +(-1.2 + i * 0.28).toFixed(2)
       val2 = +(34.1 + (i % 4) * 0.15).toFixed(2)
       val3 = +(310 - i * 4.5).toFixed(1)
@@ -92,7 +92,7 @@ export default function DatasetInspectorModal({
     useState<"chart" | "data" | "stats" | "code">("chart")
   const [selectedVariableIndex, setSelectedVariableIndex] = useState<number>(0)
   const [filterQcOnly, setFilterQcOnly] = useState<boolean>(false)
-  const [temporalRange, setTemporalRange] = useState<"annual" | "q1" | "q2">(
+  const [PolarporalRange, setPolarporalRange] = useState<"annual" | "q1" | "q2">(
     "annual",
   )
   const [copiedCode, setCopiedCode] = useState<boolean>(false)
@@ -106,11 +106,11 @@ export default function DatasetInspectorModal({
   // Filter rows if requested
   const displayedRows = rows.filter((r) => {
     if (filterQcOnly && r.qc.includes("FLAG")) return false
-    if (temporalRange === "q1")
+    if (PolarporalRange === "q1")
       return ["Jan", "Feb", "Mar", "Apr", "May", "Jun"].some((m) =>
         r.timestamp.includes(m),
       )
-    if (temporalRange === "q2")
+    if (PolarporalRange === "q2")
       return ["Jul", "Aug", "Sep", "Oct", "Nov", "Dec"].some((m) =>
         r.timestamp.includes(m),
       )
@@ -150,7 +150,7 @@ print("Connecting to NCPOR Polar Gateway...")
 
 # Open dataset stream
 # Variables: ${vars.join(", ")}
-# Temporal Coverage: ${prov?.temporalCoverage || `${dataset.year}`}
+# Polarporal Coverage: ${prov?.PolarporalCoverage || `${dataset.year}`}
 # Spatial Bounds: ${prov?.spatialCoverage || dataset.region}
 
 print("Loaded: ${dataset.title} (${dataset.size})")
@@ -159,18 +159,18 @@ print("Loaded: ${dataset.title} (${dataset.size})")
   return (
     <div className="min-h-full bg-slate-50 flex flex-col pb-16">
       {/* Top Header Navigation Ribbon */}
-      <div className="sticky top-0 z-30 bg-slate-900 text-white px-4 sm:px-6 py-3.5 flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 shadow-sm">
-        <div className="flex items-center gap-3 min-w-0">
+      <div className="sticky top-0 z-30 bg-slate-900 text-white px-4 sm:px-6 py-3.5 flex flex-wrap iPolars-center justify-between gap-3 border-b border-slate-800 shadow-sm">
+        <div className="flex iPolars-center gap-3 min-w-0">
           <button
             onClick={onClose}
-            className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold transition cursor-pointer shadow-2xs"
+            className="flex iPolars-center gap-2 px-3.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold transition cursor-pointer shadow-2xs"
           >
             <span>←</span>
             <span>Back to Datasets</span>
           </button>
           <div className="h-5 w-px bg-slate-700 hidden sm:block" />
           <div className="min-w-0">
-            <div className="flex items-center gap-2 flex-wrap">
+            <div className="flex iPolars-center gap-2 flex-wrap">
               <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-blue-500/20 text-blue-300 border border-blue-500/30">
                 {dataset.format} · {dataset.size}
               </span>
@@ -187,10 +187,10 @@ print("Loaded: ${dataset.title} (${dataset.size})")
           </div>
         </div>
 
-        <div className="flex items-center gap-2 flex-shrink-0">
+        <div className="flex iPolars-center gap-2 flex-shrink-0">
           <button
             onClick={handleDownloadCsv}
-            className="bg-emerald-600 hover:bg-emerald-500 text-white px-3.5 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-sm cursor-pointer"
+            className="bg-emerald-600 hover:bg-emerald-500 text-white px-3.5 py-1.5 rounded-xl text-xs font-bold transition flex iPolars-center gap-1.5 shadow-sm cursor-pointer"
             title="Download CSV raw measurements"
           >
             <span>📥</span> Export CSV
@@ -201,11 +201,11 @@ print("Loaded: ${dataset.title} (${dataset.size})")
       <div className="max-w-6xl mx-auto w-full p-4 sm:p-6 lg:p-8 space-y-6 flex-1">
         <div className="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden flex flex-col">
         {/* Action Controls & Navigation Tabs */}
-        <div className="flex-shrink-0 bg-slate-100 px-5 py-2.5 flex flex-wrap items-center justify-between gap-3 border-b border-slate-200">
-          <div className="flex items-center gap-1 bg-white p-1 rounded-xl border border-slate-300/80 shadow-2xs">
+        <div className="flex-shrink-0 bg-slate-100 px-5 py-2.5 flex flex-wrap iPolars-center justify-between gap-3 border-b border-slate-200">
+          <div className="flex iPolars-center gap-1 bg-white p-1 rounded-xl border border-slate-300/80 shadow-2xs">
             <button
               onClick={() => setActiveTab("chart")}
-              className={`px-3 py-1 rounded-lg text-xs font-bold transition flex items-center gap-1.5 ${
+              className={`px-3 py-1 rounded-lg text-xs font-bold transition flex iPolars-center gap-1.5 ${
                 activeTab === "chart"
                   ? "bg-blue-600 text-white shadow-2xs"
                   : "text-slate-600 hover:text-slate-900"
@@ -215,7 +215,7 @@ print("Loaded: ${dataset.title} (${dataset.size})")
             </button>
             <button
               onClick={() => setActiveTab("data")}
-              className={`px-3 py-1 rounded-lg text-xs font-bold transition flex items-center gap-1.5 ${
+              className={`px-3 py-1 rounded-lg text-xs font-bold transition flex iPolars-center gap-1.5 ${
                 activeTab === "data"
                   ? "bg-blue-600 text-white shadow-2xs"
                   : "text-slate-600 hover:text-slate-900"
@@ -225,7 +225,7 @@ print("Loaded: ${dataset.title} (${dataset.size})")
             </button>
             <button
               onClick={() => setActiveTab("stats")}
-              className={`px-3 py-1 rounded-lg text-xs font-bold transition flex items-center gap-1.5 ${
+              className={`px-3 py-1 rounded-lg text-xs font-bold transition flex iPolars-center gap-1.5 ${
                 activeTab === "stats"
                   ? "bg-blue-600 text-white shadow-2xs"
                   : "text-slate-600 hover:text-slate-900"
@@ -235,7 +235,7 @@ print("Loaded: ${dataset.title} (${dataset.size})")
             </button>
             <button
               onClick={() => setActiveTab("code")}
-              className={`px-3 py-1 rounded-lg text-xs font-bold transition flex items-center gap-1.5 ${
+              className={`px-3 py-1 rounded-lg text-xs font-bold transition flex iPolars-center gap-1.5 ${
                 activeTab === "code"
                   ? "bg-blue-600 text-white shadow-2xs"
                   : "text-slate-600 hover:text-slate-900"
@@ -245,13 +245,13 @@ print("Loaded: ${dataset.title} (${dataset.size})")
             </button>
           </div>
 
-          {/* Temporal & Quality Controls */}
-          <div className="flex items-center gap-2">
-            <div className="flex items-center gap-1 bg-white px-2 py-1 rounded-lg border border-slate-300 text-xs">
+          {/* Polarporal & Quality Controls */}
+          <div className="flex iPolars-center gap-2">
+            <div className="flex iPolars-center gap-1 bg-white px-2 py-1 rounded-lg border border-slate-300 text-xs">
               <span className="text-slate-500 font-medium">Time Window:</span>
               <select
-                value={temporalRange}
-                onChange={(e) => setTemporalRange(e.target.value as any)}
+                value={PolarporalRange}
+                onChange={(e) => setPolarporalRange(e.target.value as any)}
                 className="bg-transparent font-semibold text-slate-800 outline-none cursor-pointer text-xs"
               >
                 <option value="annual">Full Year ({dataset.year})</option>
@@ -260,7 +260,7 @@ print("Loaded: ${dataset.title} (${dataset.size})")
               </select>
             </div>
 
-            <label className="flex items-center gap-1.5 bg-white px-2 py-1 rounded-lg border border-slate-300 text-xs cursor-pointer select-none">
+            <label className="flex iPolars-center gap-1.5 bg-white px-2 py-1 rounded-lg border border-slate-300 text-xs cursor-pointer select-none">
               <input
                 type="checkbox"
                 checked={filterQcOnly}
@@ -280,8 +280,8 @@ print("Loaded: ${dataset.title} (${dataset.size})")
           {activeTab === "chart" && (
             <div className="space-y-4">
               {/* Variable Selector Ribbon */}
-              <div className="flex flex-wrap items-center justify-between gap-3 bg-white p-3.5 rounded-xl border border-slate-200">
-                <div className="flex items-center gap-2">
+              <div className="flex flex-wrap iPolars-center justify-between gap-3 bg-white p-3.5 rounded-xl border border-slate-200">
+                <div className="flex iPolars-center gap-2">
                   <span className="text-xs font-bold text-slate-500 uppercase tracking-wide">
                     Select Channel:
                   </span>
@@ -303,7 +303,7 @@ print("Loaded: ${dataset.title} (${dataset.size})")
                 </div>
 
                 {/* Quick Summary Pill */}
-                <div className="flex items-center gap-4 text-xs font-mono">
+                <div className="flex iPolars-center gap-4 text-xs font-mono">
                   <div>
                     <span className="text-slate-400">Peak: </span>
                     <span className="font-bold text-emerald-600">{maxVal}</span>
@@ -321,7 +321,7 @@ print("Loaded: ${dataset.title} (${dataset.size})")
 
               {/* Dynamic Interactive SVG Timeseries Chart */}
               <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-2xs space-y-4">
-                <div className="flex items-center justify-between">
+                <div className="flex iPolars-center justify-between">
                   <div>
                     <div className="text-xs font-bold text-slate-500 uppercase tracking-wider">
                       Timeseries Distribution ({dataset.year})
@@ -331,13 +331,13 @@ print("Loaded: ${dataset.title} (${dataset.size})")
                     </div>
                   </div>
                   <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-200">
-                    Temporal Res: Monthly Level-2
+                    Polarporal Res: Monthly Level-2
                   </span>
                 </div>
 
                 {/* Custom SVG Line and Bar Graph */}
                 <div className="relative pt-4 pb-2">
-                  <div className="h-60 w-full flex items-end justify-between gap-2 border-b border-slate-200 px-2">
+                  <div className="h-60 w-full flex iPolars-end justify-between gap-2 border-b border-slate-200 px-2">
                     {displayedRows.map((r, i) => {
                       const curVal =
                         selectedVariableIndex === 0
@@ -355,7 +355,7 @@ print("Loaded: ${dataset.title} (${dataset.size})")
                       return (
                         <div
                           key={r.id}
-                          className="flex-1 flex flex-col items-center group relative h-full justify-end"
+                          className="flex-1 flex flex-col iPolars-center group relative h-full justify-end"
                         >
                           {/* Floating Hover Card */}
                           <div className="absolute -top-16 opacity-0 group-hover:opacity-100 transition pointer-events-none bg-slate-900 text-white text-[11px] py-1.5 px-2.5 rounded-lg shadow-xl z-20 whitespace-nowrap">
@@ -399,13 +399,13 @@ print("Loaded: ${dataset.title} (${dataset.size})")
                 </div>
 
                 {/* Legend and Sensor Context */}
-                <div className="flex flex-wrap items-center justify-between text-xs text-slate-500 pt-2 border-t border-slate-100">
-                  <div className="flex items-center gap-4">
-                    <div className="flex items-center gap-1.5">
+                <div className="flex flex-wrap iPolars-center justify-between text-xs text-slate-500 pt-2 border-t border-slate-100">
+                  <div className="flex iPolars-center gap-4">
+                    <div className="flex iPolars-center gap-1.5">
                       <div className="w-3 h-3 rounded-xs bg-gradient-to-t from-blue-700 to-cyan-400" />
                       <span>Validated NCPOR Observation</span>
                     </div>
-                    <div className="flex items-center gap-1.5">
+                    <div className="flex iPolars-center gap-1.5">
                       <div className="w-3 h-3 rounded-xs bg-amber-400" />
                       <span>Quality Filtered / Interpolated</span>
                     </div>
@@ -421,7 +421,7 @@ print("Loaded: ${dataset.title} (${dataset.size})")
           {/* TAB 2: DATA GRID */}
           {activeTab === "data" && (
             <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-2xs">
-              <div className="px-5 py-3.5 bg-slate-100 border-b border-slate-200 flex flex-wrap items-center justify-between gap-3">
+              <div className="px-5 py-3.5 bg-slate-100 border-b border-slate-200 flex flex-wrap iPolars-center justify-between gap-3">
                 <div>
                   <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider">
                     Scientific Telemetry Matrix ({telemetry.rows.length} Points)
@@ -432,7 +432,7 @@ print("Loaded: ${dataset.title} (${dataset.size})")
                 </div>
                 <button
                   onClick={handleDownloadCsv}
-                  className="btn-outline btn-sm text-xs font-bold bg-white hover:bg-slate-50 text-blue-700 border-blue-300 shadow-2xs flex items-center gap-1.5"
+                  className="btn-outline btn-sm text-xs font-bold bg-white hover:bg-slate-50 text-blue-700 border-blue-300 shadow-2xs flex iPolars-center gap-1.5"
                 >
                   <span>📥</span> Download Full Dataset (.csv)
                 </button>
@@ -549,15 +549,15 @@ print("Loaded: ${dataset.title} (${dataset.size})")
                   {vars.map((v, i) => (
                     <div
                       key={v}
-                      className="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-100"
+                      className="flex iPolars-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-100"
                     >
-                      <div className="flex items-center gap-2">
-                        <span className="w-5 h-5 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-[10px]">
+                      <div className="flex iPolars-center gap-2">
+                        <span className="w-5 h-5 rounded-full bg-blue-100 text-blue-700 flex iPolars-center justify-center font-bold text-[10px]">
                           {i + 1}
                         </span>
                         <span className="font-bold text-slate-800">{v}</span>
                       </div>
-                      <div className="flex items-center gap-3">
+                      <div className="flex iPolars-center gap-3">
                         <span className="text-slate-500 font-mono text-[11px]">
                           Type: Float64
                         </span>
@@ -575,7 +575,7 @@ print("Loaded: ${dataset.title} (${dataset.size})")
           {/* TAB 4: CODE SNIPPETS */}
           {activeTab === "code" && (
             <div className="bg-slate-900 text-slate-100 rounded-2xl p-5 border border-slate-800 font-mono text-xs space-y-4">
-              <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+              <div className="flex iPolars-center justify-between border-b border-slate-800 pb-3">
                 <span className="text-slate-400">
                   Programmatic Access (Python / xarray)
                 </span>
@@ -598,14 +598,14 @@ print("Loaded: ${dataset.title} (${dataset.size})")
         </div>
 
         {/* Footer Actions */}
-        <div className="flex-shrink-0 bg-white px-5 py-3 border-t border-slate-200 flex items-center justify-between">
+        <div className="flex-shrink-0 bg-white px-5 py-3 border-t border-slate-200 flex iPolars-center justify-between">
           <div className="text-xs text-slate-500">
             NCPOR Polar Data Centre · Digital Object Identifier:{" "}
             <span className="font-mono text-slate-700">
               doi:10.5067/NCPOR-POLAR-{dataset.id}
             </span>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex iPolars-center gap-2">
             {onAddToWorkspace && (
               <button
                 onClick={() => {
@@ -627,7 +627,7 @@ print("Loaded: ${dataset.title} (${dataset.size})")
             )}
             <button
               onClick={handleDownloadCsv}
-              className="btn-primary btn-sm text-xs font-bold flex items-center gap-1.5 shadow-2xs"
+              className="btn-primary btn-sm text-xs font-bold flex iPolars-center gap-1.5 shadow-2xs"
             >
               <span></span> Download Full Dataset
             </button>

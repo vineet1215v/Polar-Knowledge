@@ -250,12 +250,12 @@ export default function PublicationPdfModal({
           {/* Understand in Notebook / Plain English Assistant */}
           <button
             onClick={handleSimplifyInNotebook}
-            className="px-2.5 py-1 rounded-lg bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white text-xs font-bold transition flex items-center gap-1.5 shadow-xs cursor-pointer border border-purple-400/40 flex-shrink-0"
+            className="px-2.5 py-1 rounded-lg bg-gradient-to-r from-[#003366] via-blue-700 to-[#002244] hover:from-[#002244] hover:to-blue-800 text-white text-xs font-bold transition flex items-center gap-1.5 shadow-xs cursor-pointer border border-blue-400/40 flex-shrink-0"
             title="Finding this manuscript dense or difficult? Click to understand in Notebook AI with plain English, simple analogies, and audio discussion."
           >
-            <span className="text-amber-300">✨</span>
+            <span className="text-cyan-300">✨</span>
             <span>Understand in Notebook</span>
-            <span className="hidden xl:inline text-[9px] px-1.5 py-0.2 rounded-full bg-white/20 text-white font-mono uppercase tracking-wider font-semibold">
+            <span className="hidden xl:inline text-[9px] px-1.5 py-0.5 rounded-full bg-cyan-950/60 text-cyan-200 border border-cyan-800/60 font-mono uppercase tracking-wider font-semibold">
               Plain English
             </span>
           </button>
@@ -304,15 +304,15 @@ export default function PublicationPdfModal({
               {currentPage === 1 && (
                 <div>
                   {/* ── PLAIN-ENGLISH READING ASSISTANT BANNER ── */}
-                  <div className="mb-6 bg-gradient-to-r from-slate-900 via-indigo-950 to-purple-950 text-white rounded-xl p-3.5 border border-purple-500/30 shadow-md flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 font-sans">
+                  <div className="mb-6 bg-gradient-to-r from-[#003366] via-slate-900 to-[#002244] text-white rounded-xl p-3.5 border border-cyan-900/60 shadow-md flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 font-sans">
                     <div className="flex items-start sm:items-center gap-3">
-                      <div className="w-8 h-8 rounded-lg bg-purple-500/20 border border-purple-400/30 flex items-center justify-center text-lg flex-shrink-0">
+                      <div className="w-8 h-8 rounded-lg bg-cyan-950/80 border border-cyan-700/50 flex items-center justify-center text-lg flex-shrink-0 text-cyan-400">
                         💡
                       </div>
                       <div>
                         <div className="text-xs font-bold text-white flex items-center gap-2">
                           <span>Difficult or dense academic text?</span>
-                          <span className="text-[10px] font-semibold bg-purple-500/30 text-purple-200 px-2 py-0.5 rounded-full border border-purple-400/30">
+                          <span className="text-[10px] font-semibold bg-cyan-950/80 text-cyan-200 px-2 py-0.5 rounded-full border border-cyan-700/50">
                             Notebook AI Simplifier
                           </span>
                         </div>
@@ -323,7 +323,7 @@ export default function PublicationPdfModal({
                     </div>
                     <button
                       onClick={handleSimplifyInNotebook}
-                      className="px-3.5 py-1.5 rounded-lg bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-400 hover:to-indigo-400 text-white text-xs font-black transition flex items-center gap-1.5 shadow-sm flex-shrink-0 cursor-pointer self-stretch sm:self-auto justify-center"
+                      className="px-3.5 py-1.5 rounded-lg bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white text-xs font-black transition flex items-center gap-1.5 shadow-sm flex-shrink-0 cursor-pointer self-stretch sm:self-auto justify-center"
                     >
                       <span>✨</span>
                       <span>Simplify in Notebook</span>

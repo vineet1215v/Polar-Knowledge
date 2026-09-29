@@ -157,7 +157,7 @@ export default function CmlreBackboneLogin({
               Welcome to NCPOR Portal
             </h2>
             <p className="text-sm sm:text-base text-slate-100/90 font-normal leading-relaxed drop-shadow-sm">
-              Secure access to India&apos;s marine and polar data infrastructure
+              Secure access to India&apos;s polar data infrastructure
             </p>
             <div className="pt-1">
               <span className="inline-flex items-center px-3.5 py-1 rounded-full text-xs font-medium bg-black/40 text-white/95 border border-white/30 backdrop-blur-md shadow-xs">
@@ -434,13 +434,13 @@ export default function CmlreBackboneLogin({
         </div>
       </main>
 
-      {/* ── FLOATING MARINE AI ASSISTANT BADGE (BOTTOM RIGHT) ───────────────── */}
+      {/* ── FLOATING POLAR AI ASSISTANT BADGE (BOTTOM RIGHT) ───────────────── */}
       <aside className="fixed bottom-6 right-6 z-40">
         <button
           onClick={onOpenAI}
           className="group flex flex-col items-center gap-1 focus:outline-hidden"
-          title="Open Marine AI Assistant"
-          aria-label="Open Marine AI Assistant"
+          title="Open Polar AI Assistant"
+          aria-label="Open Polar AI Assistant"
         >
           <div className="w-14 h-14 rounded-full bg-[#001D3D] border-2 border-sky-400/80 shadow-2xl flex items-center justify-center text-white relative transition-transform duration-200 group-hover:scale-110">
             {/* Glowing Ring Animation */}
@@ -457,7 +457,7 @@ export default function CmlreBackboneLogin({
             </svg>
           </div>
           <span className="bg-[#002855] text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-md border border-sky-300/40 tracking-wide">
-            Marine AI
+            Polar AI
           </span>
         </button>
       </aside>

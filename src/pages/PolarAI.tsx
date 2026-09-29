@@ -1517,12 +1517,12 @@ export default function PolarAI({
 
         {/* ── CENTER PANEL: BLANK CANVAS / CHAT (6 COLS) ────────────────────── */}
         <div className="lg:col-span-6 bg-white rounded-2xl border border-slate-200/90 shadow-2xs flex flex-col h-full overflow-hidden">
-          {/* Plain English Mode Indicator Ribbon */}
-          <div className="bg-gradient-to-r from-purple-900 via-indigo-900 to-slate-900 text-white px-4 py-2 border-b border-purple-800/40 flex items-center justify-between gap-2 flex-shrink-0 text-xs shadow-xs">
+          {/* Plain-Language Mode Indicator Ribbon (Matching Official MoES Navy Theme) */}
+          <div className="bg-gradient-to-r from-[#003366] via-slate-900 to-[#002244] text-white px-4 py-2 border-b border-slate-800 flex items-center justify-between gap-2 flex-shrink-0 text-xs shadow-xs">
             <div className="flex items-center gap-2 min-w-0">
-              <span className="text-amber-300 text-sm flex-shrink-0">✨</span>
-              <span className="font-bold truncate">Plain-English Explainer Active</span>
-              <span className="text-[10px] text-purple-200 bg-purple-800/60 px-2 py-0.5 rounded-full border border-purple-700/50 hidden sm:inline flex-shrink-0">
+              <span className="text-cyan-400 text-sm flex-shrink-0">✨</span>
+              <span className="font-bold whitespace-nowrap text-white">Plain-Language Explainer</span>
+              <span className="text-[10px] text-cyan-200 bg-cyan-950/60 px-2 py-0.5 rounded-full border border-cyan-800/50 hidden md:inline flex-shrink-0">
                 Academic jargon translated for everyone
               </span>
             </div>
@@ -1530,7 +1530,7 @@ export default function PolarAI({
               <button
                 type="button"
                 onClick={() => handleSendMessage("Explain like I'm 5 in simple terms")}
-                className="px-2 py-0.5 rounded bg-white/10 hover:bg-white/20 text-white text-[11px] font-semibold transition cursor-pointer"
+                className="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-white text-[11px] font-semibold transition cursor-pointer"
                 title="Explain like I'm 5"
               >
                 👶 ELI5
@@ -1538,7 +1538,7 @@ export default function PolarAI({
               <button
                 type="button"
                 onClick={() => handleSendMessage("What are the 3 biggest takeaways in plain English?")}
-                className="px-2 py-0.5 rounded bg-white/10 hover:bg-white/20 text-white text-[11px] font-semibold transition cursor-pointer"
+                className="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-white text-[11px] font-semibold transition cursor-pointer"
                 title="3 Key Takeaways"
               >
                 🔑 Key Points
@@ -1546,7 +1546,7 @@ export default function PolarAI({
               <button
                 type="button"
                 onClick={() => handleLaunchStudioTool("podcast")}
-                className="px-2 py-0.5 rounded bg-purple-500/80 hover:bg-purple-500 text-white text-[11px] font-semibold transition flex items-center gap-1 cursor-pointer"
+                className="px-2.5 py-1 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-[11px] font-bold transition flex items-center gap-1 cursor-pointer shadow-2xs"
                 title="Listen to 5-minute audio briefing"
               >
                 <span>🎙️</span>
@@ -1580,27 +1580,27 @@ export default function PolarAI({
                   </p>
                 </div>
 
-                {/* Simplified Paper Assistant Card */}
-                <div className="p-4 rounded-2xl bg-gradient-to-r from-purple-50 via-indigo-50 to-blue-50 border border-purple-200/90 shadow-2xs space-y-2.5 text-left">
+                {/* Simplified Paper Assistant Card (Themed in MoES Blue / Cyan) */}
+                <div className="p-4 rounded-2xl bg-gradient-to-r from-blue-50/80 via-slate-50 to-cyan-50/70 border border-blue-200 shadow-2xs space-y-2.5 text-left">
                   <div className="flex items-center justify-between gap-2">
                     <div className="flex items-center gap-2">
                       <span className="text-lg">✨</span>
-                      <span className="font-bold text-xs text-purple-900">
+                      <span className="font-bold text-xs text-[#003366]">
                         Find academic research difficult or heavy to understand?
                       </span>
                     </div>
-                    <span className="text-[10px] font-mono bg-purple-100 text-purple-800 px-2 py-0.5 rounded-full font-bold">
+                    <span className="text-[10px] font-mono bg-blue-100 text-blue-900 border border-blue-200 px-2 py-0.5 rounded-full font-bold">
                       NotebookLM Engine
                     </span>
                   </div>
-                  <p className="text-xs text-purple-950/80 leading-relaxed">
+                  <p className="text-xs text-slate-600 leading-relaxed">
                     We translate dense formulas, oceanographic models, and cryospheric jargon into clear plain English with everyday analogies and audio briefings.
                   </p>
                   <div className="flex flex-wrap gap-2 pt-1">
                     <button
                       type="button"
                       onClick={() => handleSendMessage("Explain like I'm 5 in simple terms")}
-                      className="px-3 py-1.5 rounded-xl bg-purple-700 hover:bg-purple-800 text-white text-xs font-bold transition shadow-xs cursor-pointer flex items-center gap-1"
+                      className="px-3 py-1.5 rounded-xl bg-[#003366] hover:bg-[#002244] text-white text-xs font-bold transition shadow-xs cursor-pointer flex items-center gap-1"
                     >
                       <span>👶</span>
                       <span>Explain Like I'm 5</span>
@@ -1608,7 +1608,7 @@ export default function PolarAI({
                     <button
                       type="button"
                       onClick={() => handleSendMessage("What are the 3 biggest takeaways in plain English?")}
-                      className="px-3 py-1.5 rounded-xl bg-white hover:bg-purple-50 text-purple-900 border border-purple-200 text-xs font-bold transition shadow-2xs cursor-pointer flex items-center gap-1"
+                      className="px-3 py-1.5 rounded-xl bg-white hover:bg-blue-50 text-slate-800 hover:text-blue-700 border border-slate-200 text-xs font-bold transition shadow-2xs cursor-pointer flex items-center gap-1"
                     >
                       <span>🔑</span>
                       <span>3 Key Takeaways</span>
@@ -1616,7 +1616,7 @@ export default function PolarAI({
                     <button
                       type="button"
                       onClick={() => handleSendMessage("Break down the difficult technical terms and jargon")}
-                      className="px-3 py-1.5 rounded-xl bg-white hover:bg-purple-50 text-purple-900 border border-purple-200 text-xs font-bold transition shadow-2xs cursor-pointer flex items-center gap-1"
+                      className="px-3 py-1.5 rounded-xl bg-white hover:bg-blue-50 text-slate-800 hover:text-blue-700 border border-slate-200 text-xs font-bold transition shadow-2xs cursor-pointer flex items-center gap-1"
                     >
                       <span>📖</span>
                       <span>Jargon Buster</span>
@@ -1624,7 +1624,7 @@ export default function PolarAI({
                     <button
                       type="button"
                       onClick={() => handleLaunchStudioTool("podcast")}
-                      className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white text-xs font-bold transition shadow-xs cursor-pointer flex items-center gap-1"
+                      className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-[#003366] to-blue-600 hover:from-[#002244] hover:to-blue-700 text-white text-xs font-bold transition shadow-xs cursor-pointer flex items-center gap-1"
                     >
                       <span>🎙️</span>
                       <span>Audio Overview</span>
@@ -1749,7 +1749,7 @@ export default function PolarAI({
             <div className="pt-3 space-y-2">
               {/* Quick Plain-English Understanding Chips */}
               <div className="flex items-center gap-1.5 flex-wrap">
-                <span className="text-[10px] font-bold text-purple-700 bg-purple-50 px-2 py-0.5 rounded-full border border-purple-200 flex-shrink-0">
+                <span className="text-[10px] font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded-full border border-blue-200 flex-shrink-0">
                   ✨ Plain English:
                 </span>
                 {[
@@ -1763,7 +1763,7 @@ export default function PolarAI({
                     key={chip.label}
                     type="button"
                     onClick={() => handleSendMessage(chip.prompt)}
-                    className="px-2.5 py-1 rounded-full bg-slate-100 hover:bg-purple-50 hover:text-purple-700 hover:border-purple-300 border border-slate-200 text-[11px] font-medium text-slate-700 transition cursor-pointer shadow-2xs flex items-center gap-1"
+                    className="px-2.5 py-1 rounded-full bg-slate-100 hover:bg-blue-50 hover:text-blue-700 hover:border-blue-300 border border-slate-200 text-[11px] font-medium text-slate-700 transition cursor-pointer shadow-2xs flex items-center gap-1"
                   >
                     <span>{chip.label}</span>
                   </button>

@@ -49,7 +49,7 @@ export default function DashboardMapAnalyticsSection({
 
               {/* Subtitle */}
               <p className="text-xs text-slate-500 leading-relaxed mb-3.5">
-                Bio-physical marine ecosystem simulator modeling species biomass, ocean warming &amp; trophic shifts.
+                Bio-physical polar ecosystem simulator modeling species biomass, ocean warming &amp; trophic shifts.
               </p>
 
               {/* Live Telemetry KPI Chips */}
@@ -147,7 +147,7 @@ export default function DashboardMapAnalyticsSection({
 
               {/* Subtitle */}
               <p className="text-xs text-slate-500 leading-relaxed mb-4 text-left">
-                Interactive parameter analysis with real-time marine data
+                Interactive parameter analysis with real-time polar data
                 visualization
               </p>
             </div>
