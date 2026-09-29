@@ -6,7 +6,7 @@ type ContentChannel = "Article" | "Social Post" | "Short Video Script" | "Infogr
 
 const generatedContent: Record<ContentChannel, string> = {
   Article:
-    "DRAFT — AI Generated — Requires Editorial Review\n\n**46th Indian Antarctic Expedition Underway**\n\nThe National Centre for Polar and Ocean Research (NCPOR) has launched India's 46th Antarctic Expedition (46th IAE), marking a new chapter in the country's commitment to polar science. The expedition includes researchers from multiple disciplines including glaciology, oceanography, atmospheric science and marine biology.\n\nThe team will operate from India's two permanent Antarctic research stations, Maitri and Bharati, conducting multi-year climate observations, sea ice surveys and biodiversity assessments.\n\n[Source: 46th IAE Science Plan · NCPOR Expedition Archive · Status: DRAFT]\n[Review required before publication]",
+    "DRAFT — AI Generated — Requires Editorial Review\n\n**46th Indian Antarctic Expedition Underway**\n\nThe National Centre for Polar and Ocean Research (NCPOR) has launched India's 46th Antarctic Expedition (46th IAE), marking a new chapter in the country's commitment to polar science. The expedition includes researchers from multiple disciplines including glaciology, oceanography, atmospheric science and polar biology.\n\nThe team will operate from India's two permanent Antarctic research stations, Maitri and Bharati, conducting multi-year climate observations, sea ice surveys and biodiversity assessments.\n\n[Source: 46th IAE Science Plan · NCPOR Expedition Archive · Status: DRAFT]\n[Review required before publication]",
   "Social Post":
     "DRAFT — AI Generated — Not approved for posting\n\n India's 46th Antarctic Expedition is now underway! Our scientists are heading to Maitri and Bharati stations to study sea ice, climate change and polar biodiversity.\n\nFollow along as we explore one of Earth's most remote frontiers. #NCPOR #AntarcticExploration #PolarScience #India\n\n[Source: NCPOR Expedition Archive · Status: DRAFT · Character count: 243]",
   "Short Video Script":
@@ -552,7 +552,7 @@ export interface PolarPulseStory {
   id: number
   title: string
   date: string
-  category: "Expeditions" | "Cryosphere" | "Arctic Watch" | "Technology" | "Marine Life" | "Atmosphere"
+  category: "Expeditions" | "Cryosphere" | "Arctic Watch" | "Technology" | "Polar Life" | "Atmosphere"
   categoryColor: string
   location: string
   heroImage: string
@@ -660,22 +660,22 @@ export const POLAR_PULSE_STORIES: PolarPulseStory[] = [
     id: 5,
     title: "2,450 Antarctic Fish Otolith Specimens Digitized on Open Polar Portal",
     date: "15 Jul 2024",
-    category: "Marine Life",
+    category: "Polar Life",
     categoryColor: "bg-purple-600",
     location: "Southern Ocean Living Resources BioLab",
     heroImage: "https://images.unsplash.com/photo-1766465405501-ab1cce22d097?w=1200&q=80",
     thumb: "https://images.unsplash.com/photo-1766465405501-ab1cce22d097?w=200&q=80",
     bullets: [
-      "NCPOR Marine Living Resources team uploaded micro-computed tomography scans of 2,450 sagittal otoliths from Antarctic toothfish.",
+      "NCPOR Polar Living Resources team uploaded micro-computed tomography scans of 2,450 sagittal otoliths from Antarctic toothfish.",
       "Digital vouchers allow researchers worldwide to track annual growth rings, calcium carbonate accretion, and Southern Ocean acidification.",
       "Dataset links morphometric otolith shapes to 32 deep-water CTD transects across the Indian sector of the Southern Ocean."
     ],
     keyStat: { label: "Digitized Otoliths", value: "2,450+" },
-    source: "NCPOR Marine Living Resources Division",
+    source: "NCPOR Polar Living Resources Division",
     readTime: "60 Words · 1 min",
     likes: 310,
     shares: 98,
-    tags: ["#Otolith", "#Toothfish", "#eDNA", "#MarineEcology"],
+    tags: ["#Otolith", "#Toothfish", "#eDNA", "#PolarEcology"],
     isVerified: true
   },
   {
@@ -879,7 +879,7 @@ export default function News({ onOpenSocial }: NewsProps = {}) {
   }
 
   // Categories list
-  const categories = ["All", "Expeditions", "Cryosphere", "Arctic Watch", "Technology", "Marine Life", "Atmosphere"]
+  const categories = ["All", "Expeditions", "Cryosphere", "Arctic Watch", "Technology", "Polar Life", "Atmosphere"]
 
   const pressReleases = [
     {

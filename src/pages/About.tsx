@@ -22,12 +22,12 @@ const researchDomains = [
     desc: "Physical properties and dynamics of polar oceans including the Southern Ocean and Arctic.",
   },
   {
-    name: "Marine Biology & Ecology",
+    name: "Polar Biology & Ecology",
     icon: "",
     count: { datasets: 29, pubs: 96, researchers: 14 },
     dest: "datasets",
     tags: ["Phytoplankton", "Krill", "Benthic", "Biodiversity"],
-    desc: "Marine ecosystems, biodiversity, and biological productivity in polar waters.",
+    desc: "Polar ecosystems, biodiversity, and biological productivity in polar waters.",
   },
   {
     name: "Atmospheric & Climate Science",
@@ -56,7 +56,7 @@ const researchDomains = [
       "Climate Reconstruction",
       "Holocene",
     ],
-    desc: "Reconstruction of past climate using ice cores, marine sediment, and other paleoclimate proxies.",
+    desc: "Reconstruction of past climate using ice cores, polar sediment, and other paleoclimate proxies.",
   },
 ]
 
@@ -386,7 +386,7 @@ export default function About({ onNavigate }: Props) {
                   Antarctic Expedition was conducted in 1981 by the Department
                   of Ocean Development. NCPOR has since grown into a
                   multi-disciplinary institution with research spanning
-                  glaciology, oceanography, atmospheric science, marine biology,
+                  glaciology, oceanography, atmospheric science, polar biology,
                   and paleoclimatology.
                 </p>
               </div>

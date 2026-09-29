@@ -49,53 +49,53 @@ export default function DashboardMapAnalyticsSection({
 
               {/* Subtitle */}
               <p className="text-xs text-slate-500 leading-relaxed mb-3.5">
-                Bio-physical polar ecosystem simulator modeling species biomass, ocean warming &amp; trophic shifts.
+                Multi-pillar polar cryosphere simulator modeling permafrost thaw, glacier velocities, and greenhouse dynamics.
               </p>
 
               {/* Live Telemetry KPI Chips */}
               <div className="grid grid-cols-3 gap-2 mb-3.5">
                 <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-100 text-left">
-                  <div className="text-[10px] font-medium text-slate-500">Eco Health</div>
-                  <div className="text-sm font-bold text-emerald-600 font-mono mt-0.5">88.4%</div>
+                  <div className="text-[10px] font-medium text-slate-500">Stability</div>
+                  <div className="text-sm font-bold text-emerald-600 font-mono mt-0.5">84.2%</div>
                   <div className="text-[9px] text-slate-400">Optimal</div>
                 </div>
                 <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-100 text-left">
-                  <div className="text-[10px] font-medium text-slate-500">Sea Temp</div>
-                  <div className="text-sm font-bold text-blue-600 font-mono mt-0.5">24.1°C</div>
-                  <div className="text-[9px] text-amber-600">▲ +0.3°C</div>
+                  <div className="text-[10px] font-medium text-slate-500">Anomaly</div>
+                  <div className="text-sm font-bold text-blue-600 font-mono mt-0.5">-4.2°C</div>
+                  <div className="text-[9px] text-emerald-600">Polar Sub-zero</div>
                 </div>
                 <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-100 text-left">
-                  <div className="text-[10px] font-medium text-slate-500">O₂ Level</div>
-                  <div className="text-sm font-bold text-cyan-600 font-mono mt-0.5">6.0 mg/L</div>
-                  <div className="text-[9px] text-slate-400">Stable</div>
+                  <div className="text-[10px] font-medium text-slate-500">CH₄ Plume</div>
+                  <div className="text-sm font-bold text-amber-600 font-mono mt-0.5">1,942 ppb</div>
+                  <div className="text-[9px] text-slate-400">Degassing</div>
                 </div>
               </div>
 
-              {/* Live Monitored Marine Species Mini-List */}
+              {/* Live Monitored Polar Indicators Mini-List */}
               <div className="space-y-1.5 mb-4 text-left">
                 <div className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">
-                  Active Modeled Species
-                </div>
-                <div className="flex items-center justify-between p-2 rounded-lg bg-blue-50/50 border border-blue-100 text-xs">
-                  <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-blue-600" />
-                    <span className="font-semibold text-slate-800">Yellowfin Tuna</span>
-                  </div>
-                  <span className="font-mono text-[11px] font-bold text-blue-700">10,241 kg</span>
+                  Active Polar Cryo Indicators
                 </div>
                 <div className="flex items-center justify-between p-2 rounded-lg bg-emerald-50/50 border border-emerald-100 text-xs">
                   <div className="flex items-center gap-2">
                     <span className="w-2 h-2 rounded-full bg-emerald-600" />
-                    <span className="font-semibold text-slate-800">Oil Sardine</span>
+                    <span className="font-semibold text-slate-800">Permafrost Thaw Rate</span>
                   </div>
-                  <span className="font-mono text-[11px] font-bold text-emerald-700">7,672 kg</span>
+                  <span className="font-mono text-[11px] font-bold text-emerald-700">14.8 cm/yr</span>
                 </div>
-                <div className="flex items-center justify-between p-2 rounded-lg bg-purple-50/50 border border-purple-100 text-xs">
+                <div className="flex items-center justify-between p-2 rounded-lg bg-blue-50/50 border border-blue-100 text-xs">
                   <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-purple-600" />
-                    <span className="font-semibold text-slate-800">Tiger Prawn</span>
+                    <span className="w-2 h-2 rounded-full bg-blue-600" />
+                    <span className="font-semibold text-slate-800">Glacier Flow Velocity</span>
                   </div>
-                  <span className="font-mono text-[11px] font-bold text-purple-700">1,280 kg</span>
+                  <span className="font-mono text-[11px] font-bold text-blue-700">142.6 m/yr</span>
+                </div>
+                <div className="flex items-center justify-between p-2 rounded-lg bg-sky-50/50 border border-sky-100 text-xs">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-sky-600" />
+                    <span className="font-semibold text-slate-800">Snow Cover Duration</span>
+                  </div>
+                  <span className="font-mono text-[11px] font-bold text-sky-700">184 Days</span>
                 </div>
               </div>
             </div>
