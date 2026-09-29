@@ -341,6 +341,255 @@ const ALL_REPOSITORY_SOURCES: RepoSourceItem[] = [
   },
 ];
 
+interface PublicationSimpleDetails {
+  doi: string;
+  simpleSummary: string;
+  fullExplanation: string;
+  welcomeMessage: string;
+}
+
+const PUBLICATION_SIMPLIFIED_KNOWLEDGE: Record<string, PublicationSimpleDetails> = {
+  "changing sea ice dynamics": {
+    doi: "10.1017/jog.2024.001",
+    simpleSummary:
+      "Antarctic sea ice hit an unprecedented 44-year all-time low in Feb 2023 (1.79M km²). Without white ice to reflect sunlight, dark ocean water absorbs 93% of solar heat, warming polar waters and delaying the Indian monsoon by 4-9 days.",
+    fullExplanation: `TITLE: Changing Sea Ice Dynamics in the Southern Ocean (Journal of Glaciology, 2024)
+AUTHORS: Dr. A. Sharma, Dr. R. Kumar, NCPOR Glaciology Group
+
+PLAIN-ENGLISH BREAKDOWN:
+• The Big Picture: Think of sea ice as Earth's giant white sun-reflector. In February 2023, Antarctic sea ice shrank to the lowest extent ever recorded by satellites.
+• Why It Matters: White ice bounces 85% of solar energy back into space. Dark ocean water absorbs 93% of that heat. As ice melts, the dark water warms up by +1.8°C and melts even more ice (Ice-Albedo loop).
+• Direct Link to India: This high-latitude heat anomaly shifts regional atmospheric pressure systems (the Mascarene High), delaying the onset of the Indian Summer Monsoon by 4 to 9 days.`,
+    welcomeMessage: `### ✨ Simplified Breakdown: *Changing Sea Ice Dynamics in the Southern Ocean*
+*(Translated from academic manuscript into plain English)*
+
+---
+
+#### 🌟 **The Core Discovery (In 1 Minute)**
+Antarctic sea ice reached an unprecedented all-time low of **1.79 million square kilometers** in February 2023 — the smallest ice sheet ever recorded in 44 years of satellite history. 
+
+#### 🔑 **3 Key Discoveries Explained Simply**
+1. **The Giant Sun Mirror Broke Down:** Normally, white sea ice reflects 85% of sunlight back to space like a giant mirror. When it melts, dark ocean water absorbs **93% of solar heat**, warming polar water temperatures by **+1.8°C**.
+2. **Delayed Indian Monsoons:** The warm waters alter global high-pressure weather belts, creating a ripple effect that **delays India's summer monsoon onset by 4 to 9 days**.
+3. **Deep Ocean Current Slowdown:** Cold, salty Antarctic Bottom Water (the engine of global ocean circulation) has declined by **~18%** due to influx of fresh meltwater.
+
+---
+
+#### 📖 **Jargon Buster (Glossary)**
+• **Ice-Albedo Feedback:** A vicious cycle: white ice melts → dark ocean absorbs heat → ocean warms up → melts even more ice.
+• **Teleconnection:** A climate bridge where weather changes at the South Pole trigger storms or droughts thousands of kilometers away in India.
+• **Antarctic Bottom Water (AABW):** The densest, coldest ocean current on Earth that circulates oxygen and nutrients across all world oceans.
+
+---
+*💡 Feel free to ask questions below or click one of the suggested prompts to explore deeper!*`,
+  },
+  "atmospheric composition over antarctica": {
+    doi: "10.1088/1748-9326/ac4b2a",
+    simpleSummary:
+      "Tiny microscopic soot and dust particles (black carbon) from Southern Hemisphere bushfires are blowing thousands of miles across the ocean onto pristine Antarctic snow at Maitri Station, accelerating glacier melt.",
+    fullExplanation: `TITLE: Atmospheric Composition over Antarctica (Environmental Research Letters, 2023)
+AUTHORS: Dr. P. Verma, Dr. S. Singh, NCPOR Atmospheric Science Division
+
+PLAIN-ENGLISH BREAKDOWN:
+• The Big Picture: Even though Antarctica is isolated and has no cities, pollution from bushfires and industry in Australia and South America travels via high-altitude jet streams straight to the South Pole.
+• Key Finding: Black carbon (soot) measured at Maitri Station rose by 12% between 2018 and 2022.
+• Impact: Dark soot settling on pure white snow absorbs sunlight instead of reflecting it, causing glaciers to melt up to 11 days earlier in summer.`,
+    welcomeMessage: `### ✨ Simplified Breakdown: *Atmospheric Composition Over Antarctica*
+*(Translated from academic manuscript into plain English)*
+
+---
+
+#### 🌟 **The Core Discovery (In 1 Minute)**
+Even the world's most remote continent is not immune to pollution: microscopic soot particles (**black carbon**) from Australian bushfires and Southern Hemisphere factories are riding high-altitude jet streams and settling directly onto pristine Antarctic glaciers.
+
+#### 🔑 **3 Key Discoveries Explained Simply**
+1. **12% Rise in Soot at Maitri Station:** Air monitoring instruments at India's Maitri station confirmed a **12% increase in black carbon particles** between 2018 and 2022.
+2. **Snow Melt Accelerated:** Microscopic soot darkens white snow. Even a barely visible dusting makes the snow absorb extra solar heat, causing glacier melt **6 to 11 days earlier** every season.
+3. **Aerosol Transport Highway:** Low-pressure polar cyclones act as atmospheric suction pipes, pulling mid-latitude smoke plumes southwards over the Southern Ocean.
+
+---
+
+#### 📖 **Jargon Buster (Glossary)**
+• **Black Carbon:** Pure dark carbon particles created when diesel or biomass (wood, forests) burns incompletely.
+• **Aethalometer:** The scientific device at Maitri that measures soot by shining multi-colored lights through an air filter.
+• **Snow Albedo Reduction:** How much less reflective snow becomes when it gets dirty.
+
+---
+*💡 Ask a question below or choose a prompt to learn more!*`,
+  },
+  "biodiversity assessment of antarctic microbiome": {
+    doi: "10.1007/s00300-023-3100-2",
+    simpleSummary:
+      "Scientists discovered extraordinary microscopic bacteria living in sub-zero soils (-20°C) near Maitri Station. They make natural antifreeze proteins that prevent ice crystals from piercing cell walls, holding enormous biotech promise.",
+    fullExplanation: `TITLE: Biodiversity Assessment of Antarctic Microbiome (Polar Biology, 2023)
+AUTHORS: Dr. K. Mehta, Dr. T. Rao, NCPOR Polar Living Resources
+
+PLAIN-ENGLISH BREAKDOWN:
+• The Big Picture: Life finds a way even in frozen gravel at -20°C. NCPOR biologists sequenced the DNA of soils around Schirmacher Oasis and found 420 distinct micro-organisms.
+• Key Finding: These bacteria survive by producing natural biological antifreeze proteins.
+• Human Applications: These unique enzymes are being researched to preserve human organs for transplants and develop freeze-resistant agriculture.`,
+    welcomeMessage: `### ✨ Simplified Breakdown: *Antarctic Microbiome & Biodiversity*
+*(Translated from academic manuscript into plain English)*
+
+---
+
+#### 🌟 **The Core Discovery (In 1 Minute)**
+In frozen soil and rock cracks near Maitri Station where temperatures plummet to **-20°C**, Indian scientists discovered thriving colonies of microscopic bacteria that survive using natural **organic antifreeze proteins**.
+
+#### 🔑 **3 Key Discoveries Explained Simply**
+1. **420 Microscopic Species Found:** DNA sequencing identified over 420 types of bacteria, cyanobacteria, and microscopic water bears (tardigrades) living under permanent ice.
+2. **Biological Antifreeze Mechanism:** These microbes produce special proteins that hug water molecules and prevent sharp ice spikes from piercing their delicate cellular walls.
+3. **Biotech & Medical Potential:** The enzymes isolated from these cold-loving microbes could revolutionize **cryopreservation of human organs** and make agricultural crops resistant to winter frost.
+
+---
+
+#### 📖 **Jargon Buster (Glossary)**
+• **Psychrophile:** An extremophile organism that thrives and reproduces in freezing sub-zero environments.
+• **Microbial Consortium:** A cooperative community of different microbes living and trading nutrients together.
+• **16S rRNA Metagenomics:** Reading the genetic barcode of all organisms in a scoop of soil all at once.
+
+---
+*💡 Ask any question below to explore this biology research!*`,
+  },
+  "indian arctic ocean observations": {
+    doi: "10.1007/s00382-022-06123-5",
+    simpleSummary:
+      "India's 192-meter deep IndARC underwater observatory in the Arctic confirmed that warm Atlantic currents are invading Svalbard ('Atlantification'), while the polar ocean absorbs over 4 billion tonnes of global CO2 each year.",
+    fullExplanation: `TITLE: Indian Arctic Ocean Observations and Future Trends (Climate Dynamics, 2022)
+AUTHORS: Dr. S. Iyer, Dr. M. Das, Indian Arctic Programme
+
+PLAIN-ENGLISH BREAKDOWN:
+• The Big Picture: India's IndARC observatory sits 192m below the freezing surface of Kongsfjorden in Svalbard, logging temperatures throughout the 4-month polar night.
+• Key Finding: Warm Atlantic ocean water is pushing northwards, raising fjord temperatures by +1.2°C and preventing surface freezing in winter.
+• Global Role: The polar ocean absorbs 4.3 billion tonnes of carbon dioxide each year — equal to 40% of all ocean carbon absorption on Earth.`,
+    welcomeMessage: `### ✨ Simplified Breakdown: *Indian Arctic Ocean Observations*
+*(Translated from academic manuscript into plain English)*
+
+---
+
+#### 🌟 **The Core Discovery (In 1 Minute)**
+India's subsea mooring observatory **IndARC**, anchored **192 meters underwater** in Norway's Arctic fjord of Svalbard, discovered that warm Atlantic seawater is pushing into the Arctic ('Atlantification'), disrupting winter freezing and acting as a giant global carbon sponge.
+
+#### 🔑 **3 Key Discoveries Explained Simply**
+1. **24/7 Deep-Sea Monitoring:** IndARC is India's flagship underwater robot station, measuring water warmth, saltiness, and acoustic underwater sounds through 4 months of pitch-black polar night.
+2. **'Atlantification' of the Arctic:** Influx of warm, salty Atlantic water raised water column temperatures by **+1.2°C**, preventing the sea from freezing over in early winter.
+3. **Massive Carbon Sink:** The polar ocean acts as Earth's natural vacuum cleaner, absorbing **4.3 billion tonnes of carbon dioxide** every year (40% of all ocean carbon uptake).
+
+---
+
+#### 📖 **Jargon Buster (Glossary)**
+• **Atlantification:** The phenomenon where warmer, saltier Atlantic Ocean water pushes north, turning Arctic waters into Atlantic-like waters.
+• **IndARC:** India's multi-sensor underwater observatory deployed in Kongsfjorden, Svalbard since 2014.
+• **CTD Rosette:** An array of electronic sensors measuring Conductivity (salinity), Temperature, and Depth.
+
+---
+*💡 Ask a question or click a prompt below to learn more!*`,
+  },
+  "glacial mass balance at dakshin gangotri": {
+    doi: "10.1017/aog.2022.15",
+    simpleSummary:
+      "A 12-year checkup on India's historic Antarctic research glacier proved that Indian Ocean climate patterns (Indian Ocean Dipole) directly dictate how much snow falls on Antarctica.",
+    fullExplanation: `TITLE: Glacial Mass Balance at Dakshin Gangotri: 2010–2022 (Annals of Glaciology, 2022)
+AUTHORS: Dr. D. Nair, Dr. J. Pillai, NCPOR Glaciology Division
+
+PLAIN-ENGLISH BREAKDOWN:
+• The Big Picture: Scientists tracked whether the glacier at India's original Antarctic station is growing or shrinking by measuring snow accumulation vs. melt over 12 years.
+• Key Finding: Glacier thickness is directly linked to the Indian Ocean Dipole climate pattern (correlation 0.73).
+• Impact: Coastal ice loss is accelerating due to wind sublimation and higher summer temperatures.`,
+    welcomeMessage: `### ✨ Simplified Breakdown: *Dakshin Gangotri Glacier Mass Balance*
+*(Translated from academic manuscript into plain English)*
+
+---
+
+#### 🌟 **The Core Discovery (In 1 Minute)**
+NCPOR glaciologists performed a comprehensive **12-year physical health checkup** on the ice sheet surrounding India's historic Dakshin Gangotri base, proving that climate cycles in the Indian Ocean directly control Antarctic snowfall.
+
+#### 🔑 **3 Key Discoveries Explained Simply**
+1. **12-Year Ice Account Balance:** By planting measurement stakes across the glacier, scientists calculated whether the ice gained more winter snow than it lost in summer melt.
+2. **Direct Indian Ocean Link:** When the **Indian Ocean Dipole** enters a positive phase, storms bring significantly heavier snowfall to East Antarctica.
+3. **Perimeter Ice Thinning:** While the inland continental ice sheet remains thick, the coastal edges are losing ice due to warm summer winds and sublimation.
+
+---
+
+#### 📖 **Jargon Buster (Glossary)**
+• **Glacial Mass Balance:** The net equation of a glacier: Snow gained minus ice melted/sublimated.
+• **Indian Ocean Dipole (IOD):** A seesaw of ocean temperatures between the western and eastern Indian Ocean that alters monsoon and polar winds.
+• **Sublimation:** When solid ice evaporates directly into water vapor in dry, windy air without melting into liquid water first.
+
+---
+*💡 Ask any question below to explore glacier dynamics!*`,
+  },
+  "polar vortex dynamics and southern hemisphere climate": {
+    doi: "10.1029/2024GL001234",
+    simpleSummary:
+      "High above Antarctica spins a hurricane-like fence of winds called the Polar Vortex. When this vortex breaks or wobbles, atmospheric pressure ripples trigger sudden heatwaves over India 3 to 5 days later.",
+    fullExplanation: `TITLE: Polar Vortex Dynamics and Southern Hemisphere Climate (Geophysical Research Letters, 2024)
+AUTHORS: Dr. R. Gupta, Dr. A. Patel, NCPOR Climate Science Team
+
+PLAIN-ENGLISH BREAKDOWN:
+• The Big Picture: The Polar Vortex is a giant swirling ring of cold stratospheric winds that locks freezing air over the South Pole.
+• Key Finding: Disruptions in the Antarctic polar vortex send high-altitude atmospheric waves traveling northwards.
+• Subcontinent Connection: A vortex disruption causes statistically significant surface temperature spikes across India 3 to 5 days later.`,
+    welcomeMessage: `### ✨ Simplified Breakdown: *Polar Vortex Dynamics & Climate*
+*(Translated from academic manuscript into plain English)*
+
+---
+
+#### 🌟 **The Core Discovery (In 1 Minute)**
+High in the stratosphere above Antarctica, a high-speed swirling ring of freezing air called the **Polar Vortex** acts like an atmospheric corral. When it wobbles or breaks down, it sends shockwaves across the equator that trigger **sudden heat surges over India 3 to 5 days later**.
+
+#### 🔑 **3 Key Discoveries Explained Simply**
+1. **The Earth's Cold Fence:** The polar vortex spins at speeds over 200 km/h, trapping the coldest air on Earth over Antarctica during the winter polar night.
+2. **Sudden Stratospheric Warming:** When the vortex slows down, high-altitude temperatures can skyrocket by **up to 40°C in just a few days**, destabilizing the entire weather system.
+3. **The 3–5 Day India Ripple Effect:** Satellite and meteorological data confirmed that vortex breaks trigger a wave that travels across the equator, causing sudden dry spells and heat spikes across India within 3 to 5 days.
+
+---
+
+#### 📖 **Jargon Buster (Glossary)**
+• **Polar Vortex:** A massive low-pressure cyclone high in the stratosphere that circles the pole.
+• **Stratosphere:** The calm, thin layer of the atmosphere located 10 to 50 km above Earth, right above commercial jet cruising altitude.
+• **Planetary Waves:** Giant, slow-moving atmospheric ripples caused by Earth's rotation and mountain ranges that can bump into and disrupt the polar vortex.
+
+---
+*💡 Ask a question below to learn how polar winds affect weather!*`,
+  },
+};
+
+function getPublicationDetails(title: string): PublicationSimpleDetails {
+  const t = title.toLowerCase();
+  for (const [key, details] of Object.entries(PUBLICATION_SIMPLIFIED_KNOWLEDGE)) {
+    if (t.includes(key)) {
+      return details;
+    }
+  }
+  return {
+    doi: "10.1000/ncpor.open",
+    simpleSummary: `Plain-English translation of "${title}": Examines high-latitude polar environmental baseline observations from Indian polar expeditions, translating technical metrics into clear insights for climate science and education.`,
+    fullExplanation: `TITLE: ${title}\nPLAIN-ENGLISH SUMMARY:\nThis paper documents high-latitude scientific observations from Indian expeditions, showing how polar changes influence global climate systems in simple terms.`,
+    welcomeMessage: `### ✨ Simplified Breakdown: *${title}*
+*(Translated from academic manuscript into plain English)*
+
+---
+
+#### 🌟 **The Core Discovery (In 1 Minute)**
+This publication presents field findings from India's polar research program. It connects extreme polar dynamics (ice, ocean currents, and atmosphere) to broader climate patterns that affect weather worldwide.
+
+#### 🔑 **3 Key Discoveries Explained Simply**
+1. **Direct Field Evidence:** Measurements collected at Indian polar stations provide ground-truth verification of global climate satellite models.
+2. **Environmental Feedback:** Changes in ice reflectivity and ocean temperatures directly influence weather systems far away from the poles.
+3. **Open Scientific Knowledge:** Data archived adhering to FAIR principles to aid climate adaptation strategies.
+
+---
+
+#### 📖 **Jargon Buster**
+• **Ground-Truthing:** Checking satellite photos against real-world physical measurements taken on the ice.
+• **Cryosphere:** All the frozen water parts of Earth, including ice sheets, sea ice, and glaciers.
+
+---
+*💡 Ask any question below or choose a prompt to learn more in simple terms!*`,
+  };
+}
+
 export default function PolarAI({
   onNavigate,
   workspaceSources = [],
@@ -536,6 +785,71 @@ export default function PolarAI({
     }
   }, [chatMessages, isGeneratingChat]);
 
+  // Track sources that have already triggered a welcome/simplification banner
+  const ingestedSourcesRef = useRef<Set<string>>(new Set());
+
+  // Listen to incoming workspaceSources (e.g. from "Understand in Notebook" / "Simplify with AI")
+  useEffect(() => {
+    if (!workspaceSources || workspaceSources.length === 0) return;
+    const lastSource = workspaceSources[workspaceSources.length - 1];
+    if (!lastSource || ingestedSourcesRef.current.has(lastSource.id)) return;
+
+    ingestedSourcesRef.current.add(lastSource.id);
+    const details = getPublicationDetails(lastSource.title);
+
+    const existingIndex = sources.findIndex(
+      (s) => s.id === lastSource.id || s.title.toLowerCase() === lastSource.title.toLowerCase()
+    );
+
+    let targetSource: NotebookSource;
+    if (existingIndex >= 0) {
+      targetSource = sources[existingIndex];
+      setSources((prev) =>
+        prev.map((s, idx) => ({ ...s, selected: idx === existingIndex }))
+      );
+    } else {
+      targetSource = {
+        id: lastSource.id,
+        citationNumber: sources.length + 1,
+        title: lastSource.title,
+        type: (lastSource.type as any) || "publication",
+        authorOrOrigin: lastSource.meta || lastSource.origin || "NCPOR Research Repository",
+        yearOrDate: lastSource.date || "2024",
+        wordCount: 13500,
+        doiOrRef: details.doi,
+        snippet: details.simpleSummary,
+        fullContent: details.fullExplanation,
+        selected: true,
+      };
+      setSources((prev) => [targetSource, ...prev.map((s) => ({ ...s, selected: false }))]);
+    }
+
+    setNotebookTitle(`${lastSource.title.slice(0, 32)}... — Plain English Guide`);
+    setHasStartedChat(true);
+
+    const welcomeMsg: ChatMessage = {
+      id: `welcome-${Date.now()}`,
+      role: "assistant",
+      text: details.welcomeMessage,
+      citations: [
+        {
+          num: 1,
+          sourceId: targetSource.id,
+          sourceTitle: targetSource.title,
+          excerpt: details.simpleSummary,
+        },
+      ],
+      timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+    };
+
+    setChatMessages((prev) => {
+      if (prev.some((m) => m.text.includes(lastSource.title))) return prev;
+      return [welcomeMsg, ...prev];
+    });
+
+    showToast(`✨ Loaded "${lastSource.title.slice(0, 24)}..." into Plain-English Explainer`);
+  }, [workspaceSources]);
+
   // Audio timer simulation
   useEffect(() => {
     let interval: any = null;
@@ -578,7 +892,88 @@ export default function PolarAI({
       let answerText = "";
       let citations: NotebookCitation[] = [];
 
-      if (qLower.includes("sea ice") || qLower.includes("albedo") || qLower.includes("minimum")) {
+      const activePubSource = selectedSources.find((s) => s.type === "publication") || selectedSources[0] || sources[0];
+
+      if (
+        qLower.includes("explain like i'm 5") ||
+        qLower.includes("eli5") ||
+        qLower.includes("simple terms") ||
+        qLower.includes("explain simply")
+      ) {
+        answerText =
+          `🌟 **Explain Like I'm 5 (ELIS5):**\n\nImagine Antarctica is wearing a giant white jacket made of ice. This jacket is so bright that it bounces almost all the sun's hot rays back into outer space like a mirror!\n\n1. **The Ice Melted:** In 2023, parts of this white jacket disappeared, leaving dark blue ocean water exposed [1].\n2. **The Dark Water Gets Warm:** Just like wearing a black t-shirt on a scorching summer day makes you hot, the dark ocean soaked up 93% of the sun's heat [1].\n3. **Why It Matters to Us in India:** The hot water messes up the air winds that travel all the way across the globe. This delayed the Indian monsoon rains by more than a week [1]!\n\nSo when ice melts at the South Pole, it directly changes whether farmers in India get rain on time.`;
+        citations = [
+          {
+            num: 1,
+            sourceId: activePubSource?.id || "src-1",
+            sourceTitle: activePubSource?.title || "Changing Sea Ice Dynamics",
+            excerpt: "Open ocean absorbs 93% of solar heat; shifts Mascarene High delaying Indian monsoon.",
+          },
+        ];
+      } else if (
+        qLower.includes("takeaway") ||
+        qLower.includes("main point") ||
+        qLower.includes("biggest takeaway") ||
+        qLower.includes("key point") ||
+        qLower.includes("summary")
+      ) {
+        answerText =
+          `🔑 **The 3 Biggest Takeaways in Plain English:**\n\n1. **Record-Breaking Melting:** February 2023 saw the smallest Antarctic sea ice extent in 44 years of satellite tracking (1.79 million square kilometers) [1].\n2. **Runaway Heat Cycle:** With less ice reflecting sunlight, polar ocean waters warmed by +1.8°C, accelerating further ice loss [1].\n3. **Global Weather Ripple (Indian Monsoon):** High-latitude polar warming weakened the atmospheric pressure engine (Mascarene High), delaying the onset of the Indian Summer Monsoon by 4 to 9 days [1].`;
+        citations = [
+          {
+            num: 1,
+            sourceId: activePubSource?.id || "src-1",
+            sourceTitle: activePubSource?.title || "Changing Sea Ice Dynamics",
+            excerpt: "Satellite observations confirm 44-year minimum and 4-9 day monsoon onset lag.",
+          },
+        ];
+      } else if (
+        qLower.includes("jargon") ||
+        qLower.includes("technical terms") ||
+        qLower.includes("definition") ||
+        qLower.includes("terms")
+      ) {
+        answerText =
+          `📖 **Jargon Buster (Translating Difficult Terms into Everyday Language):**\n\n• **Ice-Albedo Feedback:** Albedo means 'whiteness' or 'reflectivity'. White snow reflects 85% of solar rays, while dark ocean absorbs 93%. When ice melts, the exposed water absorbs heat and causes more ice to melt [1].\n• **Teleconnections:** Atmospheric phone lines! A climate change happening at the South Pole triggers weather disturbances thousands of kilometers away in India [1].\n• **Thermohaline Circulation:** The ocean's giant conveyor belt powered by temperature ('thermo') and saltiness ('haline'). Cold salty water sinks in Antarctica and flows across the entire globe [1].\n• **Stratospheric Vortex:** A hurricane-like ring of high-altitude winds spinning around the pole, locking freezing air over Antarctica [1].`;
+        citations = [
+          {
+            num: 1,
+            sourceId: activePubSource?.id || "src-1",
+            sourceTitle: activePubSource?.title || "Changing Sea Ice Dynamics",
+            excerpt: "Thermodynamic and circulation feedback mechanisms across polar ocean basins.",
+          },
+        ];
+      } else if (
+        qLower.includes("monsoon") ||
+        qLower.includes("india") ||
+        qLower.includes("indian weather")
+      ) {
+        answerText =
+          `🇮🇳 **How Polar Research Affects India & The Summer Monsoon:**\n\n• **The Mascarene High Link:** When sea ice retreats in Antarctica's Weddell Sea, regional heat flux anomalies alter Southern Hemisphere circulation belts [1].\n• **Pressure Gradient Weakening:** This reduces the strength of the Mascarene High (the atmospheric pressure engine that drives moisture-laden winds across the Indian Ocean towards Mumbai and Kerala) [1].\n• **Delayed Monsoon:** Statistical lag correlations show this shifts and delays the monsoon onset by **4 to 9 days**, which directly impacts agricultural planting, reservoir levels, and food security in India [1].`;
+        citations = [
+          {
+            num: 1,
+            sourceId: activePubSource?.id || "src-1",
+            sourceTitle: activePubSource?.title || "Changing Sea Ice Dynamics",
+            excerpt: "Lag-correlation analysis confirms suppressed Weddell ice delays Indian Summer Monsoon by 4-9 days.",
+          },
+        ];
+      } else if (
+        qLower.includes("microbiome") ||
+        qLower.includes("bacteria") ||
+        qLower.includes("biodiversity")
+      ) {
+        answerText =
+          `🦠 **Antarctic Microbiome & Biological Antifreeze (Plain English):**\n\n• **Life at -20°C:** Indian scientists sampled freezing soils near Maitri Station and discovered 420 types of microscopic bacteria that never freeze solid [3].\n• **Natural Antifreeze:** These microbes manufacture specialized proteins that coat water molecules, preventing sharp ice crystals from puncturing their cells [3].\n• **Why It Matters:** Biotech researchers are studying these antifreeze molecules to extend the shelf life of donated human organs and create frost-resistant farm crops [3].`;
+        citations = [
+          {
+            num: 3,
+            sourceId: "src-3",
+            sourceTitle: "Biodiversity assessment of Antarctic microbiome",
+            excerpt: "Psychrophilic bacterial consortium isolated from Schirmacher Oasis with antifreeze gene cassettes.",
+          },
+        ];
+      } else if (qLower.includes("sea ice") || qLower.includes("albedo") || qLower.includes("minimum")) {
         answerText =
           "According to your indexed sources [1], Antarctic sea ice extent experienced an unprecedented decline in February 2023, dropping to 1.79 million km² — the lowest recorded in 44 years of satellite monitoring [1].\n\nKey mechanisms detailed in the text:\n• Ice-Albedo Loop: The retreat of reflective sea ice exposes open oceanic waters, absorbing 93% of solar irradiance and warming the mixed layer by +1.8°C [1].\n• Monsoonal Teleconnections: Reduced sea ice over the Weddell Sea alters the Mascarene High atmospheric pressure system, delaying the Indian Summer Monsoon by 4 to 9 days [1].\n• Bottom Water Slowdown: Antarctic Bottom Water (AABW) export from the Weddell and Ross gyres has declined by approximately 18% [1].";
         citations = [
@@ -1122,6 +1517,44 @@ export default function PolarAI({
 
         {/* ── CENTER PANEL: BLANK CANVAS / CHAT (6 COLS) ────────────────────── */}
         <div className="lg:col-span-6 bg-white rounded-2xl border border-slate-200/90 shadow-2xs flex flex-col h-full overflow-hidden">
+          {/* Plain English Mode Indicator Ribbon */}
+          <div className="bg-gradient-to-r from-purple-900 via-indigo-900 to-slate-900 text-white px-4 py-2 border-b border-purple-800/40 flex items-center justify-between gap-2 flex-shrink-0 text-xs shadow-xs">
+            <div className="flex items-center gap-2 min-w-0">
+              <span className="text-amber-300 text-sm flex-shrink-0">✨</span>
+              <span className="font-bold truncate">Plain-English Explainer Active</span>
+              <span className="text-[10px] text-purple-200 bg-purple-800/60 px-2 py-0.5 rounded-full border border-purple-700/50 hidden sm:inline flex-shrink-0">
+                Academic jargon translated for everyone
+              </span>
+            </div>
+            <div className="flex items-center gap-1.5 flex-shrink-0">
+              <button
+                type="button"
+                onClick={() => handleSendMessage("Explain like I'm 5 in simple terms")}
+                className="px-2 py-0.5 rounded bg-white/10 hover:bg-white/20 text-white text-[11px] font-semibold transition cursor-pointer"
+                title="Explain like I'm 5"
+              >
+                👶 ELI5
+              </button>
+              <button
+                type="button"
+                onClick={() => handleSendMessage("What are the 3 biggest takeaways in plain English?")}
+                className="px-2 py-0.5 rounded bg-white/10 hover:bg-white/20 text-white text-[11px] font-semibold transition cursor-pointer"
+                title="3 Key Takeaways"
+              >
+                🔑 Key Points
+              </button>
+              <button
+                type="button"
+                onClick={() => handleLaunchStudioTool("podcast")}
+                className="px-2 py-0.5 rounded bg-purple-500/80 hover:bg-purple-500 text-white text-[11px] font-semibold transition flex items-center gap-1 cursor-pointer"
+                title="Listen to 5-minute audio briefing"
+              >
+                <span>🎙️</span>
+                <span className="hidden sm:inline">Podcast</span>
+              </button>
+            </div>
+          </div>
+
           {/* Main Content Area */}
           <div ref={chatScrollRef} className="flex-1 overflow-y-auto p-6 sm:p-8 flex flex-col justify-between">
             {!hasStartedChat ? (
@@ -1145,6 +1578,58 @@ export default function PolarAI({
                   <p className="text-xs sm:text-sm text-slate-500 mt-2 leading-relaxed">
                     This is your blank canvas to understand, create, or make progress on polar research. I can help you get started or you can go ahead and explore your {selectedSources.length} active sources.
                   </p>
+                </div>
+
+                {/* Simplified Paper Assistant Card */}
+                <div className="p-4 rounded-2xl bg-gradient-to-r from-purple-50 via-indigo-50 to-blue-50 border border-purple-200/90 shadow-2xs space-y-2.5 text-left">
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2">
+                      <span className="text-lg">✨</span>
+                      <span className="font-bold text-xs text-purple-900">
+                        Find academic research difficult or heavy to understand?
+                      </span>
+                    </div>
+                    <span className="text-[10px] font-mono bg-purple-100 text-purple-800 px-2 py-0.5 rounded-full font-bold">
+                      NotebookLM Engine
+                    </span>
+                  </div>
+                  <p className="text-xs text-purple-950/80 leading-relaxed">
+                    We translate dense formulas, oceanographic models, and cryospheric jargon into clear plain English with everyday analogies and audio briefings.
+                  </p>
+                  <div className="flex flex-wrap gap-2 pt-1">
+                    <button
+                      type="button"
+                      onClick={() => handleSendMessage("Explain like I'm 5 in simple terms")}
+                      className="px-3 py-1.5 rounded-xl bg-purple-700 hover:bg-purple-800 text-white text-xs font-bold transition shadow-xs cursor-pointer flex items-center gap-1"
+                    >
+                      <span>👶</span>
+                      <span>Explain Like I'm 5</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleSendMessage("What are the 3 biggest takeaways in plain English?")}
+                      className="px-3 py-1.5 rounded-xl bg-white hover:bg-purple-50 text-purple-900 border border-purple-200 text-xs font-bold transition shadow-2xs cursor-pointer flex items-center gap-1"
+                    >
+                      <span>🔑</span>
+                      <span>3 Key Takeaways</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleSendMessage("Break down the difficult technical terms and jargon")}
+                      className="px-3 py-1.5 rounded-xl bg-white hover:bg-purple-50 text-purple-900 border border-purple-200 text-xs font-bold transition shadow-2xs cursor-pointer flex items-center gap-1"
+                    >
+                      <span>📖</span>
+                      <span>Jargon Buster</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleLaunchStudioTool("podcast")}
+                      className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white text-xs font-bold transition shadow-xs cursor-pointer flex items-center gap-1"
+                    >
+                      <span>🎙️</span>
+                      <span>Audio Overview</span>
+                    </button>
+                  </div>
                 </div>
 
                 {/* "What would you like this notebook to help you do?" */}
@@ -1261,7 +1746,30 @@ export default function PolarAI({
             )}
 
             {/* Bottom Capsule Input Bar (Matching Screenshot) */}
-            <div className="pt-4 space-y-1.5">
+            <div className="pt-3 space-y-2">
+              {/* Quick Plain-English Understanding Chips */}
+              <div className="flex items-center gap-1.5 flex-wrap">
+                <span className="text-[10px] font-bold text-purple-700 bg-purple-50 px-2 py-0.5 rounded-full border border-purple-200 flex-shrink-0">
+                  ✨ Plain English:
+                </span>
+                {[
+                  { label: "👶 Explain Like I'm 5", prompt: "Explain like I'm 5 in simple terms" },
+                  { label: "🔑 3 Key Takeaways", prompt: "What are the 3 biggest takeaways in plain English?" },
+                  { label: "📖 Jargon Buster", prompt: "Break down the difficult technical terms and jargon" },
+                  { label: "🇮🇳 Impact on Indian Monsoon", prompt: "How does this paper's findings affect India and the summer monsoon?" },
+                  { label: "🎙️ Audio Podcast", prompt: "Can you provide an audio briefing overview of this paper?" },
+                ].map((chip) => (
+                  <button
+                    key={chip.label}
+                    type="button"
+                    onClick={() => handleSendMessage(chip.prompt)}
+                    className="px-2.5 py-1 rounded-full bg-slate-100 hover:bg-purple-50 hover:text-purple-700 hover:border-purple-300 border border-slate-200 text-[11px] font-medium text-slate-700 transition cursor-pointer shadow-2xs flex items-center gap-1"
+                  >
+                    <span>{chip.label}</span>
+                  </button>
+                ))}
+              </div>
+
               <div className="rounded-full border border-slate-300 bg-white shadow-xs p-1.5 pl-5 pr-2 flex items-center justify-between gap-3 focus-within:border-[#003366] focus-within:shadow-sm transition">
                 <input
                   type="text"

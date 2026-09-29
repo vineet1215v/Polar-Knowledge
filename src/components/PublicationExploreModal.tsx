@@ -81,6 +81,25 @@ export default function PublicationExploreModal({
     },
   ]
 
+  const handleSimplifyInNotebook = () => {
+    const item: WorkspaceSource = {
+      id: `pub-${pub.id}`,
+      type: "publication",
+      title: pub.title,
+      meta: `${pub.journal} · ${pub.year}`,
+      version: "v1.0",
+      date: `${pub.year}`,
+      origin: pub.journal,
+    }
+    onAddToWorkspace?.(item)
+    gameStore.addXP(
+      25,
+      `Opened "${pub.title.slice(0, 24)}..." in Notebook AI for plain-English simplification`,
+    )
+    onClose()
+    onNavigate?.("ai")
+  }
+
   return (
     <div className="h-full overflow-y-auto bg-slate-50 flex flex-col pb-16">
       {/* Top Header Ribbon */}
@@ -113,6 +132,19 @@ export default function PublicationExploreModal({
         </div>
 
         <div className="flex items-center gap-2 flex-shrink-0">
+          {/* Understand in Notebook / Plain English Assistant */}
+          <button
+            onClick={handleSimplifyInNotebook}
+            className="bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white px-3.5 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-sm cursor-pointer border border-purple-400/40"
+            title="Complex academic terminology? Click to understand in Notebook AI with plain English, simple analogies, and audio discussion."
+          >
+            <span className="text-amber-300">✨</span>
+            <span>Understand in Notebook</span>
+            <span className="hidden sm:inline text-[9px] px-1.5 py-0.2 rounded-full bg-white/20 text-white font-mono uppercase tracking-wider font-semibold">
+              Plain English
+            </span>
+          </button>
+
           <button
             onClick={() => onOpenPdf(pub)}
             className="bg-blue-600 hover:bg-blue-500 text-white px-3.5 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-sm cursor-pointer"
@@ -176,6 +208,34 @@ export default function PublicationExploreModal({
           {/* TAB 1: OVERVIEW */}
           {activeTab === "overview" && (
             <div className="space-y-5">
+              {/* Plain-English Assistant Banner */}
+              <div className="card p-4 bg-gradient-to-r from-slate-900 via-indigo-950 to-purple-950 text-white rounded-2xl border border-purple-500/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-md">
+                <div className="flex items-start sm:items-center gap-3">
+                  <div className="w-9 h-9 rounded-xl bg-purple-500/20 border border-purple-400/30 flex items-center justify-center text-xl flex-shrink-0">
+                    💡
+                  </div>
+                  <div>
+                    <div className="text-xs font-bold text-white flex items-center gap-2">
+                      <span>Difficult or dense scientific manuscript?</span>
+                      <span className="text-[10px] font-semibold bg-purple-500/30 text-purple-200 px-2 py-0.5 rounded-full border border-purple-400/30">
+                        Notebook AI Explainer
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-slate-300 mt-0.5 leading-snug">
+                      Scientific papers can be dense and confusing. Open this paper in Notebook AI for plain-English explanations, key takeaways, and a 5-minute audio briefing.
+                    </p>
+                  </div>
+                </div>
+                <button
+                  onClick={handleSimplifyInNotebook}
+                  className="px-3.5 py-2 bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-400 hover:to-indigo-400 text-white rounded-xl text-xs font-black transition flex items-center gap-1.5 shadow-sm flex-shrink-0 cursor-pointer self-stretch sm:self-auto justify-center"
+                >
+                  <span>✨</span>
+                  <span>Simplify in Notebook</span>
+                  <span>→</span>
+                </button>
+              </div>
+
               {/* Metadata Cards HUD */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 <div className="card p-3.5 bg-white border border-slate-200">
@@ -464,19 +524,18 @@ export default function PublicationExploreModal({
           </div>
           <div className="flex items-center gap-2">
             <button
-              onClick={() => {
-                onClose()
-                onNavigate?.("ai")
-              }}
-              className="btn-outline btn-sm text-xs font-semibold flex items-center gap-1"
+              onClick={handleSimplifyInNotebook}
+              className="px-3 py-1.5 rounded-lg border border-purple-300 bg-purple-50 hover:bg-purple-100 text-purple-700 text-xs font-bold transition flex items-center gap-1.5 cursor-pointer shadow-2xs"
+              title="Understand this paper with plain-English summaries and audio overview in Notebook AI"
             >
-              <span></span> Ask Polar AI
+              <span>✨</span>
+              <span>Understand in Notebook</span>
             </button>
             <button
               onClick={() => onOpenPdf(pub)}
               className="btn-primary btn-sm text-xs font-bold flex items-center gap-1.5 shadow-2xs"
             >
-              <span></span> View Full PDF
+              <span>📄</span> View Full PDF
             </button>
           </div>
         </div>

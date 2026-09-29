@@ -1,5 +1,7 @@
-import { useState } from "react"
+import { useState, useRef, useEffect } from "react"
 import { gameStore } from "../gameStore"
+
+import type { WorkspaceSource } from "../workspaceStore"
 
 export interface PublicationItem {
   id: number
@@ -15,14 +17,45 @@ interface Props {
   pub: PublicationItem
   onClose: () => void
   onNavigate?: (p: string) => void
+  onAddToWorkspace?: (s: WorkspaceSource) => void
 }
 
-export default function PublicationPdfModal({ pub, onClose }: Props) {
+export default function PublicationPdfModal({
+  pub,
+  onClose,
+  onNavigate,
+  onAddToWorkspace,
+}: Props) {
   const [zoom, setZoom] = useState<number>(100)
   const [currentPage, setCurrentPage] = useState<number>(1)
   const [activeTab, setActiveTab] = useState<"document" | "figures">("document")
   const [highlightMode, setHighlightMode] = useState<boolean>(false)
   const [paperSearch, setPaperSearch] = useState<string>("")
+  const canvasRef = useRef<HTMLDivElement>(null)
+
+  const handleSimplifyInNotebook = () => {
+    const item: WorkspaceSource = {
+      id: `pub-${pub.id}`,
+      type: "publication",
+      title: pub.title,
+      meta: `${pub.journal} · ${pub.year}`,
+      version: "v1.0",
+      date: `${pub.year}`,
+      origin: pub.journal,
+    }
+    onAddToWorkspace?.(item)
+    gameStore.addXP(
+      25,
+      `Opened "${pub.title.slice(0, 24)}..." in Notebook AI for plain-English simplification`,
+    )
+    onNavigate?.("ai")
+  }
+
+  useEffect(() => {
+    if (canvasRef.current) {
+      canvasRef.current.scrollTop = 0
+    }
+  }, [currentPage, activeTab])
 
   const totalPages = 8
 
@@ -52,195 +85,198 @@ export default function PublicationPdfModal({ pub, onClose }: Props) {
   }
 
   return (
-    <div className="min-h-full bg-slate-100 flex flex-col pb-16">
-      {/* Top PDF Reader Control Ribbon */}
-      <div className="sticky top-0 z-30 bg-slate-900 text-white px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 shadow-sm flex-shrink-0">
-        {/* Document Title & Meta */}
-        <div className="flex items-center gap-3 min-w-0">
+    <div className="h-full flex flex-col overflow-hidden bg-slate-100">
+      {/* ── ULTRA-SLIM UNIFIED PDF READER TOOLBAR (Single Compact Row) ── */}
+      <div className="bg-slate-900 text-white px-3 sm:px-4 py-1.5 border-b border-slate-800 shadow-sm flex items-center justify-between gap-2 flex-shrink-0 z-30 flex-nowrap overflow-x-auto">
+        {/* Left: Back Button + PDF Tag + Document Title */}
+        <div className="flex items-center gap-2 min-w-0 flex-shrink">
           <button
             onClick={onClose}
-            className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-red-600 hover:bg-red-500 text-white text-xs font-bold transition shadow-2xs cursor-pointer flex-shrink-0"
+            className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-red-600 hover:bg-red-500 text-white text-xs font-bold transition shadow-xs cursor-pointer flex-shrink-0"
+            title="Return to Publications"
           >
             <span>←</span>
-            <span>Back to Publications</span>
+            <span className="hidden sm:inline">Back</span>
           </button>
-          <div className="h-5 w-px bg-slate-700 hidden sm:block" />
-          <div className="w-8 h-8 rounded-lg bg-red-600 text-white flex items-center justify-center font-black text-[11px] shadow-xs flex-shrink-0">
+
+          <span className="px-1.5 py-0.5 rounded bg-red-600 text-white text-[10px] font-black tracking-wider flex-shrink-0">
             PDF
-          </div>
-          <div className="min-w-0">
-            <h3 className="font-bold text-xs sm:text-sm text-white truncate max-w-xs sm:max-w-md md:max-w-xl">
+          </span>
+
+          <div className="min-w-0 truncate">
+            <h3
+              className="font-bold text-xs sm:text-sm text-white truncate max-w-[140px] sm:max-w-xs md:max-w-sm lg:max-w-md"
+              title={pub.title}
+            >
               {pub.title}
             </h3>
-              <div className="text-[10px] text-slate-400 flex items-center gap-2">
-                <span className="text-slate-300 font-medium">
-                  {pub.journal}
-                </span>
-                <span>•</span>
-                <span className="font-mono text-slate-400">DOI: {pub.doi}</span>
-                <span>•</span>
-                <span className="text-emerald-400 font-semibold">
-                  Open Access
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* Reader Toolbar Buttons */}
-          <div className="flex items-center gap-1.5 flex-wrap">
-            {/* View Switcher */}
-            <div className="flex bg-slate-800 p-0.5 rounded-lg text-xs">
-              <button
-                onClick={() => setActiveTab("document")}
-                className={`px-2.5 py-1 rounded-md font-semibold transition ${
-                  activeTab === "document"
-                    ? "bg-blue-600 text-white shadow-2xs"
-                    : "text-slate-400 hover:text-white"
-                }`}
-              >
-                Paper
-              </button>
-              <button
-                onClick={() => setActiveTab("figures")}
-                className={`px-2.5 py-1 rounded-md font-semibold transition ${
-                  activeTab === "figures"
-                    ? "bg-blue-600 text-white shadow-2xs"
-                    : "text-slate-400 hover:text-white"
-                }`}
-              >
-                Figures
-              </button>
-            </div>
-
-            {/* Page navigation */}
-            {activeTab === "document" && (
-              <div className="flex items-center gap-1 bg-slate-800 px-2 py-1 rounded-lg text-xs text-slate-300">
-                <button
-                  disabled={currentPage <= 1}
-                  onClick={() =>
-                    setCurrentPage((prev) => Math.max(1, prev - 1))
-                  }
-                  className="px-1.5 py-0.5 rounded hover:bg-slate-700 disabled:opacity-40 font-bold"
-                  title="Previous Page"
-                >
-                  ◀
-                </button>
-                <span className="font-mono font-bold text-[11px] px-1 text-white">
-                  {currentPage} / {totalPages}
-                </span>
-                <button
-                  disabled={currentPage >= totalPages}
-                  onClick={() =>
-                    setCurrentPage((prev) => Math.min(totalPages, prev + 1))
-                  }
-                  className="px-1.5 py-0.5 rounded hover:bg-slate-700 disabled:opacity-40 font-bold"
-                  title="Next Page"
-                >
-                  ▶
-                </button>
-              </div>
-            )}
-
-            {/* Zoom Controls */}
-            {activeTab === "document" && (
-              <div className="hidden md:flex items-center gap-1 bg-slate-800 px-2 py-1 rounded-lg text-xs text-slate-300">
-                <button
-                  onClick={() => setZoom((prev) => Math.max(75, prev - 15))}
-                  className="px-1 font-bold hover:text-white"
-                  title="Zoom Out"
-                >
-                  −
-                </button>
-                <span className="font-mono font-semibold text-[10px] w-8 text-center">
-                  {zoom}%
-                </span>
-                <button
-                  onClick={() => setZoom((prev) => Math.min(150, prev + 15))}
-                  className="px-1 font-bold hover:text-white"
-                  title="Zoom In"
-                >
-                  +
-                </button>
-              </div>
-            )}
-
-            {/* Highlighter tool */}
-            <button
-              onClick={() => {
-                setHighlightMode(!highlightMode)
-                if (!highlightMode)
-                  gameStore.addXP(15, "Activated Scientific Highlighter Tool")
-              }}
-              className={`px-2 py-1 rounded-lg text-xs transition flex items-center gap-1 ${
-                highlightMode
-                  ? "bg-amber-400 text-slate-950 font-bold"
-                  : "bg-slate-800 text-slate-300 hover:text-white"
-              }`}
-              title="Toggle Text Highlight Tool"
-            >
-              <span></span>
-              <span className="hidden sm:inline">Highlight</span>
-            </button>
-
-            {/* Download PDF button */}
-            <button
-              onClick={handleDownloadPdf}
-              className="px-3 py-1 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-xs font-bold transition flex items-center gap-1 shadow-xs"
-            >
-              <span>📥</span>
-              <span className="hidden sm:inline">Download</span>
-            </button>
           </div>
         </div>
 
-        {/* Page Thumbnail Strip (When in document mode) */}
-        {activeTab === "document" && (
-          <div className="sticky top-[53px] z-20 bg-slate-800/95 px-4 py-2 border-b border-slate-700 flex items-center gap-2 overflow-x-auto text-xs text-slate-300 flex-shrink-0 shadow-xs">
-            <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider flex-shrink-0">
-              Jump to Page:
-            </span>
-            {Array.from({ length: totalPages }, (_, i) => i + 1).map(
-              (pageNum) => (
-                <button
-                  key={pageNum}
-                  onClick={() => {
-                    setCurrentPage(pageNum)
-                    gameStore.addXP(5, `Navigated to Page ${pageNum}`)
-                  }}
-                  className={`px-2.5 py-0.5 rounded text-xs font-mono font-bold transition ${
-                    currentPage === pageNum
-                      ? "bg-blue-500 text-white shadow-xs"
-                      : "bg-slate-700 hover:bg-slate-600 text-slate-300"
-                  }`}
-                >
-                  P.{pageNum}
-                </button>
-              ),
-            )}
-
-            {/* Search in paper input */}
-            <div className="ml-auto hidden sm:flex items-center gap-1">
-              <input
-                type="text"
-                value={paperSearch}
-                onChange={(e) => setPaperSearch(e.target.value)}
-                placeholder="Find in manuscript..."
-                className="bg-slate-900 border border-slate-700 rounded px-2 py-0.5 text-[11px] text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 w-36"
-              />
-              {paperSearch && (
-                <button
-                  onClick={() => setPaperSearch("")}
-                  className="text-slate-400 hover:text-white text-xs px-1"
-                >
-                  x
-                </button>
-              )}
-            </div>
+        {/* Center: Paper/Figures Toggle + Integrated Page Numbers 1..8 */}
+        <div className="flex items-center gap-1.5 flex-shrink-0">
+          {/* Mode Switcher */}
+          <div className="flex bg-slate-800 p-0.5 rounded-lg text-xs">
+            <button
+              onClick={() => setActiveTab("document")}
+              className={`px-2 py-0.5 rounded text-xs font-semibold transition ${
+                activeTab === "document"
+                  ? "bg-blue-600 text-white shadow-xs"
+                  : "text-slate-400 hover:text-white"
+              }`}
+            >
+              Paper
+            </button>
+            <button
+              onClick={() => setActiveTab("figures")}
+              className={`px-2 py-0.5 rounded text-xs font-semibold transition ${
+                activeTab === "figures"
+                  ? "bg-blue-600 text-white shadow-xs"
+                  : "text-slate-400 hover:text-white"
+              }`}
+            >
+              Figures
+            </button>
           </div>
-        )}
 
-        {/* Reader Canvas Area */}
-        <div className="flex-1 bg-slate-100 overflow-y-auto p-3 sm:p-6 flex justify-center">
+          {/* Integrated Page Navigator Pills */}
+          {activeTab === "document" && (
+            <div className="flex items-center gap-1 bg-slate-800 px-1.5 py-0.5 rounded-lg text-xs text-slate-300">
+              <button
+                disabled={currentPage <= 1}
+                onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
+                className="px-1 py-0.5 rounded hover:bg-slate-700 disabled:opacity-30 text-[11px] font-bold"
+                title="Previous Page"
+              >
+                ◀
+              </button>
+
+              <div className="flex items-center gap-0.5">
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                  (pageNum) => (
+                    <button
+                      key={pageNum}
+                      onClick={() => {
+                        setCurrentPage(pageNum)
+                        gameStore.addXP(5, `Navigated to Page ${pageNum}`)
+                      }}
+                      className={`w-5 h-5 rounded text-[10px] font-mono font-bold flex items-center justify-center transition ${
+                        currentPage === pageNum
+                          ? "bg-blue-500 text-white shadow-xs"
+                          : "text-slate-400 hover:text-white hover:bg-slate-700"
+                      }`}
+                      title={`Jump to Page ${pageNum}`}
+                    >
+                      {pageNum}
+                    </button>
+                  ),
+                )}
+              </div>
+
+              <button
+                disabled={currentPage >= totalPages}
+                onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
+                className="px-1 py-0.5 rounded hover:bg-slate-700 disabled:opacity-30 text-[11px] font-bold"
+                title="Next Page"
+              >
+                ▶
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* Right: Zoom + Quick Search + Highlight + Download */}
+        <div className="flex items-center gap-1.5 flex-shrink-0">
+          {/* Zoom */}
+          {activeTab === "document" && (
+            <div className="hidden xl:flex items-center bg-slate-800 px-1.5 py-0.5 rounded-lg text-xs text-slate-300">
+              <button
+                onClick={() => setZoom((prev) => Math.max(75, prev - 10))}
+                className="px-1 font-bold hover:text-white text-xs"
+                title="Zoom Out"
+              >
+                −
+              </button>
+              <span className="font-mono font-semibold text-[10px] w-7 text-center">
+                {zoom}%
+              </span>
+              <button
+                onClick={() => setZoom((prev) => Math.min(150, prev + 10))}
+                className="px-1 font-bold hover:text-white text-xs"
+                title="Zoom In"
+              >
+                +
+              </button>
+            </div>
+          )}
+
+          {/* Quick Search */}
+          <div className="hidden md:flex items-center relative">
+            <input
+              type="text"
+              value={paperSearch}
+              onChange={(e) => setPaperSearch(e.target.value)}
+              placeholder="Find..."
+              className="bg-slate-800 border border-slate-700 rounded-lg px-2 py-0.5 text-[11px] text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 w-20 sm:w-24"
+            />
+            {paperSearch && (
+              <button
+                onClick={() => setPaperSearch("")}
+                className="absolute right-1 text-slate-400 hover:text-white text-[10px]"
+              >
+                ✕
+              </button>
+            )}
+          </div>
+
+          {/* Highlighter Tool */}
+          <button
+            onClick={() => {
+              setHighlightMode(!highlightMode)
+              if (!highlightMode)
+                gameStore.addXP(15, "Activated Scientific Highlighter Tool")
+            }}
+            className={`px-2 py-1 rounded-lg text-xs transition flex items-center gap-1 ${
+              highlightMode
+                ? "bg-amber-400 text-slate-950 font-bold"
+                : "bg-slate-800 text-slate-300 hover:text-white"
+            }`}
+            title="Toggle Text Highlight Tool"
+          >
+            <span>✏️</span>
+            <span className="hidden sm:inline text-[11px]">Highlight</span>
+          </button>
+
+          {/* Understand in Notebook / Plain English Assistant */}
+          <button
+            onClick={handleSimplifyInNotebook}
+            className="px-2.5 py-1 rounded-lg bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white text-xs font-bold transition flex items-center gap-1.5 shadow-xs cursor-pointer border border-purple-400/40 flex-shrink-0"
+            title="Finding this manuscript dense or difficult? Click to understand in Notebook AI with plain English, simple analogies, and audio discussion."
+          >
+            <span className="text-amber-300">✨</span>
+            <span>Understand in Notebook</span>
+            <span className="hidden xl:inline text-[9px] px-1.5 py-0.2 rounded-full bg-white/20 text-white font-mono uppercase tracking-wider font-semibold">
+              Plain English
+            </span>
+          </button>
+
+          {/* Download PDF button */}
+          <button
+            onClick={handleDownloadPdf}
+            className="px-2.5 py-1 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-xs font-bold transition flex items-center gap-1 shadow-xs"
+            title="Download Manuscript PDF"
+          >
+            <span>📥</span>
+            <span className="hidden sm:inline text-[11px]">Download</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Reader Canvas Area */}
+      <div
+        ref={canvasRef}
+        className="flex-1 min-h-0 bg-slate-100 overflow-y-auto p-3 sm:p-5 flex justify-center pb-20"
+      >
           {activeTab === "document" && (
             <div
               className="bg-white shadow-xl rounded-sm border border-slate-300 text-slate-900 transition-all duration-200"
@@ -267,6 +303,34 @@ export default function PublicationPdfModal({ pub, onClose }: Props) {
               {/* PAGE 1: Front Matter & Abstract */}
               {currentPage === 1 && (
                 <div>
+                  {/* ── PLAIN-ENGLISH READING ASSISTANT BANNER ── */}
+                  <div className="mb-6 bg-gradient-to-r from-slate-900 via-indigo-950 to-purple-950 text-white rounded-xl p-3.5 border border-purple-500/30 shadow-md flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 font-sans">
+                    <div className="flex items-start sm:items-center gap-3">
+                      <div className="w-8 h-8 rounded-lg bg-purple-500/20 border border-purple-400/30 flex items-center justify-center text-lg flex-shrink-0">
+                        💡
+                      </div>
+                      <div>
+                        <div className="text-xs font-bold text-white flex items-center gap-2">
+                          <span>Difficult or dense academic text?</span>
+                          <span className="text-[10px] font-semibold bg-purple-500/30 text-purple-200 px-2 py-0.5 rounded-full border border-purple-400/30">
+                            Notebook AI Simplifier
+                          </span>
+                        </div>
+                        <p className="text-[11px] text-slate-300 mt-0.5 leading-snug">
+                          Convert complex oceanographic models and technical jargon into simple everyday terms, key takeaways, and a 5-min audio podcast.
+                        </p>
+                      </div>
+                    </div>
+                    <button
+                      onClick={handleSimplifyInNotebook}
+                      className="px-3.5 py-1.5 rounded-lg bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-400 hover:to-indigo-400 text-white text-xs font-black transition flex items-center gap-1.5 shadow-sm flex-shrink-0 cursor-pointer self-stretch sm:self-auto justify-center"
+                    >
+                      <span>✨</span>
+                      <span>Simplify in Notebook</span>
+                      <span>→</span>
+                    </button>
+                  </div>
+
                   <h1 className="text-2xl font-bold leading-tight mb-3 text-slate-950 font-serif">
                     {pub.title}
                   </h1>
@@ -301,9 +365,20 @@ export default function PublicationPdfModal({ pub, onClose }: Props) {
                         : "bg-slate-50 border-slate-200"
                     }`}
                   >
-                    <h4 className="font-sans font-bold text-xs uppercase tracking-wider text-slate-800 mb-2">
-                      Abstract
-                    </h4>
+                    <div className="flex items-center justify-between mb-2">
+                      <h4 className="font-sans font-bold text-xs uppercase tracking-wider text-slate-800">
+                        Abstract
+                      </h4>
+                      <button
+                        onClick={handleSimplifyInNotebook}
+                        className="text-[11px] font-bold text-purple-700 hover:text-purple-900 flex items-center gap-1 cursor-pointer hover:underline font-sans"
+                        title="Understand this abstract in simple words"
+                      >
+                        <span>✨</span>
+                        <span>Explain Simply in Notebook</span>
+                        <span>→</span>
+                      </button>
+                    </div>
                     <p className="text-sm leading-relaxed text-slate-800 text-justify">
                       High-latitude polar observations collected during Indian
                       scientific expeditions provide critical empirical
