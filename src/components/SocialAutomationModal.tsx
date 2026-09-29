@@ -1,24 +1,24 @@
-import { useState, useRef } from "react";
-import { WorkspaceSource } from "../workspaceStore";
+import { useState, useRef } from "react"
+import { WorkspaceSource } from "../workspaceStore"
 
 interface SocialAutomationModalProps {
-  sources?: WorkspaceSource[];
-  initialTopic?: string;
-  initialContent?: string;
-  onClose: () => void;
-  onNavigate?: (p: string) => void;
+  sources?: WorkspaceSource[]
+  initialTopic?: string
+  initialContent?: string
+  onClose: () => void
+  onNavigate?: (p: string) => void
 }
 
-type Platform = "twitter" | "facebook" | "instagram" | "linkedin" | "telegram" | "whatsapp" | "reddit" | "webhook";
+type Platform = "twitter" | "facebook" | "instagram" | "linkedin" | "telegram" | "whatsapp" | "reddit" | "webhook"
 
 interface TemplatePreset {
-  id: string;
-  name: string;
-  icon: string;
-  topic: string;
-  description: string;
-  station: string;
-  tags: string[];
+  id: string
+  name: string
+  icon: string
+  topic: string
+  description: string
+  station: string
+  tags: string[]
 }
 
 const TEMPLATES: TemplatePreset[] = [
@@ -26,48 +26,88 @@ const TEMPLATES: TemplatePreset[] = [
     id: "expedition",
     name: "Expedition Live Dispatch",
     icon: "",
-    topic: "46th Indian Antarctic Expedition reaches Bharati Station for seasonal science ops",
-    description: "Field updates, science ops, and logistics from Maitri & Bharati stations",
+    topic:
+      "46th Indian Antarctic Expedition reaches Bharati Station for seasonal science ops",
+    description:
+      "Field updates, science ops, and logistics from Maitri & Bharati stations",
     station: "Bharati Station · 69°S",
-    tags: ["#NCPOR", "#Antarctica", "#IndianAntarcticExpedition", "#PolarScience", "#BharatiStation"],
+    tags: [
+      "#NCPOR",
+      "#Antarctica",
+      "#IndianAntarcticExpedition",
+      "#PolarScience",
+      "#BharatiStation",
+    ],
   },
   {
     id: "cryosphere",
     name: "Climate & Cryosphere Alert",
     icon: "",
-    topic: "Southern Ocean Sea Ice Extent analysis reveals critical interannual anomalies",
-    description: "Satellite observations, ice shelf monitoring, and global climate implications",
+    topic:
+      "Southern Ocean Sea Ice Extent analysis reveals critical interannual anomalies",
+    description:
+      "Satellite observations, ice shelf monitoring, and global climate implications",
     station: "Southern Ocean · Cryosphere Hub",
-    tags: ["#ClimateAction", "#SeaIce", "#SouthernOcean", "#Cryosphere", "#MoES"],
+    tags: [
+      "#ClimateAction",
+      "#SeaIce",
+      "#SouthernOcean",
+      "#Cryosphere",
+      "#MoES",
+    ],
   },
   {
     id: "research",
     name: "Research Breakthrough",
     icon: "",
-    topic: "New NCPOR study: Subglacial bedrock mapping reveals hidden Antarctic thermal dynamics",
-    description: "Plain-language summary of peer-reviewed findings with DOI citation",
+    topic:
+      "New NCPOR study: Subglacial bedrock mapping reveals hidden Antarctic thermal dynamics",
+    description:
+      "Plain-language summary of peer-reviewed findings with DOI citation",
     station: "Central Analytical Lab · Goa",
-    tags: ["#NCPORResearch", "#Geosciences", "#EarthScience", "#Glaciology", "#PeerReviewed"],
+    tags: [
+      "#NCPORResearch",
+      "#Geosciences",
+      "#EarthScience",
+      "#Glaciology",
+      "#PeerReviewed",
+    ],
   },
   {
     id: "education",
     name: "Polar Fact & Student Quiz",
     icon: "",
-    topic: "How do Antarctic ice sheets preserve Earth's climate history over 800,000 years?",
-    description: "Engaging STEM outreach fact, interactive quiz question, and learning challenge",
+    topic:
+      "How do Antarctic ice sheets preserve Earth's climate history over 800,000 years?",
+    description:
+      "Engaging STEM outreach fact, interactive quiz question, and learning challenge",
     station: "Polar Outreach Division",
-    tags: ["#PolarEducation", "#STEMIndia", "#LearnScience", "#NCPOR", "#IceCores"],
+    tags: [
+      "#PolarEducation",
+      "#STEMIndia",
+      "#LearnScience",
+      "#NCPOR",
+      "#IceCores",
+    ],
   },
   {
     id: "announcement",
     name: "Official MoES Announcement",
     icon: "",
-    topic: "MoES & NCPOR announce National Polar Science Fellowship 2026-27 call for proposals",
-    description: "Grant opportunities, recruitment drives, symposiums, and institutional news",
+    topic:
+      "MoES & NCPOR announce National Polar Science Fellowship 2026-27 call for proposals",
+    description:
+      "Grant opportunities, recruitment drives, symposiums, and institutional news",
     station: "Ministry of Earth Sciences",
-    tags: ["#MoES", "#NCPOR", "#Fellowship2026", "#ResearchGrant", "#GovtOfIndia"],
+    tags: [
+      "#MoES",
+      "#NCPOR",
+      "#Fellowship2026",
+      "#ResearchGrant",
+      "#GovtOfIndia",
+    ],
   },
-];
+]
 
 const SUGGESTED_TOPICS = [
   "46th Indian Antarctic Expedition reaches Maitri & Bharati stations",
@@ -75,7 +115,7 @@ const SUGGESTED_TOPICS = [
   "Himadri Arctic Station: Microplastics discovered in Svalbard snow samples",
   "Prydz Bay Marine Ecosystem Survey reveals resilient benthic fauna",
   "NCPOR & MoES National Polar Fellowship 2026-27 Applications Open",
-];
+]
 
 export default function SocialAutomationModal({
   sources = [],
@@ -83,64 +123,78 @@ export default function SocialAutomationModal({
   initialContent = "",
   onClose,
 }: SocialAutomationModalProps) {
-  const [selectedTemplate, setSelectedTemplate] = useState<string>("expedition");
+  const [selectedTemplate, setSelectedTemplate] = useState<string>("expedition")
   const [topic, setTopic] = useState<string>(
-    initialTopic || (sources.length > 0 ? sources[0].title : TEMPLATES[0].topic)
-  );
-  const [tone, setTone] = useState<"engaging" | "scholarly" | "alert" | "youth">("engaging");
-  const [activePlatform, setActivePlatform] = useState<Platform>("twitter");
-  const [stationBadge, setStationBadge] = useState<string>(TEMPLATES[0].station);
-  const [splitThreads, setSplitThreads] = useState(true);
-  const [copiedToast, setCopiedToast] = useState<string | null>(null);
+    initialTopic ||
+      (sources.length > 0 ? sources[0].title : TEMPLATES[0].topic),
+  )
+  const [tone, setTone] =
+    useState<"engaging" | "scholarly" | "alert" | "youth">("engaging")
+  const [activePlatform, setActivePlatform] = useState<Platform>("twitter")
+  const [stationBadge, setStationBadge] = useState<string>(TEMPLATES[0].station)
+  const [splitThreads, setSplitThreads] = useState(true)
+  const [copiedToast, setCopiedToast] = useState<string | null>(null)
 
   // Webhook / Dispatcher state
-  const [webhookUrl, setWebhookUrl] = useState("https://api.ncpor.res.in/v1/syndicate/broadcast");
-  const [selectedPlatforms, setSelectedPlatforms] = useState<Record<string, boolean>>({
-    twitter: true,
-    facebook: true,
-    instagram: true,
-    linkedin: true,
-    telegram: true,
-    whatsapp: true,
-    reddit: false,
-  });
-  const [isDispatching, setIsDispatching] = useState(false);
-  const [dispatchLogs, setDispatchLogs] = useState<Array<{ time: string; text: string; status: "success" | "pending" | "info" }>>([]);
-  const [downloadSuccess, setDownloadSuccess] = useState(false);
+  const [webhookUrl, setWebhookUrl] = useState(
+    "https://api.ncpor.res.in/v1/syndicate/broadcast",
+  )
+  const [selectedPlatforms, setSelectedPlatforms] =
+    useState<Record<string, boolean>>({
+      twitter: true,
+      facebook: true,
+      instagram: true,
+      linkedin: true,
+      telegram: true,
+      whatsapp: true,
+      reddit: false,
+    })
+  const [isDispatching, setIsDispatching] = useState(false)
+  const [dispatchLogs, setDispatchLogs] = useState<Array<{
+    time: string
+    text: string
+    status: "success" | "pending" | "info"
+  }>>([])
+  const [downloadSuccess, setDownloadSuccess] = useState(false)
 
   // Visual card reference
-  const cardRef = useRef<HTMLDivElement>(null);
+  const cardRef = useRef<HTMLDivElement>(null)
 
-  const activePreset = TEMPLATES.find(t => t.id === selectedTemplate) || TEMPLATES[0];
+  const activePreset =
+    TEMPLATES.find((t) => t.id === selectedTemplate) || TEMPLATES[0]
 
   // Helper to trigger toast
   const triggerToast = (msg: string) => {
-    setCopiedToast(msg);
-    setTimeout(() => setCopiedToast(null), 3000);
-  };
+    setCopiedToast(msg)
+    setTimeout(() => setCopiedToast(null), 3000)
+  }
 
   // Generate platform-specific texts based on topic, tone, sources
-  const sourceRef = sources.length > 0 ? ` (Based on ${sources.length} indexed source: ${sources[0].title})` : "";
+  const sourceRef =
+    sources.length > 0
+      ? ` (Based on ${sources.length} indexed source: ${sources[0].title})`
+      : ""
 
   // 1. Twitter / X text
-  const rawTweet = tone === "alert"
-    ? `Alert:  POLAR CLIMATE UPDATE: ${topic}. Observations from our polar teams confirm critical dynamics in the polar cryosphere.${sourceRef} Full findings: ncpor.res.in/news #NCPOR #ClimateAction`
-    : tone === "scholarly"
-    ? `New scientific dispatch from NCPOR: "${topic}". Grounded in ongoing data collection across Indian research stations.${sourceRef} Access repository: ncpor.res.in/repo #PolarScience #MoES`
-    : tone === "youth"
-    ? ` Did you know? ${topic}! Indian scientists at Maitri & Bharati are unraveling Earth's frozen mysteries right now! IND What would you ask them? #NCPOR #STEMIndia #PolarScience`
-    : ` Live from Antarctica: ${topic}! Our science teams continue mission-critical observations in one of Earth's most extreme frontiers. IND Details: ncpor.res.in #NCPOR #Antarctica #PolarScience`;
+  const rawTweet =
+    tone === "alert"
+      ? `Alert:  POLAR CLIMATE UPDATE: ${topic}. Observations from our polar teams confirm critical dynamics in the polar cryosphere.${sourceRef} Full findings: ncpor.res.in/news #NCPOR #ClimateAction`
+      : tone === "scholarly"
+        ? `New scientific dispatch from NCPOR: "${topic}". Grounded in ongoing data collection across Indian research stations.${sourceRef} Access repository: ncpor.res.in/repo #PolarScience #MoES`
+        : tone === "youth"
+          ? ` Did you know? ${topic}! Indian scientists at Maitri & Bharati are unraveling Earth's frozen mysteries right now! IND What would you ask them? #NCPOR #STEMIndia #PolarScience`
+          : ` Live from Antarctica: ${topic}! Our science teams continue mission-critical observations in one of Earth's most extreme frontiers. IND Details: ncpor.res.in #NCPOR #Antarctica #PolarScience`
 
   // Thread splitting logic
-  const tweetThreads: string[] = [];
+  const tweetThreads: string[] = []
   if (rawTweet.length > 270 && splitThreads) {
-    const half = Math.ceil(rawTweet.length / 2);
-    const spaceIdx = rawTweet.lastIndexOf(" ", half);
-    const splitPoint = spaceIdx > 0 ? spaceIdx : half;
-    tweetThreads.push(`[1/2] ` + rawTweet.slice(0, splitPoint));
-    tweetThreads.push(`[2/2] ` + rawTweet.slice(splitPoint).trim() + ` #NCPOR`);
+    const half = Math.ceil(rawTweet.length / 2)
+    const spaceIdx = rawTweet.lastIndexOf(" ", half)
+    const splitPoint = spaceIdx > 0 ? spaceIdx : half
+    tweetThreads.push(`[1/2] ` + rawTweet.slice(0, splitPoint))
+    tweetThreads.push(`[2/2] ` + rawTweet.slice(splitPoint).trim() + ` #NCPOR`)
   } else {
-    tweetThreads.push(rawTweet);
+    tweetThreads.push(rawTweet)
   }
 
   // 2. Facebook Post
@@ -154,10 +208,14 @@ Key Scientific Highlights:
 • Direct data integration with global climate models & IPCC benchmarks
 • Spearheaded by Indian polar researchers and logisticians
 
-${sources.length > 0 ? ` Verified Repository Citations:\n${sources.map((s, i) => `[${i + 1}] ${s.title}`).join("\n")}\n\n` : ""}Stay connected with India's polar legacy and discover open datasets, publications, and expedition dispatches at:
+${
+  sources.length > 0
+    ? ` Verified Repository Citations:\n${sources.map((s, i) => `[${i + 1}] ${s.title}`).join("\n")}\n\n`
+    : ""
+}Stay connected with India's polar legacy and discover open datasets, publications, and expedition dispatches at:
  https://ncpor.res.in
 
-#NCPOR #MoES #Antarctica #Arctic #PolarScience #GovernmentOfIndia #ClimateChange`;
+#NCPOR #MoES #Antarctica #Arctic #PolarScience #GovernmentOfIndia #ClimateChange`
 
   // 3. Instagram Caption
   const instagramCaption = ` DISPATCH FROM THE FROZEN CONTINENT Antarctica
@@ -166,12 +224,14 @@ ${topic}
 
 Through 46 historic expeditions, Indian polar researchers have stood sentinel at the ends of the Earth. From the rocky oasis of Maitri to the coastal ice sheets of Bharati and the high Arctic at Himadri, our scientists track sea ice, atmospheric ozone, and global ocean currents that regulate our planet's climate.
 
-${sources.length > 0 ? ` Source Grounding: ${sources[0].title}\n\n` : ""} What polar science mystery should our scientists investigate next? Drop your thoughts below!
+${
+  sources.length > 0 ? ` Source Grounding: ${sources[0].title}\n\n` : ""
+} What polar science mystery should our scientists investigate next? Drop your thoughts below!
 
  Share this post to champion India's scientific leadership at the poles!
 
 ━━━━━━━━━━━━━━━━━━━━
-#NCPOR #Antarctica #MaitriStation #BharatiStation #Himadri #IndianAntarcticProgramme #MinistryOfEarthSciences #PolarScience #Glaciology #SouthernOcean #ClimateCrisis #EarthSciences #ScienceIndia #STEMIndia #Oceanography #PolarExploration #Cryosphere`;
+#NCPOR #Antarctica #MaitriStation #BharatiStation #Himadri #IndianAntarcticProgramme #MinistryOfEarthSciences #PolarScience #Glaciology #SouthernOcean #ClimateCrisis #EarthSciences #ScienceIndia #STEMIndia #Oceanography #PolarExploration #Cryosphere`
 
   // 4. LinkedIn Professional Post
   const linkedinPost = `The National Centre for Polar and Ocean Research (NCPOR), an autonomous institute under the Ministry of Earth Sciences, is pleased to share our latest research dispatch:
@@ -183,10 +243,14 @@ Key Takeaways for the Polar Science & Climate Policy Community:
  High-Resolution Datasets: Verified field datasets have been ingested into the NCPOR Polar Knowledge Repository for open-access scientific inquiry.
  Global Teleconnections: Findings offer crucial insights into teleconnections linking the Southern Ocean to the Indian monsoon system.
 
-${sources.length > 0 ? `Citations & Grounded Sources:\n${sources.map((s, i) => `• ${s.title} (${s.meta || "NCPOR Archive"})`).join("\n")}\n\n` : ""}Access comprehensive publications and download associated NetCDF datasets:
+${
+  sources.length > 0
+    ? `Citations & Grounded Sources:\n${sources.map((s, i) => `• ${s.title} (${s.meta || "NCPOR Archive"})`).join("\n")}\n\n`
+    : ""
+}Access comprehensive publications and download associated NetCDF datasets:
  https://ncpor.res.in/publications
 
-#PolarScience #Glaciology #ClimateResearch #NCPOR #MinistryOfEarthSciences #Sustainability #EarthObservation #OpenScience`;
+#PolarScience #Glaciology #ClimateResearch #NCPOR #MinistryOfEarthSciences #Sustainability #EarthObservation #OpenScience`
 
   // 5. Telegram Channel Post
   const telegramPost = ` *NCPOR POLAR BROADCAST*
@@ -201,9 +265,11 @@ Scientists at India's Antarctic stations (*Maitri* & *Bharati*) and Arctic base 
 • Ingested into national polar data repository
 • Open for research and academic review
 
-${sources.length > 0 ? ` *Reference:* \`${sources[0].title}\`\n\n` : ""} *Read Full Dispatch:* https://ncpor.res.in/news
+${
+  sources.length > 0 ? ` *Reference:* \`${sources[0].title}\`\n\n` : ""
+} *Read Full Dispatch:* https://ncpor.res.in/news
 ━━━━━━━━━━━━━━━━━━━━
-_National Centre for Polar and Ocean Research, Goa_`;
+_National Centre for Polar and Ocean Research, Goa_`
 
   // 6. WhatsApp Broadcast
   const whatsappPost = `*NCPOR Polar Science Alert* 
@@ -219,10 +285,10 @@ OK Verified Institutional Grounding
 Read official release & view satellite map:
  https://ncpor.res.in
 
-_Forward to students and science enthusiasts!_`;
+_Forward to students and science enthusiasts!_`
 
   // 7. Reddit Post
-  const redditTitle = `[NCPOR Polar Dispatch] ${topic}`;
+  const redditTitle = `[NCPOR Polar Dispatch] ${topic}`
   const redditBody = `**National Centre for Polar and Ocean Research (NCPOR) Scientific Update**
 
 **Topic:** ${topic}
@@ -232,38 +298,42 @@ India operates two year-round research stations in Antarctica (Maitri in Schirma
 
 This research contributes to understanding Southern Ocean circulation, cryospheric mass balance, and global teleconnections.
 
-${sources.length > 0 ? `**Repository Reference:**\n${sources.map(s => `- ${s.title}`).join("\n")}\n\n` : ""}Detailed scientific briefs and datasets are openly accessible at [NCPOR Polar Portal](https://ncpor.res.in).`;
+${
+  sources.length > 0
+    ? `**Repository Reference:**\n${sources.map((s) => `- ${s.title}`).join("\n")}\n\n`
+    : ""
+}Detailed scientific briefs and datasets are openly accessible at [NCPOR Polar Portal](https://ncpor.res.in).`
 
   // Direct 1-Click Launch Handlers
   const handleLaunchTwitter = (text: string) => {
-    const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
-    window.open(url, "_blank", "noopener,noreferrer,width=600,height=450");
-  };
+    const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`
+    window.open(url, "_blank", "noopener,noreferrer,width=600,height=450")
+  }
 
   const handleLaunchFacebook = () => {
-    const url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent("https://ncpor.res.in")}&quote=${encodeURIComponent(facebookPost)}`;
-    window.open(url, "_blank", "noopener,noreferrer,width=600,height=500");
-  };
+    const url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent("https://ncpor.res.in")}&quote=${encodeURIComponent(facebookPost)}`
+    window.open(url, "_blank", "noopener,noreferrer,width=600,height=500")
+  }
 
   const handleLaunchLinkedIn = () => {
-    const url = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent("https://ncpor.res.in")}`;
-    window.open(url, "_blank", "noopener,noreferrer,width=600,height=600");
-  };
+    const url = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent("https://ncpor.res.in")}`
+    window.open(url, "_blank", "noopener,noreferrer,width=600,height=600")
+  }
 
   const handleLaunchTelegram = () => {
-    const url = `https://t.me/share/url?url=${encodeURIComponent("https://ncpor.res.in")}&text=${encodeURIComponent(telegramPost)}`;
-    window.open(url, "_blank", "noopener,noreferrer");
-  };
+    const url = `https://t.me/share/url?url=${encodeURIComponent("https://ncpor.res.in")}&text=${encodeURIComponent(telegramPost)}`
+    window.open(url, "_blank", "noopener,noreferrer")
+  }
 
   const handleLaunchWhatsApp = () => {
-    const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(whatsappPost)}`;
-    window.open(url, "_blank", "noopener,noreferrer");
-  };
+    const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(whatsappPost)}`
+    window.open(url, "_blank", "noopener,noreferrer")
+  }
 
   const handleLaunchReddit = () => {
-    const url = `https://www.reddit.com/submit?title=${encodeURIComponent(redditTitle)}&text=${encodeURIComponent(redditBody)}`;
-    window.open(url, "_blank", "noopener,noreferrer");
-  };
+    const url = `https://www.reddit.com/submit?title=${encodeURIComponent(redditTitle)}&text=${encodeURIComponent(redditBody)}`
+    window.open(url, "_blank", "noopener,noreferrer")
+  }
 
   const handleWebShare = async () => {
     if (navigator.share) {
@@ -272,16 +342,18 @@ ${sources.length > 0 ? `**Repository Reference:**\n${sources.map(s => `- ${s.tit
           title: topic,
           text: instagramCaption,
           url: "https://ncpor.res.in",
-        });
-        triggerToast("Shared successfully!");
+        })
+        triggerToast("Shared successfully!")
       } catch {
         // User cancelled or failed
       }
     } else {
-      navigator.clipboard.writeText(instagramCaption);
-      triggerToast("Copied caption to clipboard! (Web Share API not supported on this device)");
+      navigator.clipboard.writeText(instagramCaption)
+      triggerToast(
+        "Copied caption to clipboard! (Web Share API not supported on this device)",
+      )
     }
-  };
+  }
 
   // Download SVG Graphic Card
   const handleDownloadGraphic = () => {
@@ -329,92 +401,99 @@ ${sources.length > 0 ? `**Repository Reference:**\n${sources.map(s => `- ${s.tit
   <line x1="80" y1="940" x2="1000" y2="940" stroke="rgba(255,255,255,0.15)" stroke-width="2"/>
   <text x="80" y="990" font-family="Inter, sans-serif" font-weight="600" font-size="22" fill="#94a3b8">#NCPOR #Antarctica #PolarScience #ClimateAction</text>
   <text x="1000" y="990" text-anchor="end" font-family="Inter, sans-serif" font-weight="bold" font-size="24" fill="#38bdf8">ncpor.res.in </text>
-</svg>`;
+</svg>`
 
-    const blob = new Blob([svgContent], { type: "image/svg+xml" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `NCPOR_Social_Graphic_${Date.now()}.svg`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-    setDownloadSuccess(true);
-    setTimeout(() => setDownloadSuccess(false), 3000);
-  };
+    const blob = new Blob([svgContent], { type: "image/svg+xml" })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement("a")
+    a.href = url
+    a.download = `NCPOR_Social_Graphic_${Date.now()}.svg`
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    URL.revokeObjectURL(url)
+    setDownloadSuccess(true)
+    setTimeout(() => setDownloadSuccess(false), 3000)
+  }
 
   // Autonomous Webhook Multi-Dispatch Handler
   const handleBroadcastAll = () => {
-    setIsDispatching(true);
-    setDispatchLogs([]);
+    setIsDispatching(true)
+    setDispatchLogs([])
 
     const selectedList = Object.entries(selectedPlatforms)
       .filter(([_, active]) => active)
-      .map(([platform]) => platform);
+      .map(([platform]) => platform)
 
     if (selectedList.length === 0) {
-      alert("Please select at least one platform to broadcast.");
-      setIsDispatching(false);
-      return;
+      alert("Please select at least one platform to broadcast.")
+      setIsDispatching(false)
+      return
     }
 
     const initialLog = {
       time: new Date().toLocaleTimeString(),
       text: `Initiating multi-channel syndication to ${selectedList.length} platforms via ${webhookUrl}...`,
       status: "info" as const,
-    };
-    setDispatchLogs([initialLog]);
+    }
+    setDispatchLogs([initialLog])
 
     // Dispatch simulated step by step
     selectedList.forEach((plat, index) => {
-      setTimeout(() => {
-        setDispatchLogs(prev => [
-          ...prev,
-          {
-            time: new Date().toLocaleTimeString(),
-            text: `Dispatched payload to ${plat.toUpperCase()} [Status: 200 OK, Message ID: ${plat}_${Math.floor(Math.random() * 900000 + 100000)}]`,
-            status: "success",
-          },
-        ]);
+      setTimeout(
+        () => {
+          setDispatchLogs((prev) => [
+            ...prev,
+            {
+              time: new Date().toLocaleTimeString(),
+              text: `Dispatched payload to ${plat.toUpperCase()} [Status: 200 OK, Message ID: ${plat}_${Math.floor(Math.random() * 900000 + 100000)}]`,
+              status: "success",
+            },
+          ])
 
-        if (index === selectedList.length - 1) {
-          setTimeout(() => {
-            setDispatchLogs(prev => [
-              ...prev,
-              {
-                time: new Date().toLocaleTimeString(),
-                text: ` Multi-platform syndication completed! All ${selectedList.length} channels delivered.`,
-                status: "success",
-              },
-            ]);
-            setIsDispatching(false);
-            triggerToast("Multi-platform broadcast completed successfully!");
-          }, 400);
-        }
-      }, (index + 1) * 350);
-    });
-  };
+          if (index === selectedList.length - 1) {
+            setTimeout(() => {
+              setDispatchLogs((prev) => [
+                ...prev,
+                {
+                  time: new Date().toLocaleTimeString(),
+                  text: ` Multi-platform syndication completed! All ${selectedList.length} channels delivered.`,
+                  status: "success",
+                },
+              ])
+              setIsDispatching(false)
+              triggerToast("Multi-platform broadcast completed successfully!")
+            }, 400)
+          }
+        },
+        (index + 1) * 350,
+      )
+    })
+  }
 
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6"
-      style={{ background: "rgba(12, 30, 60, 0.75)", backdropFilter: "blur(6px)" }}
+      style={{
+        background: "rgba(12, 30, 60, 0.75)",
+        backdropFilter: "blur(6px)",
+      }}
       onClick={onClose}
     >
       <div
         className="bg-white w-full max-w-5xl h-[92vh] max-h-[900px] rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-slate-200"
-        onClick={e => e.stopPropagation()}
+        onClick={(e) => e.stopPropagation()}
       >
         {/* Modal Top Header */}
         <div
           className="flex-shrink-0 px-6 py-4 flex items-center justify-between text-white"
-          style={{ background: "var(--primary-navy)", borderBottom: "1px solid rgba(255,255,255,0.1)" }}
+          style={{
+            background: "var(--primary-navy)",
+            borderBottom: "1px solid rgba(255,255,255,0.1)",
+          }}
         >
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-blue-600/30 border border-blue-400/40 flex items-center justify-center text-xl shadow-inner">
-              
-            </div>
+            <div className="w-10 h-10 rounded-xl bg-blue-600/30 border border-blue-400/40 flex items-center justify-center text-xl shadow-inner"></div>
             <div>
               <div className="flex items-center gap-2">
                 <h1 className="text-base font-bold tracking-tight text-white">
@@ -425,7 +504,9 @@ ${sources.length > 0 ? `**Repository Reference:**\n${sources.map(s => `- ${s.tit
                 </span>
               </div>
               <p className="text-xs text-slate-300 mt-0.5">
-                Generate source-grounded polar content and broadcast directly to Twitter/X, Facebook, Instagram, LinkedIn, Telegram, WhatsApp &amp; Webhooks
+                Generate source-grounded polar content and broadcast directly to
+                Twitter/X, Facebook, Instagram, LinkedIn, Telegram, WhatsApp
+                &amp; Webhooks
               </p>
             </div>
           </div>
@@ -456,15 +537,15 @@ ${sources.length > 0 ? `**Repository Reference:**\n${sources.map(s => `- ${s.tit
                 1. Select Content Preset
               </label>
               <div className="space-y-1.5">
-                {TEMPLATES.map(tmpl => {
-                  const isSelected = selectedTemplate === tmpl.id;
+                {TEMPLATES.map((tmpl) => {
+                  const isSelected = selectedTemplate === tmpl.id
                   return (
                     <button
                       key={tmpl.id}
                       onClick={() => {
-                        setSelectedTemplate(tmpl.id);
-                        setTopic(tmpl.topic);
-                        setStationBadge(tmpl.station);
+                        setSelectedTemplate(tmpl.id)
+                        setTopic(tmpl.topic)
+                        setStationBadge(tmpl.station)
                       }}
                       className={`w-full p-2.5 rounded-xl text-left border transition-all flex items-start gap-2.5 ${
                         isSelected
@@ -472,7 +553,9 @@ ${sources.length > 0 ? `**Repository Reference:**\n${sources.map(s => `- ${s.tit
                           : "border-slate-200 hover:border-slate-300 hover:bg-slate-50"
                       }`}
                     >
-                      <span className="text-lg flex-shrink-0 mt-0.5">{tmpl.icon}</span>
+                      <span className="text-lg flex-shrink-0 mt-0.5">
+                        {tmpl.icon}
+                      </span>
                       <div className="min-w-0 flex-1">
                         <div
                           className={`text-xs font-bold ${
@@ -486,7 +569,7 @@ ${sources.length > 0 ? `**Repository Reference:**\n${sources.map(s => `- ${s.tit
                         </div>
                       </div>
                     </button>
-                  );
+                  )
                 })}
               </div>
             </div>
@@ -499,13 +582,13 @@ ${sources.length > 0 ? `**Repository Reference:**\n${sources.map(s => `- ${s.tit
                 </label>
                 {sources.length > 0 && (
                   <span className="text-[10px] text-blue-600 font-semibold">
-                     {sources.length} source(s)
+                    {sources.length} source(s)
                   </span>
                 )}
               </div>
               <textarea
                 value={topic}
-                onChange={e => setTopic(e.target.value)}
+                onChange={(e) => setTopic(e.target.value)}
                 rows={3}
                 className="w-full text-xs p-2.5 rounded-xl border border-slate-300 focus:border-blue-600 focus:ring-1 focus:ring-blue-600 outline-none text-slate-800"
                 placeholder="Enter polar headline or research finding..."
@@ -513,7 +596,9 @@ ${sources.length > 0 ? `**Repository Reference:**\n${sources.map(s => `- ${s.tit
 
               {/* Quick Suggestion Chips */}
               <div className="mt-2 flex flex-wrap gap-1">
-                <span className="text-[10px] font-semibold text-slate-400 mr-1">Quick Picks:</span>
+                <span className="text-[10px] font-semibold text-slate-400 mr-1">
+                  Quick Picks:
+                </span>
                 {SUGGESTED_TOPICS.map((s, idx) => (
                   <button
                     key={idx}
@@ -538,7 +623,7 @@ ${sources.length > 0 ? `**Repository Reference:**\n${sources.map(s => `- ${s.tit
                   { id: "scholarly", label: "Academic", icon: "" },
                   { id: "alert", label: "Climate Alert", icon: "Alert: " },
                   { id: "youth", label: "Youth / STEM", icon: "Note: " },
-                ].map(t => (
+                ].map((t) => (
                   <button
                     key={t.id}
                     onClick={() => setTone(t.id as any)}
@@ -562,14 +647,24 @@ ${sources.length > 0 ? `**Repository Reference:**\n${sources.map(s => `- ${s.tit
               </label>
               <select
                 value={stationBadge}
-                onChange={e => setStationBadge(e.target.value)}
+                onChange={(e) => setStationBadge(e.target.value)}
                 className="w-full text-xs p-2 rounded-xl border border-slate-300 bg-white text-slate-800 focus:border-blue-600 outline-none"
               >
-                <option value="Bharati Station · 69°S">Bharati Station · 69°S (East Antarctica)</option>
-                <option value="Maitri Station · 70°S">Maitri Station · 70°S (Schirmacher Oasis)</option>
-                <option value="Himadri Arctic Station">Himadri Arctic Station (Ny-Ålesund, 79°N)</option>
-                <option value="Southern Ocean Expedition">Southern Ocean Expedition Hub</option>
-                <option value="Central Analytical Lab · Goa">Central Analytical Lab · Goa</option>
+                <option value="Bharati Station · 69°S">
+                  Bharati Station · 69°S (East Antarctica)
+                </option>
+                <option value="Maitri Station · 70°S">
+                  Maitri Station · 70°S (Schirmacher Oasis)
+                </option>
+                <option value="Himadri Arctic Station">
+                  Himadri Arctic Station (Ny-Ålesund, 79°N)
+                </option>
+                <option value="Southern Ocean Expedition">
+                  Southern Ocean Expedition Hub
+                </option>
+                <option value="Central Analytical Lab · Goa">
+                  Central Analytical Lab · Goa
+                </option>
               </select>
             </div>
 
@@ -580,8 +675,10 @@ ${sources.length > 0 ? `**Repository Reference:**\n${sources.map(s => `- ${s.tit
                   <span></span> Grounded Sources ({sources.length})
                 </div>
                 <div className="space-y-1 text-[11px] text-blue-800 max-h-24 overflow-y-auto">
-                  {sources.map(s => (
-                    <div key={s.id} className="truncate">• {s.title}</div>
+                  {sources.map((s) => (
+                    <div key={s.id} className="truncate">
+                      • {s.title}
+                    </div>
                   ))}
                 </div>
               </div>
@@ -601,8 +698,8 @@ ${sources.length > 0 ? `**Repository Reference:**\n${sources.map(s => `- ${s.tit
                 { id: "whatsapp", label: "WhatsApp", icon: "" },
                 { id: "reddit", label: "Reddit", icon: "" },
                 { id: "webhook", label: " Blast All", icon: "" },
-              ].map(tab => {
-                const isActive = activePlatform === tab.id;
+              ].map((tab) => {
+                const isActive = activePlatform === tab.id
                 return (
                   <button
                     key={tab.id}
@@ -616,7 +713,7 @@ ${sources.length > 0 ? `**Repository Reference:**\n${sources.map(s => `- ${s.tit
                     <span>{tab.icon}</span>
                     <span>{tab.label}</span>
                   </button>
-                );
+                )
               })}
             </div>
 
@@ -627,7 +724,9 @@ ${sources.length > 0 ? `**Repository Reference:**\n${sources.map(s => `- ${s.tit
                 <div className="w-full max-w-xl space-y-4">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <span className="text-sm font-bold text-slate-800">Twitter / 𝕏 Post Preview</span>
+                      <span className="text-sm font-bold text-slate-800">
+                        Twitter / 𝕏 Post Preview
+                      </span>
                       <span
                         className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${
                           rawTweet.length <= 280
@@ -643,7 +742,7 @@ ${sources.length > 0 ? `**Repository Reference:**\n${sources.map(s => `- ${s.tit
                       <input
                         type="checkbox"
                         checked={splitThreads}
-                        onChange={e => setSplitThreads(e.target.checked)}
+                        onChange={(e) => setSplitThreads(e.target.checked)}
                         className="rounded border-slate-300 text-blue-600"
                       />
                       <span>Auto-Thread if &gt; 280</span>
@@ -657,18 +756,20 @@ ${sources.length > 0 ? `**Repository Reference:**\n${sources.map(s => `- ${s.tit
                       className="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm relative space-y-3"
                     >
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-slate-900 text-white flex items-center justify-center font-black text-sm">
-                          
-                        </div>
+                        <div className="w-10 h-10 rounded-full bg-slate-900 text-white flex items-center justify-center font-black text-sm"></div>
                         <div>
                           <div className="flex items-center gap-1.5">
                             <span className="font-bold text-xs text-slate-900">
                               NCPOR India
                             </span>
                             <span className="text-blue-500 text-xs">OK</span>
-                            <span className="text-slate-400 text-xs">@NCPOR_Goa</span>
+                            <span className="text-slate-400 text-xs">
+                              @NCPOR_Goa
+                            </span>
                             <span className="text-slate-300 text-xs">·</span>
-                            <span className="text-slate-400 text-xs">Just now</span>
+                            <span className="text-slate-400 text-xs">
+                              Just now
+                            </span>
                           </div>
                           <div className="text-[10px] text-slate-500">
                             National Centre for Polar and Ocean Research
@@ -688,12 +789,12 @@ ${sources.length > 0 ? `**Repository Reference:**\n${sources.map(s => `- ${s.tit
                         <div className="flex items-center gap-2">
                           <button
                             onClick={() => {
-                              navigator.clipboard.writeText(tw);
-                              triggerToast("Copied tweet text!");
+                              navigator.clipboard.writeText(tw)
+                              triggerToast("Copied tweet text!")
                             }}
                             className="px-2.5 py-1 text-[11px] font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors"
                           >
-                             Copy Text
+                            Copy Text
                           </button>
                           <button
                             onClick={() => handleLaunchTwitter(tw)}
@@ -712,8 +813,12 @@ ${sources.length > 0 ? `**Repository Reference:**\n${sources.map(s => `- ${s.tit
               {activePlatform === "facebook" && (
                 <div className="w-full max-w-xl space-y-4">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-bold text-slate-800">Facebook News Feed Preview</span>
-                    <span className="text-xs text-slate-500">Rich OpenGraph Card</span>
+                    <span className="text-sm font-bold text-slate-800">
+                      Facebook News Feed Preview
+                    </span>
+                    <span className="text-xs text-slate-500">
+                      Rich OpenGraph Card
+                    </span>
                   </div>
 
                   {/* Facebook Mockup Card */}
@@ -750,9 +855,12 @@ ${sources.length > 0 ? `**Repository Reference:**\n${sources.map(s => `- ${s.tit
                         </div>
                       </div>
                       <div className="p-2.5 bg-white border-t border-slate-100">
-                        <div className="text-[10px] text-slate-400 uppercase font-semibold">NCPOR.RES.IN</div>
+                        <div className="text-[10px] text-slate-400 uppercase font-semibold">
+                          NCPOR.RES.IN
+                        </div>
                         <div className="text-xs font-bold text-slate-800 truncate">
-                          Official Polar Observation Dispatch &amp; Scientific Data Repository
+                          Official Polar Observation Dispatch &amp; Scientific
+                          Data Repository
                         </div>
                       </div>
                     </div>
@@ -761,12 +869,12 @@ ${sources.length > 0 ? `**Repository Reference:**\n${sources.map(s => `- ${s.tit
                     <div className="pt-2 border-t border-slate-100 flex items-center justify-end gap-2">
                       <button
                         onClick={() => {
-                          navigator.clipboard.writeText(facebookPost);
-                          triggerToast("Copied Facebook post!");
+                          navigator.clipboard.writeText(facebookPost)
+                          triggerToast("Copied Facebook post!")
                         }}
                         className="px-3 py-1.5 text-xs font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors"
                       >
-                         Copy Post
+                        Copy Post
                       </button>
                       <button
                         onClick={handleLaunchFacebook}
@@ -785,9 +893,13 @@ ${sources.length > 0 ? `**Repository Reference:**\n${sources.map(s => `- ${s.tit
                   {/* Visual Graphic Generator (1:1 Poster) */}
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-slate-800">1:1 Square Visual Poster</span>
+                      <span className="text-xs font-bold text-slate-800">
+                        1:1 Square Visual Poster
+                      </span>
                       {downloadSuccess && (
-                        <span className="text-[10px] text-emerald-600 font-semibold">OK Downloaded</span>
+                        <span className="text-[10px] text-emerald-600 font-semibold">
+                          OK Downloaded
+                        </span>
                       )}
                     </div>
 
@@ -795,7 +907,8 @@ ${sources.length > 0 ? `**Repository Reference:**\n${sources.map(s => `- ${s.tit
                       ref={cardRef}
                       className="aspect-square w-full rounded-2xl overflow-hidden relative shadow-lg p-5 flex flex-col justify-between text-white border border-slate-800"
                       style={{
-                        background: "linear-gradient(135deg, #08152a 0%, #0c1e3c 50%, #1e3a8a 100%)",
+                        background:
+                          "linear-gradient(135deg, #08152a 0%, #0c1e3c 50%, #1e3a8a 100%)",
                       }}
                     >
                       {/* Top Branding */}
@@ -806,7 +919,9 @@ ${sources.length > 0 ? `**Repository Reference:**\n${sources.map(s => `- ${s.tit
                             <div className="text-[10px] font-bold text-white tracking-wide">
                               NCPOR · MINISTRY OF EARTH SCIENCES
                             </div>
-                            <div className="text-[8px] text-cyan-300">Govt. of India IND</div>
+                            <div className="text-[8px] text-cyan-300">
+                              Govt. of India IND
+                            </div>
                           </div>
                         </div>
                         <span className="text-[9px] px-2 py-0.5 rounded-full bg-cyan-400/20 text-cyan-300 font-bold border border-cyan-400/30">
@@ -829,8 +944,12 @@ ${sources.length > 0 ? `**Repository Reference:**\n${sources.map(s => `- ${s.tit
 
                       {/* Bottom Footer */}
                       <div className="pt-3 border-t border-white/10 flex items-center justify-between text-[9px] text-slate-300">
-                        <span className="font-semibold text-cyan-200">#NCPOR #Antarctica</span>
-                        <span className="font-mono text-cyan-400">ncpor.res.in </span>
+                        <span className="font-semibold text-cyan-200">
+                          #NCPOR #Antarctica
+                        </span>
+                        <span className="font-mono text-cyan-400">
+                          ncpor.res.in{" "}
+                        </span>
                       </div>
                     </div>
 
@@ -854,7 +973,9 @@ ${sources.length > 0 ? `**Repository Reference:**\n${sources.map(s => `- ${s.tit
                   {/* Caption & Hashtag Manager */}
                   <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm space-y-3 flex flex-col h-full">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-slate-800">Caption &amp; 30 Polar Hashtags</span>
+                      <span className="text-xs font-bold text-slate-800">
+                        Caption &amp; 30 Polar Hashtags
+                      </span>
                       <span className="text-[10px] text-purple-700 bg-purple-50 px-2 py-0.5 rounded-full font-semibold">
                         Optimized Reach
                       </span>
@@ -867,15 +988,17 @@ ${sources.length > 0 ? `**Repository Reference:**\n${sources.map(s => `- ${s.tit
                     <div className="space-y-2 pt-2 border-t border-slate-100">
                       <button
                         onClick={() => {
-                          navigator.clipboard.writeText(instagramCaption);
-                          triggerToast("Copied Instagram caption & hashtags!");
+                          navigator.clipboard.writeText(instagramCaption)
+                          triggerToast("Copied Instagram caption & hashtags!")
                         }}
                         className="w-full py-2 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-purple-600 via-pink-600 to-amber-500 hover:opacity-95 transition-opacity flex items-center justify-center gap-1.5 shadow-sm"
                       >
                         <span> Copy Caption &amp; Hashtags</span>
                       </button>
                       <button
-                        onClick={() => window.open("https://www.instagram.com/", "_blank")}
+                        onClick={() =>
+                          window.open("https://www.instagram.com/", "_blank")
+                        }
                         className="w-full py-1.5 rounded-xl text-[11px] font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 transition-colors"
                       >
                         Open Instagram Web →
@@ -889,7 +1012,9 @@ ${sources.length > 0 ? `**Repository Reference:**\n${sources.map(s => `- ${s.tit
               {activePlatform === "linkedin" && (
                 <div className="w-full max-w-xl space-y-4">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-bold text-slate-800">LinkedIn Scientific Abstract</span>
+                    <span className="text-sm font-bold text-slate-800">
+                      LinkedIn Scientific Abstract
+                    </span>
                     <span className="text-xs text-blue-700 font-semibold bg-blue-50 px-2 py-0.5 rounded-full">
                       Professional Format
                     </span>
@@ -905,7 +1030,7 @@ ${sources.length > 0 ? `**Repository Reference:**\n${sources.map(s => `- ${s.tit
                           National Centre for Polar and Ocean Research (NCPOR)
                         </div>
                         <div className="text-[10px] text-slate-500">
-                          12,450 followers · Just now · 
+                          12,450 followers · Just now ·
                         </div>
                       </div>
                     </div>
@@ -917,12 +1042,12 @@ ${sources.length > 0 ? `**Repository Reference:**\n${sources.map(s => `- ${s.tit
                     <div className="pt-2 border-t border-slate-100 flex items-center justify-end gap-2">
                       <button
                         onClick={() => {
-                          navigator.clipboard.writeText(linkedinPost);
-                          triggerToast("Copied LinkedIn article!");
+                          navigator.clipboard.writeText(linkedinPost)
+                          triggerToast("Copied LinkedIn article!")
                         }}
                         className="px-3 py-1.5 text-xs font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors"
                       >
-                         Copy Post
+                        Copy Post
                       </button>
                       <button
                         onClick={handleLaunchLinkedIn}
@@ -939,7 +1064,9 @@ ${sources.length > 0 ? `**Repository Reference:**\n${sources.map(s => `- ${s.tit
               {activePlatform === "telegram" && (
                 <div className="w-full max-w-xl space-y-4">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-bold text-slate-800">Telegram Channel Broadcast</span>
+                    <span className="text-sm font-bold text-slate-800">
+                      Telegram Channel Broadcast
+                    </span>
                     <span className="text-xs text-sky-700 font-semibold bg-sky-50 px-2 py-0.5 rounded-full">
                       Markdown Support
                     </span>
@@ -951,19 +1078,23 @@ ${sources.length > 0 ? `**Repository Reference:**\n${sources.map(s => `- ${s.tit
                         {telegramPost}
                       </div>
                       <div className="text-[10px] text-slate-400 text-right">
-                        {new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })} OKOK
+                        {new Date().toLocaleTimeString([], {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}{" "}
+                        OKOK
                       </div>
                     </div>
 
                     <div className="flex items-center justify-end gap-2">
                       <button
                         onClick={() => {
-                          navigator.clipboard.writeText(telegramPost);
-                          triggerToast("Copied Telegram broadcast!");
+                          navigator.clipboard.writeText(telegramPost)
+                          triggerToast("Copied Telegram broadcast!")
                         }}
                         className="px-3 py-1.5 text-xs font-semibold text-slate-700 bg-white hover:bg-slate-100 rounded-lg shadow-sm transition-colors"
                       >
-                         Copy Message
+                        Copy Message
                       </button>
                       <button
                         onClick={handleLaunchTelegram}
@@ -980,7 +1111,9 @@ ${sources.length > 0 ? `**Repository Reference:**\n${sources.map(s => `- ${s.tit
               {activePlatform === "whatsapp" && (
                 <div className="w-full max-w-xl space-y-4">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-bold text-slate-800">WhatsApp Community Update</span>
+                    <span className="text-sm font-bold text-slate-800">
+                      WhatsApp Community Update
+                    </span>
                     <span className="text-xs text-emerald-700 font-semibold bg-emerald-50 px-2 py-0.5 rounded-full">
                       Direct WhatsApp API
                     </span>
@@ -992,19 +1125,23 @@ ${sources.length > 0 ? `**Repository Reference:**\n${sources.map(s => `- ${s.tit
                         {whatsappPost}
                       </div>
                       <div className="text-[10px] text-slate-500 text-right">
-                        {new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })} OKOK
+                        {new Date().toLocaleTimeString([], {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}{" "}
+                        OKOK
                       </div>
                     </div>
 
                     <div className="flex items-center justify-end gap-2">
                       <button
                         onClick={() => {
-                          navigator.clipboard.writeText(whatsappPost);
-                          triggerToast("Copied WhatsApp message!");
+                          navigator.clipboard.writeText(whatsappPost)
+                          triggerToast("Copied WhatsApp message!")
                         }}
                         className="px-3 py-1.5 text-xs font-semibold text-slate-700 bg-white hover:bg-slate-100 rounded-lg shadow-sm transition-colors"
                       >
-                         Copy Message
+                        Copy Message
                       </button>
                       <button
                         onClick={handleLaunchWhatsApp}
@@ -1021,7 +1158,9 @@ ${sources.length > 0 ? `**Repository Reference:**\n${sources.map(s => `- ${s.tit
               {activePlatform === "reddit" && (
                 <div className="w-full max-w-xl space-y-4">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-bold text-slate-800">Reddit Science Outreach</span>
+                    <span className="text-sm font-bold text-slate-800">
+                      Reddit Science Outreach
+                    </span>
                     <span className="text-xs text-orange-700 font-semibold bg-orange-50 px-2 py-0.5 rounded-full">
                       r/science · r/antarctica
                     </span>
@@ -1038,12 +1177,14 @@ ${sources.length > 0 ? `**Repository Reference:**\n${sources.map(s => `- ${s.tit
                     <div className="pt-2 border-t border-slate-100 flex items-center justify-end gap-2">
                       <button
                         onClick={() => {
-                          navigator.clipboard.writeText(`${redditTitle}\n\n${redditBody}`);
-                          triggerToast("Copied Reddit post!");
+                          navigator.clipboard.writeText(
+                            `${redditTitle}\n\n${redditBody}`,
+                          )
+                          triggerToast("Copied Reddit post!")
                         }}
                         className="px-3 py-1.5 text-xs font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors"
                       >
-                         Copy Post
+                        Copy Post
                       </button>
                       <button
                         onClick={handleLaunchReddit}
@@ -1065,10 +1206,12 @@ ${sources.length > 0 ? `**Repository Reference:**\n${sources.map(s => `- ${s.tit
                         Autonomous Multi-Channel Syndication
                       </div>
                       <h2 className="text-base font-extrabold text-white">
-                         Blast to All Platforms Simultaneously
+                        Blast to All Platforms Simultaneously
                       </h2>
                       <p className="text-xs text-slate-300 mt-1">
-                        Dispatches tailored payloads to all connected networks via your automation webhook (Make.com, Zapier, n8n, Buffer, or internal MoES relay).
+                        Dispatches tailored payloads to all connected networks
+                        via your automation webhook (Make.com, Zapier, n8n,
+                        Buffer, or internal MoES relay).
                       </p>
                     </div>
                   </div>
@@ -1082,7 +1225,7 @@ ${sources.length > 0 ? `**Repository Reference:**\n${sources.map(s => `- ${s.tit
                       <input
                         type="url"
                         value={webhookUrl}
-                        onChange={e => setWebhookUrl(e.target.value)}
+                        onChange={(e) => setWebhookUrl(e.target.value)}
                         className="w-full text-xs p-2.5 rounded-xl border border-slate-300 font-mono text-slate-800 focus:border-blue-600 outline-none"
                         placeholder="https://api.ncpor.res.in/v1/syndicate/broadcast"
                       />
@@ -1093,35 +1236,41 @@ ${sources.length > 0 ? `**Repository Reference:**\n${sources.map(s => `- ${s.tit
                         Target Channels to Broadcast:
                       </label>
                       <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
-                        {Object.entries(selectedPlatforms).map(([key, isChecked]) => (
-                          <label
-                            key={key}
-                            className={`p-2 rounded-xl border text-xs font-bold flex items-center gap-2 cursor-pointer transition-all ${
-                              isChecked
-                                ? "border-blue-600 bg-blue-50 text-blue-900"
-                                : "border-slate-200 bg-slate-50 text-slate-400"
-                            }`}
-                          >
-                            <input
-                              type="checkbox"
-                              checked={isChecked}
-                              onChange={e =>
-                                setSelectedPlatforms(prev => ({
-                                  ...prev,
-                                  [key]: e.target.checked,
-                                }))
-                              }
-                              className="rounded border-slate-300 text-blue-600"
-                            />
-                            <span className="capitalize">{key}</span>
-                          </label>
-                        ))}
+                        {Object.entries(selectedPlatforms).map(
+                          ([key, isChecked]) => (
+                            <label
+                              key={key}
+                              className={`p-2 rounded-xl border text-xs font-bold flex items-center gap-2 cursor-pointer transition-all ${
+                                isChecked
+                                  ? "border-blue-600 bg-blue-50 text-blue-900"
+                                  : "border-slate-200 bg-slate-50 text-slate-400"
+                              }`}
+                            >
+                              <input
+                                type="checkbox"
+                                checked={isChecked}
+                                onChange={(e) =>
+                                  setSelectedPlatforms((prev) => ({
+                                    ...prev,
+                                    [key]: e.target.checked,
+                                  }))
+                                }
+                                className="rounded border-slate-300 text-blue-600"
+                              />
+                              <span className="capitalize">{key}</span>
+                            </label>
+                          ),
+                        )}
                       </div>
                     </div>
 
                     <div className="pt-2 border-t border-slate-100 flex items-center justify-between">
                       <div className="text-[11px] text-slate-500">
-                        {Object.values(selectedPlatforms).filter(Boolean).length} channels selected
+                        {
+                          Object.values(selectedPlatforms).filter(Boolean)
+                            .length
+                        }{" "}
+                        channels selected
                       </div>
                       <button
                         onClick={handleBroadcastAll}
@@ -1130,9 +1279,23 @@ ${sources.length > 0 ? `**Repository Reference:**\n${sources.map(s => `- ${s.tit
                       >
                         {isDispatching ? (
                           <>
-                            <svg className="animate-spin w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
-                              <circle cx="12" cy="12" r="10" strokeOpacity="0.25" />
-                              <path d="M12 2a10 10 0 0 1 10 10" strokeLinecap="round" />
+                            <svg
+                              className="animate-spin w-3.5 h-3.5"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth={2.5}
+                            >
+                              <circle
+                                cx="12"
+                                cy="12"
+                                r="10"
+                                strokeOpacity="0.25"
+                              />
+                              <path
+                                d="M12 2a10 10 0 0 1 10 10"
+                                strokeLinecap="round"
+                              />
                             </svg>
                             <span>Broadcasting in Progress...</span>
                           </>
@@ -1160,11 +1323,12 @@ ${sources.length > 0 ? `**Repository Reference:**\n${sources.map(s => `- ${s.tit
                             log.status === "success"
                               ? "text-emerald-400"
                               : log.status === "info"
-                              ? "text-cyan-300"
-                              : "text-amber-300"
+                                ? "text-cyan-300"
+                                : "text-amber-300"
                           }`}
                         >
-                          <span className="text-slate-500">[{log.time}]</span> {log.text}
+                          <span className="text-slate-500">[{log.time}]</span>{" "}
+                          {log.text}
                         </div>
                       ))}
                     </div>
@@ -1176,9 +1340,7 @@ ${sources.length > 0 ? `**Repository Reference:**\n${sources.map(s => `- ${s.tit
         </div>
 
         {/* Modal Footer */}
-        <div
-          className="flex-shrink-0 px-6 py-3 border-t border-slate-200 bg-white flex items-center justify-between"
-        >
+        <div className="flex-shrink-0 px-6 py-3 border-t border-slate-200 bg-white flex items-center justify-between">
           <div className="flex items-center gap-2 text-xs text-slate-500">
             <span> NCPOR Scientific Integrity Protocol</span>
             <span>·</span>
@@ -1194,7 +1356,7 @@ ${sources.length > 0 ? `**Repository Reference:**\n${sources.map(s => `- ${s.tit
             </button>
             <button
               onClick={() => {
-                setActivePlatform("webhook");
+                setActivePlatform("webhook")
               }}
               className="px-4 py-1.5 rounded-xl text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 transition-colors shadow-sm flex items-center gap-1.5"
             >
@@ -1204,6 +1366,5 @@ ${sources.length > 0 ? `**Repository Reference:**\n${sources.map(s => `- ${s.tit
         </div>
       </div>
     </div>
-  );
+  )
 }
-

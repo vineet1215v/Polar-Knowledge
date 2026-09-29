@@ -1,21 +1,21 @@
-export type SourceType = "publication" | "dataset" | "expedition" | "media" | "event" | "station" | "researcher";
+export type SourceType = "publication" | "dataset" | "expedition" | "media" | "event" | "station" | "researcher"
 
 export interface WorkspaceSource {
-  id: string;
-  type: SourceType;
-  title: string;
-  meta: string;
-  version?: string;
-  date?: string;
-  origin?: string;
+  id: string
+  type: SourceType
+  title: string
+  meta: string
+  version?: string
+  date?: string
+  origin?: string
 }
 
 export const typeIcon: Record<SourceType, string> = {
-  publication: "",
-  dataset: "",
-  expedition: "",
-  media: "",
-  event: "",
-  station: "",
-  researcher: "",
-};
+  publication: "PUB",
+  dataset: "DATA",
+  expedition: "EXP",
+  media: "MEDIA",
+  event: "EVENT",
+  station: "STN",
+  researcher: "RES",
+}

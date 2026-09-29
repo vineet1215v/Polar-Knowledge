@@ -1,33 +1,29 @@
-// 
+//
 
-type Page =
-  | "dashboard"
-  | "expeditions"
-  | "publications"
-  | "datasets"
-  | "media"
-  | "map"
-  | "ai"
-  | "education"
-  | "news"
-  | "events"
-  | "about";
+type Page = "landing" | "login" | "dashboard" | "analytics" | "digital-twin" | "data-upload" | "explorer" | "expeditions" | "publications" | "datasets" | "media" | "map" | "research-rooms" | "ai-tools" | "bio-lab" | "otolith-lab" | "edna-lab" | "ai" | "education" | "news" | "events" | "about" | "settings" | "profile"
 
 interface SidebarProps {
-  active: Page;
-  onNavigate: (p: Page) => void;
-  collapsed?: boolean;
+  active: Page
+
+  onNavigate: (p: Page) => void
+
+  collapsed?: boolean
 }
 
 const navItems: {
-  id: Page;
-  label: string;
-  badge?: string;
-  icon: React.ReactNode;
+  id: Page
+
+  label: string
+
+  badge?: string
+
+  icon: React.ReactNode
 }[] = [
   {
     id: "dashboard",
+
     label: "Dashboard",
+
     icon: (
       <svg
         viewBox="0 0 24 24"
@@ -45,8 +41,12 @@ const navItems: {
   },
 
   {
-    id: "expeditions",
-    label: "Expeditions",
+    id: "analytics",
+
+    label: "Dynamic Analytics",
+
+    badge: "NEW",
+
     icon: (
       <svg
         viewBox="0 0 24 24"
@@ -55,16 +55,18 @@ const navItems: {
         strokeWidth={1.8}
         className="w-4 h-4"
       >
-        <path d="M12 2L2 7l10 5 10-5-10-5z" />
-        <path d="M2 17l10 5 10-5" />
-        <path d="M2 12l10 5 10-5" />
+        <line x1="18" y1="20" x2="18" y2="10" />
+        <line x1="12" y1="20" x2="12" y2="4" />
+        <line x1="6" y1="20" x2="6" y2="14" />
       </svg>
     ),
   },
 
   {
-    id: "publications",
-    label: "Research Publications",
+    id: "digital-twin",
+
+    label: "Digital Twin AI",
+
     icon: (
       <svg
         viewBox="0 0 24 24"
@@ -73,33 +75,16 @@ const navItems: {
         strokeWidth={1.8}
         className="w-4 h-4"
       >
-        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
-        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+        <path d="M12 2l2.5 7.5L22 12l-7.5 2.5L12 22l-2.5-7.5L2 12l7.5-2.5L12 2z" />
       </svg>
     ),
   },
 
   {
-    id: "datasets",
-    label: "Scientific Datasets",
-    icon: (
-      <svg
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth={1.8}
-        className="w-4 h-4"
-      >
-        <ellipse cx="12" cy="5" rx="9" ry="3" />
-        <path d="M21 12c0 1.66-4.03 3-9 3S3 13.66 3 12" />
-        <path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5" />
-      </svg>
-    ),
-  },
+    id: "explorer",
 
-  {
-    id: "media",
-    label: "Media Gallery",
+    label: "Data Explorer",
+
     icon: (
       <svg
         viewBox="0 0 24 24"
@@ -108,16 +93,20 @@ const navItems: {
         strokeWidth={1.8}
         className="w-4 h-4"
       >
-        <rect x="3" y="3" width="18" height="18" rx="2" />
-        <circle cx="8.5" cy="8.5" r="1.5" />
-        <polyline points="21 15 16 10 5 21" />
+        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+        <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
+        <line x1="12" y1="22.08" x2="12" y2="12" />
       </svg>
     ),
   },
 
   {
     id: "map",
-    label: "Polar Map & GIS",
+
+    label: "Polar Map",
+
+    badge: "NEW",
+
     icon: (
       <svg
         viewBox="0 0 24 24"
@@ -134,8 +123,52 @@ const navItems: {
   },
 
   {
+    id: "research-rooms",
+
+    label: "Research Rooms",
+
+    badge: "LIVE",
+
+    icon: (
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth={1.8}
+        className="w-4 h-4"
+      >
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+        <path d="M8 9h8" />
+        <path d="M8 13h5" />
+      </svg>
+    ),
+  },
+
+  {
+    id: "ai-tools",
+
+    label: "AI Tools",
+
+    icon: (
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth={1.8}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className="w-4 h-4"
+      >
+        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+      </svg>
+    ),
+  },
+
+  {
     id: "ai",
+
     label: "Polar Knowledge (AI)",
+
     icon: (
       <svg
         viewBox="0 0 24 24"
@@ -154,7 +187,9 @@ const navItems: {
 
   {
     id: "education",
-    label: "Gaming Academy",
+
+    label: "Polar Education",
+
     icon: (
       <svg
         viewBox="0 0 24 24"
@@ -171,7 +206,9 @@ const navItems: {
 
   {
     id: "news",
+
     label: "Content Creation",
+
     icon: (
       <svg
         viewBox="0 0 24 24"
@@ -189,8 +226,31 @@ const navItems: {
   },
 
   {
+    id: "bio-lab",
+
+    label: "eDNA & Otolith Lab",
+
+    icon: (
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth={1.8}
+        className="w-4 h-4"
+      >
+        <path d="M2 15c6.667-6 13.333 0 20-6" />
+        <path d="M9 22c1.798-1.998 2.518-3.995 2.807-5.993" />
+        <path d="M15 2c-1.798 1.998-2.518 3.995-2.807 5.993" />
+        <circle cx="12" cy="12" r="3" />
+      </svg>
+    ),
+  },
+
+  {
     id: "events",
+
     label: "Events & Activities",
+
     icon: (
       <svg
         viewBox="0 0 24 24"
@@ -206,11 +266,30 @@ const navItems: {
       </svg>
     ),
   },
-];
+
+  {
+    id: "profile",
+    label: "Scientist Profile",
+    icon: (
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth={1.8}
+        className="w-4 h-4"
+      >
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+        <circle cx="12" cy="7" r="4" />
+      </svg>
+    ),
+  },
+]
 
 export default function Sidebar({
   active,
+
   onNavigate,
+
   collapsed = false,
 }: SidebarProps) {
   return (
@@ -218,11 +297,17 @@ export default function Sidebar({
       className="flex flex-col fixed left-0 z-40"
       style={{
         top: "var(--header-height)",
+
         height: "calc(100vh - var(--header-height))",
+
         width: collapsed ? "72px" : "var(--sidebar-width)",
+
         background: "var(--sidebar-bg)",
+
         borderRight: "1px solid var(--sidebar-border)",
+
         transition: "width 0.25s ease",
+
         overflow: "hidden",
       }}
     >
@@ -241,8 +326,6 @@ export default function Sidebar({
             collapsed ? "justify-center" : "gap-2.5"
           }`}
         >
-          
-
           {/* Brand text */}
           {!collapsed && (
             <div>
@@ -273,6 +356,7 @@ export default function Sidebar({
             className="mt-3 px-2.5 py-1.5 rounded-lg flex items-center gap-1.5"
             style={{
               background: "var(--success-bg)",
+
               border: "1px solid var(--success-border)",
             }}
           >
@@ -303,31 +387,66 @@ export default function Sidebar({
         className="flex-1 overflow-y-auto px-2.5 py-3 space-y-0.5"
         aria-label="Main navigation"
       >
-        {navItems.map((item) => (
-          <button
-            key={item.id}
-            onClick={() => onNavigate(item.id)}
-            className={`sidebar-nav-item ${
-              active === item.id ? "active" : ""
-            } ${collapsed ? "justify-center" : ""}`}
-            aria-current={active === item.id ? "page" : undefined}
-            title={collapsed ? item.label : undefined}
-          >
-            {item.icon}
+        {navItems.map((item) => {
+          const isExplorerItem = item.id === "explorer"
+          const isBioLabItem = item.id === "bio-lab"
 
-            {/* Hide text when collapsed */}
-            {!collapsed && (
-              <span className="truncate flex-1 text-left flex items-center justify-between">
-                <span>{item.label}</span>
-                {item.badge && (
-                  <span className="ml-1.5 px-1.5 py-0.5 rounded text-[9px] font-bold bg-blue-100 text-blue-800 border border-blue-200">
-                    {item.badge}
-                  </span>
-                )}
+          const isItemActive =
+            active === item.id ||
+            (isExplorerItem &&
+              (active === "expeditions" ||
+                active === "publications" ||
+                active === "datasets" ||
+                active === "media")) ||
+            (isBioLabItem &&
+              (active === "bio-lab" ||
+                active === "edna-lab" ||
+                active === "otolith-lab"))
+
+          return (
+            <button
+              key={item.id}
+              onClick={() => {
+                onNavigate(item.id)
+              }}
+              className={`sidebar-nav-item ${
+                isItemActive
+                  ? "!bg-[#003366] !text-white !border-transparent font-semibold shadow-xs"
+                  : ""
+              } ${collapsed ? "justify-center" : ""}`}
+              aria-current={isItemActive ? "page" : undefined}
+              title={collapsed ? item.label : undefined}
+            >
+              <span className={isItemActive ? "[&>svg]:text-white" : ""}>
+                {item.icon}
               </span>
-            )}
-          </button>
-        ))}
+
+              {/* Hide text when collapsed */}
+              {!collapsed && (
+                <span className="truncate flex-1 text-left flex items-center justify-between">
+                  <span
+                    className={isItemActive ? "text-white font-semibold" : ""}
+                  >
+                    {item.label}
+                  </span>
+                  {item.badge && (
+                    <span
+                      className={`ml-1.5 px-1.5 py-0.5 rounded text-[9px] font-bold ${
+                        item.badge === "NEW"
+                          ? "bg-emerald-600 text-white"
+                          : isItemActive
+                            ? "bg-white/20 text-white"
+                            : "bg-blue-100 text-blue-800 border border-blue-200"
+                      }`}
+                    >
+                      {item.badge}
+                    </span>
+                  )}
+                </span>
+              )}
+            </button>
+          )
+        })}
       </nav>
 
       {/* ========================= */}
@@ -363,5 +482,5 @@ export default function Sidebar({
         </div>
       )}
     </div>
-  );
+  )
 }

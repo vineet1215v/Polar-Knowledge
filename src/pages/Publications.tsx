@@ -1,58 +1,100 @@
-import { useState } from "react";
-import { publications } from "../data";
-import { EvidenceBadge } from "../components/EvidenceBadge";
-import SaveFollowButton from "../components/SaveFollowButton";
-import PublicationPdfModal from "../components/PublicationPdfModal";
-import PublicationExploreModal from "../components/PublicationExploreModal";
-import { gameStore } from "../gameStore";
-import type { WorkspaceSource } from "../workspaceStore";
+import { useState } from "react"
+import { publications } from "../data"
+import { EvidenceBadge } from "../components/EvidenceBadge"
+import SaveFollowButton from "../components/SaveFollowButton"
+import PublicationPdfModal from "../components/PublicationPdfModal"
+import PublicationExploreModal from "../components/PublicationExploreModal"
+import { gameStore } from "../gameStore"
+import type { WorkspaceSource } from "../workspaceStore"
 
-type PubType = typeof publications[0];
+type PubType = typeof publications[0]
 
 export default function Publications({
   onNavigate,
   onAddToWorkspace,
   onOpenStudio,
 }: {
-  onNavigate?: (p: string) => void;
-  onAddToWorkspace?: (s: WorkspaceSource) => void;
-  onOpenStudio?: () => void;
+  onNavigate?: (p: string) => void
+  onAddToWorkspace?: (s: WorkspaceSource) => void
+  onOpenStudio?: () => void
 }) {
-  const [search, setSearch] = useState("");
-  const [year, setYear] = useState("");
-  const [author, setAuthor] = useState("");
-  const [topic, setTopic] = useState("all");
-  const [viewMode, setViewMode] = useState<"cards" | "table">("cards");
-  const [selected, setSelected] = useState<PubType | null>(null);
-  const [pdfModalPub, setPdfModalPub] = useState<PubType | null>(null);
+  const [search, setSearch] = useState("")
+  const [year, setYear] = useState("")
+  const [author, setAuthor] = useState("")
+  const [topic, setTopic] = useState("all")
+  const [viewMode, setViewMode] = useState<"cards" | "table">("cards")
+  const [selected, setSelected] = useState<PubType | null>(null)
+  const [pdfModalPub, setPdfModalPub] = useState<PubType | null>(null)
 
-  const filtered = publications.filter(p => {
+  const filtered = publications.filter((p) => {
     if (
       search &&
       !p.title.toLowerCase().includes(search.toLowerCase()) &&
       !p.journal.toLowerCase().includes(search.toLowerCase()) &&
       !p.authors.toLowerCase().includes(search.toLowerCase())
     )
-      return false;
-    if (year && p.year !== parseInt(year)) return false;
-    if (author && !p.authors.toLowerCase().includes(author.toLowerCase())) return false;
-    if (topic === "sea_ice" && !p.title.toLowerCase().includes("ice")) return false;
-    if (topic === "atmosphere" && !p.title.toLowerCase().includes("atmosphere") && !p.title.toLowerCase().includes("vortex"))
-      return false;
-    if (topic === "biology" && !p.title.toLowerCase().includes("biodiversity") && !p.title.toLowerCase().includes("microbiome"))
-      return false;
-    if (topic === "ocean" && !p.title.toLowerCase().includes("ocean") && !p.title.toLowerCase().includes("sea"))
-      return false;
-    return true;
-  });
+      return false
+    if (year && p.year !== parseInt(year)) return false
+    if (author && !p.authors.toLowerCase().includes(author.toLowerCase()))
+      return false
+    if (topic === "sea_ice" && !p.title.toLowerCase().includes("ice"))
+      return false
+    if (
+      topic === "atmosphere" &&
+      !p.title.toLowerCase().includes("atmosphere") &&
+      !p.title.toLowerCase().includes("vortex")
+    )
+      return false
+    if (
+      topic === "biology" &&
+      !p.title.toLowerCase().includes("biodiversity") &&
+      !p.title.toLowerCase().includes("microbiome")
+    )
+      return false
+    if (
+      topic === "ocean" &&
+      !p.title.toLowerCase().includes("ocean") &&
+      !p.title.toLowerCase().includes("sea")
+    )
+      return false
+    return true
+  })
 
   const handleOpenPdf = (p: PubType) => {
-    setPdfModalPub(p);
-    gameStore.addXP(25, `Opened Manuscript PDF: ${p.title.slice(0, 30)}...`);
-  };
+    setPdfModalPub(p)
+    gameStore.addXP(25, `Opened Manuscript PDF: ${p.title.slice(0, 30)}...`)
+  }
+
+  // ── FULL PAGE PDF READER VIEW (NO FLOATING MODAL) ──────────────────
+  if (pdfModalPub) {
+    return (
+      <PublicationPdfModal
+        pub={pdfModalPub}
+        onClose={() => setPdfModalPub(null)}
+        onNavigate={onNavigate}
+      />
+    )
+  }
+
+  // ── FULL PAGE PUBLICATION EXPLORE VIEW (NO FLOATING MODAL) ─────────
+  if (selected) {
+    return (
+      <PublicationExploreModal
+        pub={selected}
+        onClose={() => setSelected(null)}
+        onOpenPdf={handleOpenPdf}
+        onNavigate={onNavigate}
+        onAddToWorkspace={onAddToWorkspace}
+        onOpenStudio={onOpenStudio}
+      />
+    )
+  }
 
   return (
-    <div className="h-full overflow-y-auto" style={{ background: "var(--content-bg)" }}>
+    <div
+      className="h-full overflow-y-auto"
+      style={{ background: "var(--content-bg)" }}
+    >
       <div className="p-6 max-w-7xl mx-auto space-y-5">
         {/* Header Ribbon */}
         <div className="flex flex-wrap items-center justify-between gap-4">
@@ -64,7 +106,8 @@ export default function Publications({
               </h1>
             </div>
             <p className="page-header-sub text-xs text-slate-500 mt-1">
-              Peer-reviewed polar papers, open-access manuscripts, and citation tools by NCPOR scientists.
+              Peer-reviewed polar papers, open-access manuscripts, and citation
+              tools by NCPOR scientists.
             </p>
           </div>
 
@@ -73,7 +116,9 @@ export default function Publications({
             <button
               onClick={() => setViewMode("cards")}
               className={`px-3 py-1.5 rounded-lg transition flex items-center gap-1.5 ${
-                viewMode === "cards" ? "bg-white text-blue-700 shadow-2xs" : "text-slate-600 hover:text-slate-900"
+                viewMode === "cards"
+                  ? "bg-white text-blue-700 shadow-2xs"
+                  : "text-slate-600 hover:text-slate-900"
               }`}
             >
               <span></span> Cards
@@ -81,7 +126,9 @@ export default function Publications({
             <button
               onClick={() => setViewMode("table")}
               className={`px-3 py-1.5 rounded-lg transition flex items-center gap-1.5 ${
-                viewMode === "table" ? "bg-white text-blue-700 shadow-2xs" : "text-slate-600 hover:text-slate-900"
+                viewMode === "table"
+                  ? "bg-white text-blue-700 shadow-2xs"
+                  : "text-slate-600 hover:text-slate-900"
               }`}
             >
               <span></span> Scientific Table
@@ -92,42 +139,42 @@ export default function Publications({
         {/* Scientific Impact & Metrics HUD (Clean, no maps!) */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           <div className="card p-3.5 border border-slate-200 flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center text-lg font-bold border border-blue-100 flex-shrink-0">
-              
-            </div>
+            <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center text-lg font-bold border border-blue-100 flex-shrink-0"></div>
             <div>
               <div className="text-lg font-black text-slate-900">420+</div>
-              <div className="text-[11px] text-slate-500 font-medium">Indexed Papers</div>
+              <div className="text-[11px] text-slate-500 font-medium">
+                Indexed Papers
+              </div>
             </div>
           </div>
 
           <div className="card p-3.5 border border-slate-200 flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center text-lg font-bold border border-emerald-100 flex-shrink-0">
-              
-            </div>
+            <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center text-lg font-bold border border-emerald-100 flex-shrink-0"></div>
             <div>
               <div className="text-lg font-black text-emerald-700">14,850+</div>
-              <div className="text-[11px] text-slate-500 font-medium">Global Citations</div>
+              <div className="text-[11px] text-slate-500 font-medium">
+                Global Citations
+              </div>
             </div>
           </div>
 
           <div className="card p-3.5 border border-slate-200 flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-purple-50 text-purple-700 flex items-center justify-center text-lg font-bold border border-purple-100 flex-shrink-0">
-              
-            </div>
+            <div className="w-10 h-10 rounded-xl bg-purple-50 text-purple-700 flex items-center justify-center text-lg font-bold border border-purple-100 flex-shrink-0"></div>
             <div>
               <div className="text-lg font-black text-purple-700">94.2%</div>
-              <div className="text-[11px] text-slate-500 font-medium">Open Access</div>
+              <div className="text-[11px] text-slate-500 font-medium">
+                Open Access
+              </div>
             </div>
           </div>
 
           <div className="card p-3.5 border border-slate-200 flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center text-lg font-bold border border-amber-100 flex-shrink-0">
-              
-            </div>
+            <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center text-lg font-bold border border-amber-100 flex-shrink-0"></div>
             <div>
               <div className="text-lg font-black text-amber-700">2.4x</div>
-              <div className="text-[11px] text-slate-500 font-medium">Field Citation Ratio</div>
+              <div className="text-[11px] text-slate-500 font-medium">
+                Field Citation Ratio
+              </div>
             </div>
           </div>
         </div>
@@ -142,7 +189,7 @@ export default function Publications({
               { id: "ocean", label: " Southern Ocean" },
               { id: "atmosphere", label: " Atmosphere & Ozone" },
               { id: "biology", label: " Cryomicrobiome" },
-            ].map(t => (
+            ].map((t) => (
               <button
                 key={t.id}
                 onClick={() => setTopic(t.id)}
@@ -173,17 +220,17 @@ export default function Publications({
               <input
                 className="search-input text-xs pl-8 py-1.5"
                 value={search}
-                onChange={e => setSearch(e.target.value)}
+                onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search titles, authors, DOI..."
               />
             </div>
             <select
               className="filter-select text-xs py-1.5"
               value={year}
-              onChange={e => setYear(e.target.value)}
+              onChange={(e) => setYear(e.target.value)}
             >
               <option value="">Year (All)</option>
-              {[2024, 2023, 2022, 2021, 2020].map(y => (
+              {[2024, 2023, 2022, 2021, 2020].map((y) => (
                 <option key={y} value={y}>
                   {y}
                 </option>
@@ -192,7 +239,7 @@ export default function Publications({
             <select
               className="filter-select text-xs py-1.5"
               value={author}
-              onChange={e => setAuthor(e.target.value)}
+              onChange={(e) => setAuthor(e.target.value)}
             >
               <option value="">Author (All)</option>
               <option value="Sharma">A. Sharma</option>
@@ -208,7 +255,7 @@ export default function Publications({
         {/* View Mode 1: Detailed Cards View */}
         {viewMode === "cards" && (
           <div className="space-y-3">
-            {filtered.map(p => (
+            {filtered.map((p) => (
               <div
                 key={p.id}
                 onClick={() => setSelected(p)}
@@ -225,8 +272,12 @@ export default function Publications({
                       <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-100">
                         {p.journal}
                       </span>
-                      <span className="text-xs font-bold text-slate-600">· {p.year}</span>
-                      <span className="text-[10px] font-mono text-slate-400">DOI: {p.doi}</span>
+                      <span className="text-xs font-bold text-slate-600">
+                        · {p.year}
+                      </span>
+                      <span className="text-[10px] font-mono text-slate-400">
+                        DOI: {p.doi}
+                      </span>
                     </div>
 
                     <h3 className="text-sm font-bold text-slate-900 group-hover:text-blue-600 transition leading-snug">
@@ -249,9 +300,9 @@ export default function Publications({
                 <div className="flex items-center gap-2 self-end sm:self-center flex-shrink-0">
                   {/* Working View PDF Button */}
                   <button
-                    onClick={e => {
-                      e.stopPropagation();
-                      handleOpenPdf(p);
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      handleOpenPdf(p)
                     }}
                     className="btn-primary btn-sm text-xs font-bold flex items-center gap-1.5 shadow-2xs"
                   >
@@ -259,16 +310,20 @@ export default function Publications({
                   </button>
 
                   <button
-                    onClick={e => {
-                      e.stopPropagation();
-                      setSelected(p);
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      setSelected(p)
                     }}
                     className="btn-outline btn-sm text-xs font-medium"
                   >
                     Explore →
                   </button>
 
-                  <SaveFollowButton entityId={p.id.toString()} entityType="publication" compact />
+                  <SaveFollowButton
+                    entityId={p.id.toString()}
+                    entityType="publication"
+                    compact
+                  />
                 </div>
               </div>
             ))}
@@ -290,25 +345,36 @@ export default function Publications({
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
-                  {filtered.map(p => (
+                  {filtered.map((p) => (
                     <tr
                       key={p.id}
                       onClick={() => setSelected(p)}
                       className="hover:bg-slate-50/80 cursor-pointer transition"
                     >
                       <td className="py-3 px-4">
-                        <div className="font-bold text-slate-900 line-clamp-1">{p.title}</div>
-                        <div className="font-mono text-[10px] text-slate-400">{p.doi}</div>
+                        <div className="font-bold text-slate-900 line-clamp-1">
+                          {p.title}
+                        </div>
+                        <div className="font-mono text-[10px] text-slate-400">
+                          {p.doi}
+                        </div>
                       </td>
                       <td className="py-3 px-4">
                         <span className="font-medium text-blue-700 bg-blue-50 px-2 py-0.5 rounded text-[11px]">
                           {p.journal}
                         </span>
                       </td>
-                      <td className="py-3 px-4 font-mono font-semibold text-slate-700">{p.year}</td>
-                      <td className="py-3 px-4 text-slate-600">{p.authors.split(",")[0]}</td>
+                      <td className="py-3 px-4 font-mono font-semibold text-slate-700">
+                        {p.year}
+                      </td>
+                      <td className="py-3 px-4 text-slate-600">
+                        {p.authors.split(",")[0]}
+                      </td>
                       <td className="py-3 px-4 text-right">
-                        <div className="flex items-center justify-end gap-2" onClick={e => e.stopPropagation()}>
+                        <div
+                          className="flex items-center justify-end gap-2"
+                          onClick={(e) => e.stopPropagation()}
+                        >
                           <button
                             onClick={() => setSelected(p)}
                             className="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded text-xs font-semibold transition"
@@ -334,13 +400,15 @@ export default function Publications({
         {filtered.length === 0 && (
           <div className="card p-10 text-center text-slate-500 border border-slate-200">
             <div className="text-3xl mb-2"></div>
-            <div className="text-sm font-semibold">No publications found matching your filters.</div>
+            <div className="text-sm font-semibold">
+              No publications found matching your filters.
+            </div>
             <button
               onClick={() => {
-                setSearch("");
-                setYear("");
-                setAuthor("");
-                setTopic("all");
+                setSearch("")
+                setYear("")
+                setAuthor("")
+                setTopic("all")
               }}
               className="mt-3 btn-outline btn-sm text-xs"
             >
@@ -350,30 +418,10 @@ export default function Publications({
         )}
 
         <div className="text-xs text-center text-slate-400 pt-2">
-          Showing {filtered.length} of {publications.length} scientific publications in NCPOR indexed repository.
+          Showing {filtered.length} of {publications.length} scientific
+          publications in NCPOR indexed repository.
         </div>
       </div>
-
-      {/* Publication Explore Modal */}
-      {selected && (
-        <PublicationExploreModal
-          pub={selected}
-          onClose={() => setSelected(null)}
-          onOpenPdf={handleOpenPdf}
-          onNavigate={onNavigate}
-          onAddToWorkspace={onAddToWorkspace}
-          onOpenStudio={onOpenStudio}
-        />
-      )}
-
-      {/* Interactive PDF Reader Modal */}
-      {pdfModalPub && (
-        <PublicationPdfModal
-          pub={pdfModalPub}
-          onClose={() => setPdfModalPub(null)}
-          onNavigate={onNavigate}
-        />
-      )}
     </div>
-  );
+  )
 }

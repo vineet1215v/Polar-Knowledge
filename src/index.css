@@ -1,11 +1,33 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300;0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700;0,14..32,800;1,14..32,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,700&family=Noto+Sans+Devanagari:wght@400;500;600;700;800&family=Noto+Sans+Display:ital,wght@0,600;0,700;0,800;0,900;1,700&display=swap');
 @import 'tailwindcss';
+
+@theme {
+  --font-sans: 'Noto Sans', 'Noto Sans Devanagari', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'Noto Sans', 'Noto Sans Devanagari', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
 
 html, body, #root {
   height: 100%;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: 'Noto Sans', 'Noto Sans Devanagari', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+body, button, input, select, textarea, h1, h2, h3, h4, h5, h6, p, span, a, div {
+  font-family: 'Noto Sans', 'Noto Sans Devanagari', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.font-serif-display {
+  font-family: 'Noto Sans', 'Noto Sans Devanagari', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+}
+
+/* Remove ugly default browser focus outlines/rectangles across all inputs */
+input, textarea, select {
+  outline: none !important;
+}
+input:focus, textarea:focus, select:focus,
+input:focus-visible, textarea:focus-visible, select:focus-visible {
+  outline: none !important;
 }
 
 /* ═══════════════════════════════════════════════════
@@ -16,8 +38,8 @@ html, body, #root {
   --primary-navy:        #0c1e3c;
   --primary-navy-deep:   #08152a;
   --primary-blue:        #1e40af;
-  --accent:              #2563eb;
-  --accent-hover:        #1d4ed8;
+  --accent:              #1d4ed8;
+  --accent-hover:        #1e40af;
   --accent-light:        #eff6ff;
   --accent-border:       #bfdbfe;
 
@@ -26,7 +48,7 @@ html, body, #root {
   ─────────────────────────────────────────────── */
   --header-bg:           #0c1e3c;
   --header-border:       rgba(255,255,255,0.08);
-  --header-height:       64px;
+  --header-height:       68px;
 
   --sidebar-bg:          #ffffff;
   --sidebar-border:      #e8ecf0;
@@ -36,14 +58,14 @@ html, body, #root {
   --nav-text:            #374151;
   --nav-text-muted:      #6b7280;
   --nav-icon:            #6b7280;
-  --nav-hover-bg:        #f0f4ff;
-  --nav-hover-text:      #1e40af;
+  --nav-hover-bg:        #eff6ff;
+  --nav-hover-text:      #1d4ed8;
   --nav-active-bg:       #eff6ff;
   --nav-active-text:     #1d4ed8;
   --nav-active-border:   #bfdbfe;
 
   /* Surfaces */
-  --content-bg:          #ffffff;
+  --content-bg:          #f1f5f9;
   --card-bg:             #ffffff;
   --surface-secondary:   #f3f6f9;
   --surface-tertiary:    #f0f4f8;
@@ -462,6 +484,24 @@ html, body, #root {
   50%       { opacity: 0.6; transform: scale(1.4); }
 }
 .pulse-dot { animation: pulse-dot 2s infinite; }
+
+/* Announcement Marquee Ticker */
+@keyframes marquee {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee 38s linear infinite;
+  will-change: transform;
+}
+
+.animate-marquee:hover,
+.marquee-paused {
+  animation-play-state: paused !important;
+}
 
 /* ═══════════════════════════════════════════════════
    POLAR MAP — INTERACTIVE LABELS
@@ -1206,5 +1246,396 @@ aside {
     flex: 0 0 auto;
 
     overflow: visible;
+  }
+}
+
+/* ═══════════════════════════════════════════════════
+   MYGOV OFFICIAL RADIX THEME STYLES (NCPOR PORTAL)
+═══════════════════════════════════════════════════ */
+.header {
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -1px rgba(0,0,0,0.04);
+  position: relative;
+  z-index: 110;
+}
+.header.sticky {
+  width: 100%;
+  left: 0px;
+  top: 0px;
+  z-index: 99;
+  position: sticky;
+}
+.primary-header {
+  padding: 6px 0;
+  background: linear-gradient(to right, #2ab998 0%, #2989d8 30%, #428dcb 33%, #c2579b 67%, #c2579b 75%, #ec7026 100%);
+  color: #fff;
+  font-size: 0.8125rem;
+}
+.primary-header a.goi {
+  display: flex;
+  align-items: center;
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-decoration: none;
+}
+.primary-header a.goi img {
+  margin-right: 6px;
+  border-radius: 2px;
+}
+.primary-header .skip_content {
+  margin-left: auto;
+  color: #fff;
+  display: flex;
+  font-size: 0.75rem;
+  align-items: center;
+  padding: 0 10px;
+  border-right: 1px solid rgba(255, 255, 255, 0.3);
+  text-decoration: none;
+}
+.primary-header .skip_content:hover {
+  text-decoration: underline;
+}
+.primary-header .lang-switcher-block {
+  position: relative;
+  padding: 0 10px;
+  font-size: 0.75rem;
+  border-right: 1px solid rgba(255, 255, 255, 0.3);
+  display: flex;
+  align-items: center;
+}
+.primary-header .lang-switcher-block .wpLan {
+  display: flex;
+  padding: 2px 8px;
+  align-items: center;
+  gap: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 25px;
+  color: #fff;
+  cursor: pointer;
+  background: transparent;
+  text-decoration: none;
+}
+.primary-header .lang-switcher-block .wpLan:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+.primary-header .user_accessibility {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  border-right: 1px solid rgba(255, 255, 255, 0.3);
+}
+.primary-header .access_icon {
+  color: #fff;
+  font-size: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  text-decoration: none;
+}
+.primary-header .access-type {
+  font-weight: 500;
+  position: absolute;
+  right: -50px;
+  top: 100%;
+  width: 320px;
+  z-index: 1000;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0px 6px 20px 0px rgba(0,0,0,0.25);
+  color: #222;
+  padding: 16px 14px 14px;
+  border: 1px solid #E5E7EB;
+}
+.primary-header .access-type:after {
+  content: "";
+  border-bottom: 7px solid #fff;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  position: absolute;
+  right: 65px;
+  bottom: calc(100% - 1px);
+  z-index: 2;
+}
+.primary-header .site_share {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+}
+.primary-header .site_share .share_icon {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 0.75rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.primary-header .share-list {
+  box-shadow: 0px 4px 15px rgba(0,0,0,0.15);
+  background: #fff;
+  position: absolute;
+  z-index: 1001;
+  right: -6px;
+  margin: 0 auto;
+  top: 100%;
+  width: 170px;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #E5E7EB;
+}
+.primary-header .share-list:after {
+  content: "";
+  position: absolute;
+  right: 20px;
+  border-bottom: 7px solid #fff;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  bottom: calc(100% - 1px);
+  z-index: 2;
+}
+.main-header {
+  width: 100%;
+  background-color: #003366;
+  border-bottom: 2px solid #002244;
+}
+.main-header .header-search-block {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  gap: 16px;
+  position: relative;
+}
+.mygov-search-wrapper {
+  display: flex;
+  align-items: center;
+  border: 1px solid #CBD5E1;
+  border-radius: 8px;
+  background: #ffffff;
+  overflow: hidden;
+  height: 42px;
+  flex: 1;
+  max-width: 600px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+}
+.mygov-search-wrapper form {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+.mygov-search-wrapper:focus-within {
+  border-color: #1D4ED8;
+  box-shadow: 0 0 0 2px rgba(29,78,216,0.15);
+}
+.mygov-search-wrapper input.form-textfield {
+  border: none;
+  outline: none;
+  background: transparent;
+  padding: 8px 14px;
+  font-size: 0.8125rem;
+  color: #111827;
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+}
+.mygov-search-wrapper select.form-select {
+  border: none;
+  border-left: 1px solid #E2E8F0;
+  outline: none;
+  background: #FAFBFD;
+  padding: 8px 12px;
+  font-size: 0.8125rem;
+  color: #4B5563;
+  cursor: pointer;
+  height: 100%;
+}
+.mygov-search-wrapper .form-submit.btn-primary {
+  background-color: #1D4ED8;
+  color: #fff;
+  border: none;
+  padding: 0 20px;
+  height: 100%;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+}
+.mygov-search-wrapper .form-submit.btn-primary:hover {
+  background-color: #1E40AF;
+}
+.hamburger {
+  width: 40px;
+  height: 40px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.hamburger:hover {
+  background: rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 255, 255, 0.45);
+}
+.hamburger .icon-left {
+  width: 18px;
+  height: 2.5px;
+  background: #ffffff;
+  border-radius: 2px;
+  transition: all 0.3s;
+}
+.hamburger .icon-right {
+  width: 18px;
+  height: 2.5px;
+  background: #ffffff;
+  border-radius: 2px;
+  transition: all 0.3s;
+}
+.hamburger.open .icon-left {
+  transform: rotate(45deg) translate(2.5px, 2.5px);
+}
+.hamburger.open .icon-right {
+  transform: rotate(-45deg) translate(2.5px, -2.5px);
+}
+.user-block {
+  position: relative;
+}
+.user-block .user-log {
+  width: 38px;
+  height: 38px;
+  border-radius: 100%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  background-color: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.user-block .user-log:hover {
+  background-color: rgba(255, 255, 255, 0.25);
+  border-color: #ffffff;
+}
+.user-block .login-details {
+  position: absolute;
+  right: 0px;
+  top: calc(100% + 8px);
+  width: 280px;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0px 6px 20px 0px rgba(0,0,0,0.15);
+  border: 1px solid #E5E7EB;
+  padding: 16px 14px;
+  z-index: 1000;
+}
+.user-block .login-details:after {
+  content: "";
+  border-bottom: 7px solid #fff;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  position: absolute;
+  right: 14px;
+  bottom: calc(100% - 1px);
+  z-index: 2;
+}
+.user-block .login-details .login-link-wrapper a.ac-login {
+  display: block;
+  width: 100%;
+  text-align: center;
+  padding: 8px 12px;
+  border-radius: 20px;
+  background-color: #1D4ED8;
+  color: #fff;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background-color 0.2s;
+}
+.user-block .login-details .login-link-wrapper a.ac-login:hover {
+  background-color: #1E40AF;
+}
+.megamenu-wrap {
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  margin: auto;
+  top: 100%;
+  background-color: #fff;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+  border-top: 2px solid #1D4ED8;
+  width: 100%;
+  max-width: 1530px;
+  z-index: 999;
+}
+.megamenu {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 24px;
+  padding: 30px 30px 24px;
+}
+.megamenu_item h2 {
+  font-size: 0.9375rem;
+  font-weight: 800;
+  margin-bottom: 12px;
+  color: #111827;
+  border-bottom: 2px solid #1D4ED8;
+  padding-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+.megamenu_item ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.megamenu_item li {
+  margin-bottom: 8px;
+}
+.megamenu_item li a {
+  color: #374151;
+  font-size: 0.8125rem;
+  text-decoration: none;
+  transition: color 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.megamenu_item li a:hover {
+  color: #1D4ED8;
+}
+
+@media (max-width: 1024px) {
+  .megamenu {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    padding: 20px;
+    max-height: 75vh;
+    overflow-y: auto;
+  }
+}
+
+@media (max-width: 640px) {
+  .megamenu {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    padding: 16px;
+    max-height: 70vh;
+    overflow-y: auto;
   }
 }

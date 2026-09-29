@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect } from "react"
 import {
   lmsCourses,
   LMSCourse,
@@ -6,90 +6,94 @@ import {
   LMSSubject,
   LMSChapter,
   getStudentAIResponse,
-} from "../educationData";
-import { gameStore } from "../gameStore";
+} from "../educationData"
+import { gameStore } from "../gameStore"
 
 interface Props {
-  onNavigate?: (p: string) => void;
-  onOpenStudio?: () => void;
+  onNavigate?: (p: string) => void
+  onOpenStudio?: () => void
 }
 
 // Navigation flow levels matching the requested batch experience
-type ViewLevel =
-  | "batches_catalog"   // Browse all available batches
-  | "batch_details"     // Image 2: Batch banner + SUBJECTS / TESTS / ANNOUNCEMENTS / COMMUNITY
-  | "subject_chapters"  // Image 1: Back to Batch Details + 4 Chapter Cards Grid (with stats & progress)
-  | "chapter_content"   // Image 3: Back to Chapters + Lectures / Notes / DPP / Solutions / Quiz tabs
-  | "lecture_player";   // Full Cinema Player with synchronized notes & AI doubt engine
+type ViewLevel = "batches_catalog" | "batch_details" | "subject_chapters" | "chapter_content" | "lecture_player" // Browse all available batches // Image 2: Batch banner + SUBJECTS / TESTS / ANNOUNCEMENTS / COMMUNITY // Image 1: Back to Batch Details + 4 Chapter Cards Grid (with stats & progress) // Image 3: Back to Chapters + Lectures / Notes / DPP / Solutions / Quiz tabs // Full Cinema Player with synchronized notes & AI doubt engine
 
 export default function Education({ onNavigate, onOpenStudio }: Props) {
   // Navigation State - starts on Batches Catalog
-  const [viewLevel, setViewLevel] = useState<ViewLevel>("batches_catalog");
+  const [viewLevel, setViewLevel] = useState<ViewLevel>("batches_catalog")
 
   // Selected Course / Batch - defaults to Antarctic Cryosphere Masterclass
-  const [selectedCourseId, setSelectedCourseId] = useState<string>("course-glaciology");
+  const [selectedCourseId, setSelectedCourseId] =
+    useState<string>("course-glaciology")
   const currentCourse: LMSCourse =
-    lmsCourses.find(c => c.id === selectedCourseId) || lmsCourses[0];
+    lmsCourses.find((c) => c.id === selectedCourseId) || lmsCourses[0]
 
   // Batch details main tabs (Image 2)
-  const [batchTab, setBatchTab] = useState<"SUBJECTS" | "TESTS" | "ANNOUNCEMENTS" | "COMMUNITY">(
-    "SUBJECTS"
-  );
+  const [batchTab, setBatchTab] =
+    useState<"SUBJECTS" | "TESTS" | "ANNOUNCEMENTS" | "COMMUNITY">("SUBJECTS")
 
   // Selected Subject ID (defaults to Ice Core Climatology)
-  const [selectedSubjectId, setSelectedSubjectId] = useState<string>("subj-glac-icecores");
+  const [selectedSubjectId, setSelectedSubjectId] =
+    useState<string>("subj-glac-icecores")
 
   // Selected Chapter ID (defaults to Deep Ice Cores)
-  const [selectedChapterId, setSelectedChapterId] = useState<string>("chap-glac-icecores");
+  const [selectedChapterId, setSelectedChapterId] =
+    useState<string>("chap-glac-icecores")
 
   // Selected Lesson
   const [selectedLessonId, setSelectedLessonId] = useState<string>(
-    currentCourse.lessons?.[0]?.id || "l1-ice-cores"
-  );
+    currentCourse.lessons?.[0]?.id || "l1-ice-cores",
+  )
 
   // Chapter Content Sub-tabs (Image 3)
-  const [chapterTab, setChapterTab] = useState<
-    "Lectures" | "Notes" | "DPP PDF" | "Solutions" | "DPP Quiz" | "AI Doubts"
-  >("Lectures");
+  const [chapterTab, setChapterTab] =
+    useState<"Lectures" | "Notes" | "DPP PDF" | "Solutions" | "DPP Quiz" | "AI Doubts">(
+      "Lectures",
+    )
 
   // Favorite / Bookmark Batch State
-  const [isBookmarked, setIsBookmarked] = useState<boolean>(false);
+  const [isBookmarked, setIsBookmarked] = useState<boolean>(false)
 
   // Completed Lessons Set
   const [completedLessonIds, setCompletedLessonIds] = useState<Set<string>>(
-    new Set(["l1-ice-cores"])
-  );
+    new Set(["l1-ice-cores"]),
+  )
 
   // Modal Dialogs for Top Bar
-  const [batchModalOpen, setBatchModalOpen] = useState<boolean>(false);
-  const [telegramModalOpen, setTelegramModalOpen] = useState<boolean>(false);
-  const [whatsappModalOpen, setWhatsappModalOpen] = useState<boolean>(false);
-  const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [batchModalOpen, setBatchModalOpen] = useState<boolean>(false)
+  const [telegramModalOpen, setTelegramModalOpen] = useState<boolean>(false)
+  const [whatsappModalOpen, setWhatsappModalOpen] = useState<boolean>(false)
+  const [toastMessage, setToastMessage] = useState<string | null>(null)
 
   // Video Player Controls & State
-  const [isPlaying, setIsPlaying] = useState<boolean>(true);
-  const [playbackSpeed, setPlaybackSpeed] = useState<number>(1);
-  const [currentChapterIndex, setCurrentChapterIndex] = useState<number>(0);
+  const [isPlaying, setIsPlaying] = useState<boolean>(true)
+  const [playbackSpeed, setPlaybackSpeed] = useState<number>(1)
+  const [currentChapterIndex, setCurrentChapterIndex] = useState<number>(0)
 
   // Slide Deck in Class Notes
-  const [activeSlideIndex, setActiveSlideIndex] = useState<number>(0);
+  const [activeSlideIndex, setActiveSlideIndex] = useState<number>(0)
 
   // DPP Test / Quiz State
-  const [quizIndex, setQuizIndex] = useState<number>(0);
-  const [selectedQuizOption, setSelectedQuizOption] = useState<number | null>(null);
-  const [isQuizAnswered, setIsQuizAnswered] = useState<boolean>(false);
-  const [quizScore, setQuizScore] = useState<number>(0);
-  const [quizFinished, setQuizFinished] = useState<boolean>(false);
+  const [quizIndex, setQuizIndex] = useState<number>(0)
+  const [selectedQuizOption, setSelectedQuizOption] = useState<number | null>(
+    null,
+  )
+  const [isQuizAnswered, setIsQuizAnswered] = useState<boolean>(false)
+  const [quizScore, setQuizScore] = useState<number>(0)
+  const [quizFinished, setQuizFinished] = useState<boolean>(false)
 
   // AI Doubt Engine State
-  const [doubtInput, setDoubtInput] = useState<string>("");
-  const [doubtLog, setDoubtLog] = useState<
-    Array<{ q: string; a: string; timestamp: string; id: string }>
-  >([]);
+  const [doubtInput, setDoubtInput] = useState<string>("")
+  const [doubtLog, setDoubtLog] = useState<Array<{
+    q: string
+    a: string
+    timestamp: string
+    id: string
+  }>>([])
 
   // ── BATCHES SEARCH & FILTER STATE ──────────────────────────────────────────
-  const [batchSearchQuery, setBatchSearchQuery] = useState<string>("");
-  const [selectedCategoryFilter, setSelectedCategoryFilter] = useState<string>("All");
+  const [batchSearchQuery, setBatchSearchQuery] = useState<string>("")
+  const [selectedCategoryFilter, setSelectedCategoryFilter] =
+    useState<string>("All")
 
   const categoryFilters = [
     { id: "All", label: "All Batches", icon: "" },
@@ -101,11 +105,11 @@ export default function Education({ onNavigate, onOpenStudio }: Props) {
     { id: "Biology", label: "Polar Biology", icon: "EXP" },
     { id: "Engineering", label: "Station Engineering", icon: "" },
     { id: "Atmosphere", label: "Atmospheric Science", icon: "" },
-  ];
+  ]
 
   // Filter batches in catalog
-  const filteredCourses = lmsCourses.filter(course => {
-    const q = batchSearchQuery.toLowerCase().trim();
+  const filteredCourses = lmsCourses.filter((course) => {
+    const q = batchSearchQuery.toLowerCase().trim()
     const matchesQuery =
       !q ||
       course.title.toLowerCase().includes(q) ||
@@ -113,7 +117,7 @@ export default function Education({ onNavigate, onOpenStudio }: Props) {
       course.faculty.toLowerCase().includes(q) ||
       (course.category && course.category.toLowerCase().includes(q)) ||
       (course.badge && course.badge.toLowerCase().includes(q)) ||
-      (course.targetAudience && course.targetAudience.toLowerCase().includes(q));
+      (course.targetAudience && course.targetAudience.toLowerCase().includes(q))
 
     const matchesCategory =
       selectedCategoryFilter === "All" ||
@@ -127,23 +131,28 @@ export default function Education({ onNavigate, onOpenStudio }: Props) {
           course.id.includes("sea") ||
           course.id.includes("ocean"))) ||
       (selectedCategoryFilter === "Arctic" &&
-        (course.category?.toLowerCase().includes("arctic") || course.id.includes("arctic"))) ||
+        (course.category?.toLowerCase().includes("arctic") ||
+          course.id.includes("arctic"))) ||
       (selectedCategoryFilter === "Himalayan" &&
-        (course.category?.toLowerCase().includes("him") || course.id.includes("him"))) ||
+        (course.category?.toLowerCase().includes("him") ||
+          course.id.includes("him"))) ||
       (selectedCategoryFilter === "GIS" &&
         (course.category?.toLowerCase().includes("gis") ||
           course.category?.toLowerCase().includes("remote") ||
           course.id.includes("gis") ||
           course.id.includes("remote"))) ||
       (selectedCategoryFilter === "Biology" &&
-        (course.category?.toLowerCase().includes("bio") || course.id.includes("bio"))) ||
+        (course.category?.toLowerCase().includes("bio") ||
+          course.id.includes("bio"))) ||
       (selectedCategoryFilter === "Engineering" &&
-        (course.category?.toLowerCase().includes("eng") || course.id.includes("eng"))) ||
+        (course.category?.toLowerCase().includes("eng") ||
+          course.id.includes("eng"))) ||
       (selectedCategoryFilter === "Atmosphere" &&
-        (course.category?.toLowerCase().includes("atm") || course.id.includes("atm")));
+        (course.category?.toLowerCase().includes("atm") ||
+          course.id.includes("atm")))
 
-    return matchesQuery && matchesCategory;
-  });
+    return matchesQuery && matchesCategory
+  })
 
   // Construct structured subjects and chapters for the active course
   const subjects: LMSSubject[] =
@@ -162,21 +171,26 @@ export default function Education({ onNavigate, onOpenStudio }: Props) {
           },
           {
             id: "subj-core",
-            title: currentCourse.title.split("&")[0].trim() || "Polar Cryosphere Science",
+            title:
+              currentCourse.title.split("&")[0].trim() ||
+              "Polar Cryosphere Science",
             icon: currentCourse.id.includes("glac")
               ? ""
               : currentCourse.id.includes("sea")
-              ? ""
-              : currentCourse.id.includes("bio")
-              ? "EXP"
-              : "",
+                ? ""
+                : currentCourse.id.includes("bio")
+                  ? "EXP"
+                  : "",
             iconType: "science",
             chaptersCount: currentCourse.lessons.length,
             lecturesCount: currentCourse.lessons.length,
             isNotice: false,
             chapters: currentCourse.lessons.map((lesson, idx) => ({
               id: `chap-${idx}`,
-              title: lesson.title.split(":")[0].replace("50,000 Years of ", "").trim(),
+              title: lesson.title
+                .split(":")[0]
+                .replace("50,000 Years of ", "")
+                .trim(),
               lecturesCount: 1,
               notesCount: lesson.slideDeck?.length || 1,
               dppCount: lesson.dppCards?.length || 0,
@@ -185,15 +199,16 @@ export default function Education({ onNavigate, onOpenStudio }: Props) {
               lectures: [lesson],
             })),
           },
-        ];
+        ]
 
   const currentSubject: LMSSubject =
-    subjects.find(s => s.id === selectedSubjectId) ||
-    subjects.find(s => !s.isNotice) ||
-    subjects[0];
+    subjects.find((s) => s.id === selectedSubjectId) ||
+    subjects.find((s) => !s.isNotice) ||
+    subjects[0]
 
-  const currentChapter: LMSChapter =
-    currentSubject.chapters.find(c => c.id === selectedChapterId) ||
+  const currentChapter: LMSChapter = currentSubject.chapters.find(
+    (c) => c.id === selectedChapterId,
+  ) ||
     currentSubject.chapters[0] || {
       id: "chap-default",
       title: "General Orientation",
@@ -202,179 +217,186 @@ export default function Education({ onNavigate, onOpenStudio }: Props) {
       dppCount: 0,
       exercisesCount: 0,
       lectures: [],
-    };
+    }
 
   // Resolve current active lesson
   const allAvailableLessons: LMSLesson[] = [
     ...(currentChapter.lectures || []),
     ...(currentCourse.lessons || []),
-  ];
+  ]
 
   const currentLesson: LMSLesson =
-    allAvailableLessons.find(l => l.id === selectedLessonId) ||
+    allAvailableLessons.find((l) => l.id === selectedLessonId) ||
     currentChapter.lectures[0] ||
-    currentCourse.lessons[0];
+    currentCourse.lessons[0]
 
   const showToast = (msg: string) => {
-    setToastMessage(msg);
-    setTimeout(() => setToastMessage(null), 2600);
-  };
+    setToastMessage(msg)
+    setTimeout(() => setToastMessage(null), 2600)
+  }
 
   // When changing course / batch
   const handleSelectCourse = (courseId: string) => {
-    setSelectedCourseId(courseId);
-    const target = lmsCourses.find(c => c.id === courseId) || lmsCourses[0];
-    const targetSubjects = target.subjects || [];
-    const firstSubject = targetSubjects.find(s => !s.isNotice) || targetSubjects[0];
+    setSelectedCourseId(courseId)
+    const target = lmsCourses.find((c) => c.id === courseId) || lmsCourses[0]
+    const targetSubjects = target.subjects || []
+    const firstSubject =
+      targetSubjects.find((s) => !s.isNotice) || targetSubjects[0]
     if (firstSubject) {
-      setSelectedSubjectId(firstSubject.id);
-      setSelectedChapterId(firstSubject.chapters[0]?.id || "chap-0");
+      setSelectedSubjectId(firstSubject.id)
+      setSelectedChapterId(firstSubject.chapters[0]?.id || "chap-0")
       if (firstSubject.chapters[0]?.lectures?.[0]) {
-        setSelectedLessonId(firstSubject.chapters[0].lectures[0].id);
+        setSelectedLessonId(firstSubject.chapters[0].lectures[0].id)
       }
     } else {
-      setSelectedLessonId(target.lessons[0]?.id || "l1");
+      setSelectedLessonId(target.lessons[0]?.id || "l1")
     }
-    setCurrentChapterIndex(0);
-    setActiveSlideIndex(0);
-    setQuizIndex(0);
-    setSelectedQuizOption(null);
-    setIsQuizAnswered(false);
-    setQuizScore(0);
-    setQuizFinished(false);
-    setBatchModalOpen(false);
-    setViewLevel("batch_details");
-    showToast(`Switched to ${target.title}`);
-  };
+    setCurrentChapterIndex(0)
+    setActiveSlideIndex(0)
+    setQuizIndex(0)
+    setSelectedQuizOption(null)
+    setIsQuizAnswered(false)
+    setQuizScore(0)
+    setQuizFinished(false)
+    setBatchModalOpen(false)
+    setViewLevel("batch_details")
+    showToast(`Switched to ${target.title}`)
+  }
 
   // When clicking on a subject in Image 2
   const handleOpenSubject = (subjectId: string) => {
-    setSelectedSubjectId(subjectId);
-    const subj = subjects.find(s => s.id === subjectId) || subjects[0];
+    setSelectedSubjectId(subjectId)
+    const subj = subjects.find((s) => s.id === subjectId) || subjects[0]
     if (subj.chapters.length > 0) {
-      setSelectedChapterId(subj.chapters[0].id);
+      setSelectedChapterId(subj.chapters[0].id)
       if (subj.chapters[0].lectures.length > 0) {
-        setSelectedLessonId(subj.chapters[0].lectures[0].id);
+        setSelectedLessonId(subj.chapters[0].lectures[0].id)
       }
     }
-    setViewLevel("subject_chapters");
-  };
+    setViewLevel("subject_chapters")
+  }
 
   // When clicking on a chapter in Image 1
   const handleOpenChapter = (chapterId: string) => {
-    setSelectedChapterId(chapterId);
-    const chap = currentSubject.chapters.find(c => c.id === chapterId);
+    setSelectedChapterId(chapterId)
+    const chap = currentSubject.chapters.find((c) => c.id === chapterId)
     if (chap && chap.lectures.length > 0) {
-      setSelectedLessonId(chap.lectures[0].id);
+      setSelectedLessonId(chap.lectures[0].id)
     }
-    setChapterTab("Lectures");
-    setViewLevel("chapter_content");
-  };
+    setChapterTab("Lectures")
+    setViewLevel("chapter_content")
+  }
 
   // When clicking on a lecture to watch (Image 3)
   const handleWatchLecture = (lesson: LMSLesson) => {
-    setSelectedLessonId(lesson.id);
-    setCurrentChapterIndex(0);
-    setActiveSlideIndex(0);
-    setQuizIndex(0);
-    setSelectedQuizOption(null);
-    setIsQuizAnswered(false);
-    setQuizScore(0);
-    setQuizFinished(false);
-    setIsPlaying(true);
-    setViewLevel("lecture_player");
-  };
+    setSelectedLessonId(lesson.id)
+    setCurrentChapterIndex(0)
+    setActiveSlideIndex(0)
+    setQuizIndex(0)
+    setSelectedQuizOption(null)
+    setIsQuizAnswered(false)
+    setQuizScore(0)
+    setQuizFinished(false)
+    setIsPlaying(true)
+    setViewLevel("lecture_player")
+  }
 
   // Toggle completion checkmark (Image 3 OK button)
   const handleToggleComplete = (lessonId: string, title?: string) => {
-    setCompletedLessonIds(prev => {
-      const next = new Set(prev);
+    setCompletedLessonIds((prev) => {
+      const next = new Set(prev)
       if (next.has(lessonId)) {
-        next.delete(lessonId);
-        showToast("Marked lecture as incomplete");
+        next.delete(lessonId)
+        showToast("Marked lecture as incomplete")
       } else {
-        next.add(lessonId);
-        gameStore.addXP(35, `Completed: ${title || "Lecture"}`);
-        showToast("OK Marked lecture as completed (+35 XP)");
+        next.add(lessonId)
+        gameStore.addXP(35, `Completed: ${title || "Lecture"}`)
+        showToast("OK Marked lecture as completed (+35 XP)")
       }
-      return next;
-    });
-  };
+      return next
+    })
+  }
 
   // Active chapter scrubbing inside cinema player
-  const activeLectureChapter =
-    currentLesson.chapters?.[currentChapterIndex] ||
+  const activeLectureChapter = currentLesson.chapters?.[currentChapterIndex] ||
     currentLesson.chapters?.[0] || {
       time: "00:00",
       seconds: 0,
       title: "Lecture Introduction",
       slideSummary: "Key concepts and foundation",
       transcriptSnippet: "Welcome to this lecture.",
-    };
+    }
 
   useEffect(() => {
-    let timer: any;
-    if (isPlaying && viewLevel === "lecture_player" && currentLesson.chapters?.length) {
+    let timer: any
+    if (
+      isPlaying &&
+      viewLevel === "lecture_player" &&
+      currentLesson.chapters?.length
+    ) {
       timer = setInterval(() => {
-        setCurrentChapterIndex(prev => {
+        setCurrentChapterIndex((prev) => {
           if (prev < currentLesson.chapters.length - 1) {
-            return prev + 1;
+            return prev + 1
           } else {
-            setIsPlaying(false);
-            setCompletedLessonIds(c => new Set(c).add(currentLesson.id));
-            gameStore.addXP(50, `Finished Full Lecture: ${currentLesson.title}`);
-            return prev;
+            setIsPlaying(false)
+            setCompletedLessonIds((c) => new Set(c).add(currentLesson.id))
+            gameStore.addXP(50, `Finished Full Lecture: ${currentLesson.title}`)
+            return prev
           }
-        });
-      }, 7000 / playbackSpeed);
+        })
+      }, 7000 / playbackSpeed)
     }
-    return () => clearInterval(timer);
-  }, [isPlaying, playbackSpeed, currentLesson, viewLevel]);
+    return () => clearInterval(timer)
+  }, [isPlaying, playbackSpeed, currentLesson, viewLevel])
 
   // Handle Doubt Submission
   const handlePostDoubt = (text: string) => {
-    if (!text.trim()) return;
-    const answer = getStudentAIResponse(text);
+    if (!text.trim()) return
+    const answer = getStudentAIResponse(text)
     const newEntry = {
       id: Date.now().toString(),
       q: text.trim(),
       a: answer,
       timestamp: activeLectureChapter.time,
-    };
-    setDoubtLog(prev => [newEntry, ...prev]);
-    setDoubtInput("");
-    gameStore.addXP(15, `Asked Doubt in ${currentLesson.title}`);
-  };
+    }
+    setDoubtLog((prev) => [newEntry, ...prev])
+    setDoubtInput("")
+    gameStore.addXP(15, `Asked Doubt in ${currentLesson.title}`)
+  }
 
   // Handle Quiz
   const handleQuizAnswer = (optIdx: number) => {
-    if (isQuizAnswered) return;
-    setSelectedQuizOption(optIdx);
-    setIsQuizAnswered(true);
-    const currQ = currentLesson.quizQuestions?.[quizIndex];
+    if (isQuizAnswered) return
+    setSelectedQuizOption(optIdx)
+    setIsQuizAnswered(true)
+    const currQ = currentLesson.quizQuestions?.[quizIndex]
     if (currQ && optIdx === currQ.correct) {
-      setQuizScore(s => s + 1);
+      setQuizScore((s) => s + 1)
     }
-  };
+  }
 
   const handleQuizNext = () => {
-    if (!currentLesson.quizQuestions) return;
+    if (!currentLesson.quizQuestions) return
     if (quizIndex < currentLesson.quizQuestions.length - 1) {
-      setQuizIndex(i => i + 1);
-      setSelectedQuizOption(null);
-      setIsQuizAnswered(false);
+      setQuizIndex((i) => i + 1)
+      setSelectedQuizOption(null)
+      setIsQuizAnswered(false)
     } else {
-      setQuizFinished(true);
-      setCompletedLessonIds(c => new Set(c).add(currentLesson.id));
+      setQuizFinished(true)
+      setCompletedLessonIds((c) => new Set(c).add(currentLesson.id))
       const earned = Math.round(
         ((quizScore +
-          (selectedQuizOption === currentLesson.quizQuestions[quizIndex]?.correct ? 1 : 0)) /
+          (selectedQuizOption ===
+          currentLesson.quizQuestions[quizIndex]?.correct
+            ? 1
+            : 0)) /
           currentLesson.quizQuestions.length) *
-          100
-      );
-      gameStore.addXP(earned, `Passed DPP Test for ${currentLesson.title}`);
+          100,
+      )
+      gameStore.addXP(earned, `Passed DPP Test for ${currentLesson.title}`)
     }
-  };
+  }
 
   return (
     <div className="h-full overflow-y-auto bg-slate-50 text-slate-900 flex flex-col font-sans">
@@ -410,12 +432,11 @@ export default function Education({ onNavigate, onOpenStudio }: Props) {
               <h1 className="font-bold text-sm text-slate-900 tracking-tight">
                 NCPOR Polar Learning
               </h1>
-              <span className="tag font-semibold">
-                Live Batch
-              </span>
+              <span className="tag font-semibold">Live Batch</span>
             </div>
             <p className="text-[11px] text-slate-500 hidden md:block font-normal">
-              National Centre for Polar and Ocean Research • Academic & Polar Research Portal
+              National Centre for Polar and Ocean Research • Academic & Polar
+              Research Portal
             </p>
           </div>
         </div>
@@ -441,7 +462,13 @@ export default function Education({ onNavigate, onOpenStudio }: Props) {
               } btn-sm rounded-xl cursor-pointer flex items-center gap-1.5`}
               title="Return to current batch overview"
             >
-              <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+              <svg
+                className="w-3.5 h-3.5"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
                 <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
               </svg>
               Batch Overview
@@ -453,8 +480,12 @@ export default function Education({ onNavigate, onOpenStudio }: Props) {
             onClick={() => setTelegramModalOpen(true)}
             className="hidden sm:inline-flex btn-outline btn-sm rounded-xl cursor-pointer"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5 fill-[#229ED9]" viewBox="0 0 24 24">
-              <path d="M9.036 15.675l-.396 5.59c.567 0 .813-.244 1.108-.537l2.66-2.54 5.514 4.036c1.011.558 1.726.265 1.988-.937l3.607-16.92.001-.001c.311-1.453-.525-2.02-1.508-1.648L1.14 9.403c-1.412.549-1.392 1.326-.24 1.682l5.906 1.844L19.84 5.9c.613-.39 1.17-.174.71.216"/>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="w-3.5 h-3.5 fill-[#229ED9]"
+              viewBox="0 0 24 24"
+            >
+              <path d="M9.036 15.675l-.396 5.59c.567 0 .813-.244 1.108-.537l2.66-2.54 5.514 4.036c1.011.558 1.726.265 1.988-.937l3.607-16.92.001-.001c.311-1.453-.525-2.02-1.508-1.648L1.14 9.403c-1.412.549-1.392 1.326-.24 1.682l5.906 1.844L19.84 5.9c.613-.39 1.17-.174.71.216" />
             </svg>
             <span>Join Telegram</span>
           </button>
@@ -464,8 +495,12 @@ export default function Education({ onNavigate, onOpenStudio }: Props) {
             onClick={() => setWhatsappModalOpen(true)}
             className="hidden sm:inline-flex btn-outline btn-sm rounded-xl cursor-pointer"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5 fill-[#25D366]" viewBox="0 0 24 24">
-              <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.669-.699c.969.54 1.772.82 2.791.82 3.181 0 5.767-2.587 5.768-5.766.001-3.181-2.584-5.766-5.768-5.766zm3.385 8.212c-.144.405-.837.774-1.17.824-.312.045-.694.062-1.121-.073-.263-.083-.6-.195-1.033-.385-1.832-.803-3.029-2.658-3.12-2.781-.092-.122-.741-.986-.741-1.882 0-.896.469-1.336.636-1.519.167-.183.365-.229.487-.229.122 0 .244.002.35.006.113.004.264-.043.413.315.153.366.523 1.275.569 1.367.046.092.076.2.015.321-.061.122-.092.198-.183.305-.091.107-.193.24-.275.322-.092.092-.188.192-.081.376.107.183.475.783 1.021 1.269.704.627 1.297.82 1.48.912.183.091.29.076.397-.046.107-.122.457-.534.579-.717.122-.183.244-.153.412-.092.167.062 1.066.503 1.25.594.183.092.305.137.35.214.045.076.045.442-.099.847z"/>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="w-3.5 h-3.5 fill-[#25D366]"
+              viewBox="0 0 24 24"
+            >
+              <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.669-.699c.969.54 1.772.82 2.791.82 3.181 0 5.767-2.587 5.768-5.766.001-3.181-2.584-5.766-5.768-5.766zm3.385 8.212c-.144.405-.837.774-1.17.824-.312.045-.694.062-1.121-.073-.263-.083-.6-.195-1.033-.385-1.832-.803-3.029-2.658-3.12-2.781-.092-.122-.741-.986-.741-1.882 0-.896.469-1.336.636-1.519.167-.183.365-.229.487-.229.122 0 .244.002.35.006.113.004.264-.043.413.315.153.366.523 1.275.569 1.367.046.092.076.2.015.321-.061.122-.092.198-.183.305-.091.107-.193.24-.275.322-.092.092-.188.192-.081.376.107.183.475.783 1.021 1.269.704.627 1.297.82 1.48.912.183.091.29.076.397-.046.107-.122.457-.534.579-.717.122-.183.244-.153.412-.092.167.062 1.066.503 1.25.594.183.092.305.137.35.214.045.076.045.442-.099.847z" />
             </svg>
             <span>Join Whatsapp</span>
           </button>
@@ -492,13 +527,18 @@ export default function Education({ onNavigate, onOpenStudio }: Props) {
       {/* ── LEVEL 0: BATCHES CATALOG (Search & Batch Cards Grid) ─────────── */}
       {viewLevel === "batches_catalog" && (
         <div className="max-w-6xl mx-auto p-4 sm:p-6 w-full space-y-6 animate-in fade-in duration-200">
-
           {/* Search Bar & Category Filter Chips */}
           <div className="space-y-4">
             {/* Search Input Box */}
             <div className="card p-2 flex items-center gap-3 shadow-2xs border border-slate-200 rounded-xl bg-white">
               <div className="w-9 h-9 rounded-lg bg-slate-100 flex items-center justify-center text-slate-500 flex-shrink-0">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  viewBox="0 0 24 24"
+                >
                   <circle cx="11" cy="11" r="8" />
                   <path d="M21 21l-4.35-4.35" />
                 </svg>
@@ -506,7 +546,7 @@ export default function Education({ onNavigate, onOpenStudio }: Props) {
               <input
                 type="text"
                 value={batchSearchQuery}
-                onChange={e => setBatchSearchQuery(e.target.value)}
+                onChange={(e) => setBatchSearchQuery(e.target.value)}
                 placeholder="Search batches by name (e.g. Glaciology, Sea Ice), subject, instructor, code..."
                 className="w-full text-sm text-slate-800 placeholder-slate-400 bg-transparent focus:outline-none"
               />
@@ -524,8 +564,8 @@ export default function Education({ onNavigate, onOpenStudio }: Props) {
             {/* Filter Chips & Batch Count */}
             <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
               <div className="flex flex-wrap items-center gap-2">
-                {categoryFilters.map(cat => {
-                  const isActive = selectedCategoryFilter === cat.id;
+                {categoryFilters.map((cat) => {
+                  const isActive = selectedCategoryFilter === cat.id
                   return (
                     <button
                       key={cat.id}
@@ -539,12 +579,16 @@ export default function Education({ onNavigate, onOpenStudio }: Props) {
                       <span>{cat.icon}</span>
                       <span>{cat.label}</span>
                     </button>
-                  );
+                  )
                 })}
               </div>
 
               <div className="text-xs text-slate-500 font-medium">
-                Showing <span className="font-bold text-slate-800">{filteredCourses.length}</span> of {lmsCourses.length} Batches
+                Showing{" "}
+                <span className="font-bold text-slate-800">
+                  {filteredCourses.length}
+                </span>{" "}
+                of {lmsCourses.length} Batches
               </div>
             </div>
           </div>
@@ -552,7 +596,7 @@ export default function Education({ onNavigate, onOpenStudio }: Props) {
           {/* Batches Cards Grid */}
           {filteredCourses.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredCourses.map(course => (
+              {filteredCourses.map((course) => (
                 <div
                   key={course.id}
                   onClick={() => handleSelectCourse(course.id)}
@@ -561,7 +605,9 @@ export default function Education({ onNavigate, onOpenStudio }: Props) {
                   {/* Card Thumbnail */}
                   <div className="relative aspect-video w-full overflow-hidden bg-slate-900">
                     <img
-                      src={course.bannerImage || course.lessons?.[0]?.videoThumb}
+                      src={
+                        course.bannerImage || course.lessons?.[0]?.videoThumb
+                      }
                       alt={course.title}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 opacity-90"
                     />
@@ -597,11 +643,14 @@ export default function Education({ onNavigate, onOpenStudio }: Props) {
 
                       <div className="flex items-center gap-1.5 text-xs text-slate-600">
                         <span></span>
-                        <span className="font-medium line-clamp-1">{course.faculty}</span>
+                        <span className="font-medium line-clamp-1">
+                          {course.faculty}
+                        </span>
                       </div>
 
                       <p className="text-xs text-slate-500 line-clamp-2 leading-relaxed font-normal">
-                        {course.targetAudience || "Comprehensive syllabus aligned with academic benchmarks."}
+                        {course.targetAudience ||
+                          "Comprehensive syllabus aligned with academic benchmarks."}
                       </p>
                     </div>
 
@@ -609,26 +658,26 @@ export default function Education({ onNavigate, onOpenStudio }: Props) {
                       {/* Meta Pills Row */}
                       <div className="flex flex-wrap items-center gap-2 text-[11px] text-slate-600">
                         <span className="tag tag-gray text-[10px]">
-                           {course.totalHours}
+                          {course.totalHours}
                         </span>
                         <span className="tag tag-gray text-[10px]">
-                           {course.startDate || "Live Now"}
+                          {course.startDate || "Live Now"}
                         </span>
-                        <span className="tag text-[10px]">
-                          FREE
-                        </span>
+                        <span className="tag text-[10px]">FREE</span>
                       </div>
 
                       {/* Enter Batch Action Button */}
                       <button
-                        onClick={e => {
-                          e.stopPropagation();
-                          handleSelectCourse(course.id);
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          handleSelectCourse(course.id)
                         }}
                         className="btn-primary w-full py-2.5 rounded-xl font-semibold text-xs flex items-center justify-center gap-2 group-hover:bg-blue-700 transition cursor-pointer shadow-2xs"
                       >
                         <span>Enter Batch</span>
-                        <span className="transition-transform group-hover:translate-x-1">→</span>
+                        <span className="transition-transform group-hover:translate-x-1">
+                          →
+                        </span>
                       </button>
                     </div>
                   </div>
@@ -638,19 +687,18 @@ export default function Education({ onNavigate, onOpenStudio }: Props) {
           ) : (
             /* Empty State */
             <div className="card p-12 text-center rounded-2xl border border-dashed border-slate-300 space-y-3 bg-white">
-              <div className="w-12 h-12 rounded-2xl bg-slate-100 text-slate-400 mx-auto flex items-center justify-center text-xl">
-                
-              </div>
+              <div className="w-12 h-12 rounded-2xl bg-slate-100 text-slate-400 mx-auto flex items-center justify-center text-xl"></div>
               <h3 className="font-bold text-base text-slate-800">
                 No batches found matching &ldquo;{batchSearchQuery}&rdquo;
               </h3>
               <p className="text-xs text-slate-500 max-w-sm mx-auto">
-                No matching batches found with current search terms or category filter. Try clearing your search query.
+                No matching batches found with current search terms or category
+                filter. Try clearing your search query.
               </p>
               <button
                 onClick={() => {
-                  setBatchSearchQuery("");
-                  setSelectedCategoryFilter("All");
+                  setBatchSearchQuery("")
+                  setSelectedCategoryFilter("All")
                 }}
                 className="btn-outline btn-sm rounded-xl cursor-pointer mt-2"
               >
@@ -671,15 +719,19 @@ export default function Education({ onNavigate, onOpenStudio }: Props) {
                 onClick={() => setViewLevel("batches_catalog")}
                 className="hover:text-blue-600 flex items-center gap-1.5 font-medium cursor-pointer transition"
               >
-                <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+                <svg
+                  className="w-3.5 h-3.5"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
                   <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
                 </svg>
                 Batches
               </button>
               <span className="text-slate-300 font-bold">&gt;</span>
-              <span className="tag font-semibold">
-                {currentCourse.title}
-              </span>
+              <span className="tag font-semibold">{currentCourse.title}</span>
             </div>
             <button
               onClick={() => setViewLevel("batches_catalog")}
@@ -695,14 +747,18 @@ export default function Education({ onNavigate, onOpenStudio }: Props) {
               {/* Batch Banner Image with "FREE BATCH ON NCPOR" badge */}
               <div className="relative w-full sm:w-64 aspect-video rounded-xl overflow-hidden shadow-xs bg-slate-900 flex-shrink-0">
                 <img
-                  src={currentCourse.bannerImage || currentCourse.lessons?.[0]?.videoThumb}
+                  src={
+                    currentCourse.bannerImage ||
+                    currentCourse.lessons?.[0]?.videoThumb
+                  }
                   alt={currentCourse.title}
                   className="w-full h-full object-cover opacity-90"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent" />
                 <div className="absolute bottom-2.5 left-2.5 right-2.5 flex items-center justify-between">
                   <span className="bg-white text-slate-900 text-[10px] font-bold px-2 py-0.5 rounded shadow-xs flex items-center gap-1">
-                    <span className="text-red-600 text-xs">▶</span> FREE BATCH ON NCPOR
+                    <span className="text-red-600 text-xs">▶</span> FREE BATCH
+                    ON NCPOR
                   </span>
                   <span className="text-[10px] text-white/90 font-mono font-medium">
                     {currentCourse.totalLectures} Lectures
@@ -716,7 +772,8 @@ export default function Education({ onNavigate, onOpenStudio }: Props) {
                   {currentCourse.title}
                 </h2>
                 <p className="text-xs text-slate-500 font-normal">
-                  {currentCourse.targetAudience || "For Polar Science, Glaciology & Ocean Research Fellows"}
+                  {currentCourse.targetAudience ||
+                    "For Polar Science, Glaciology & Ocean Research Fellows"}
                 </p>
                 <div className="flex flex-wrap items-center gap-2 pt-1">
                   <span className="tag font-semibold">
@@ -725,9 +782,7 @@ export default function Education({ onNavigate, onOpenStudio }: Props) {
                   <span className="tag tag-gray">
                     {currentCourse.startDate || "7 Jul 2025"}
                   </span>
-                  <span className="tag tag-green">
-                     {currentCourse.faculty}
-                  </span>
+                  <span className="tag tag-green">{currentCourse.faculty}</span>
                 </div>
               </div>
             </div>
@@ -735,8 +790,12 @@ export default function Education({ onNavigate, onOpenStudio }: Props) {
             {/* Favorite / Heart Icon on Top Right (Matches Image 2) */}
             <button
               onClick={() => {
-                setIsBookmarked(b => !b);
-                showToast(isBookmarked ? "Removed from favorites" : "Added batch to favorites ");
+                setIsBookmarked((b) => !b)
+                showToast(
+                  isBookmarked
+                    ? "Removed from favorites"
+                    : "Added batch to favorites ",
+                )
               }}
               className={`w-10 h-10 rounded-xl flex items-center justify-center border transition self-end md:self-start cursor-pointer ${
                 isBookmarked
@@ -747,7 +806,11 @@ export default function Education({ onNavigate, onOpenStudio }: Props) {
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className={`w-5 h-5 ${isBookmarked ? "fill-rose-500 stroke-rose-500" : "fill-none stroke-current"}`}
+                className={`w-5 h-5 ${
+                  isBookmarked
+                    ? "fill-rose-500 stroke-rose-500"
+                    : "fill-none stroke-current"
+                }`}
                 viewBox="0 0 24 24"
                 strokeWidth="2"
               >
@@ -762,25 +825,27 @@ export default function Education({ onNavigate, onOpenStudio }: Props) {
 
           {/* Navigation Tabs (SUBJECTS | TESTS | ANNOUNCEMENTS | COMMUNITY) */}
           <div className="border-b border-slate-200 flex items-center gap-6 text-xs font-semibold">
-            {(["SUBJECTS", "TESTS", "ANNOUNCEMENTS", "COMMUNITY"] as const).map(tab => (
-              <button
-                key={tab}
-                onClick={() => setBatchTab(tab)}
-                className={`pb-2.5 transition relative cursor-pointer ${
-                  batchTab === tab
-                    ? "text-blue-600 border-b-2 border-blue-600 font-semibold"
-                    : "text-slate-500 hover:text-slate-800 font-medium"
-                }`}
-              >
-                {tab}
-              </button>
-            ))}
+            {(["SUBJECTS", "TESTS", "ANNOUNCEMENTS", "COMMUNITY"] as const).map(
+              (tab) => (
+                <button
+                  key={tab}
+                  onClick={() => setBatchTab(tab)}
+                  className={`pb-2.5 transition relative cursor-pointer ${
+                    batchTab === tab
+                      ? "text-blue-600 border-b-2 border-blue-600 font-semibold"
+                      : "text-slate-500 hover:text-slate-800 font-medium"
+                  }`}
+                >
+                  {tab}
+                </button>
+              ),
+            )}
           </div>
 
           {/* Tab 1: SUBJECTS (Matches Image 2 Subject Cards) */}
           {batchTab === "SUBJECTS" && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-1">
-              {subjects.map(subj => (
+              {subjects.map((subj) => (
                 <div
                   key={subj.id}
                   onClick={() => handleOpenSubject(subj.id)}
@@ -795,13 +860,37 @@ export default function Education({ onNavigate, onOpenStudio }: Props) {
                     }`}
                   >
                     {subj.iconType === "notices" ? (
-                      <svg className="w-5.5 h-5.5 text-slate-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
+                      <svg
+                        className="w-5.5 h-5.5 text-slate-700"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"
+                        />
                       </svg>
                     ) : (
-                      <svg className="w-5.5 h-5.5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 00-9.78 2.096A4.001 4.001 0 003 15z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M9 16h6" />
+                      <svg
+                        className="w-5.5 h-5.5 text-blue-600"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 00-9.78 2.096A4.001 4.001 0 003 15z"
+                        />
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M8 12h.01M12 12h.01M16 12h.01M9 16h6"
+                        />
                       </svg>
                     )}
                   </div>
@@ -832,23 +921,25 @@ export default function Education({ onNavigate, onOpenStudio }: Props) {
               <div className="card p-5 shadow-2xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <div>
                   <div className="flex items-center gap-2 mb-1">
-                    <span className="tag font-semibold">
-                      LIVE TEST SERIES
+                    <span className="tag font-semibold">LIVE TEST SERIES</span>
+                    <span className="text-xs text-slate-400">
+                      NCPOR ACADEMIC 2025-26
                     </span>
-                    <span className="text-xs text-slate-400">NCPOR ACADEMIC 2025-26</span>
                   </div>
                   <h4 className="font-semibold text-sm text-slate-900">
                     {currentCourse.title}: Comprehensive Module Test 01
                   </h4>
                   <p className="text-xs text-slate-500 mt-1 font-normal">
-                     60 mins • 30 Scientific Questions • Standard scoring & detailed formula explanations
+                    60 mins • 30 Scientific Questions • Standard scoring &
+                    detailed formula explanations
                   </p>
                 </div>
                 <button
                   onClick={() => {
-                    const firstActiveSubj = subjects.find(s => !s.isNotice) || subjects[0];
-                    handleOpenSubject(firstActiveSubj.id);
-                    setChapterTab("DPP Quiz");
+                    const firstActiveSubj =
+                      subjects.find((s) => !s.isNotice) || subjects[0]
+                    handleOpenSubject(firstActiveSubj.id)
+                    setChapterTab("DPP Quiz")
                   }}
                   className="btn-primary btn-sm rounded-xl cursor-pointer"
                 >
@@ -862,16 +953,20 @@ export default function Education({ onNavigate, onOpenStudio }: Props) {
           {batchTab === "ANNOUNCEMENTS" && (
             <div className="card p-5 shadow-2xs space-y-3">
               <div className="flex items-center gap-2">
-                <span className="tag font-semibold">
-                  OFFICIAL BULLETIN
+                <span className="tag font-semibold">OFFICIAL BULLETIN</span>
+                <span className="text-xs text-slate-400 font-normal">
+                  18 Aug 2025
                 </span>
-                <span className="text-xs text-slate-400 font-normal">18 Aug 2025</span>
               </div>
               <h4 className="text-sm font-semibold text-slate-900">
-                {currentCourse.title}: Field Observation Datasets & New Lectures Released
+                {currentCourse.title}: Field Observation Datasets & New Lectures
+                Released
               </h4>
               <p className="text-xs text-slate-600 leading-relaxed font-normal">
-                Lectures covering core paleoclimate proxies, satellite InSAR radar techniques, and ice-core air occlusion have been published. Downloadable slide decks, DPP problem sets, and interactive quizzes are now active under the course subjects.
+                Lectures covering core paleoclimate proxies, satellite InSAR
+                radar techniques, and ice-core air occlusion have been
+                published. Downloadable slide decks, DPP problem sets, and
+                interactive quizzes are now active under the course subjects.
               </p>
             </div>
           )}
@@ -880,7 +975,9 @@ export default function Education({ onNavigate, onOpenStudio }: Props) {
           {batchTab === "COMMUNITY" && (
             <div className="card p-5 shadow-2xs space-y-4">
               <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-                <h4 className="text-sm font-semibold text-slate-900">NCPOR Polar Student & Research Discussion Hub</h4>
+                <h4 className="text-sm font-semibold text-slate-900">
+                  NCPOR Polar Student & Research Discussion Hub
+                </h4>
                 <button
                   onClick={() => onNavigate?.("ai")}
                   className="text-xs font-semibold text-blue-600 hover:underline cursor-pointer"
@@ -889,7 +986,9 @@ export default function Education({ onNavigate, onOpenStudio }: Props) {
                 </button>
               </div>
               <p className="text-xs text-slate-500 font-normal">
-                Join our active cohort of polar science fellows, university researchers, and faculty discussing ice dynamics, teleconnections, and expedition findings.
+                Join our active cohort of polar science fellows, university
+                researchers, and faculty discussing ice dynamics,
+                teleconnections, and expedition findings.
               </p>
               <div className="flex gap-2.5">
                 <button
@@ -929,7 +1028,13 @@ export default function Education({ onNavigate, onOpenStudio }: Props) {
               onClick={() => setViewLevel("batches_catalog")}
               className="hover:text-blue-600 flex items-center gap-1.5 font-medium cursor-pointer transition"
             >
-              <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+              <svg
+                className="w-3.5 h-3.5"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
                 <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
               </svg>
               Batches
@@ -942,9 +1047,7 @@ export default function Education({ onNavigate, onOpenStudio }: Props) {
               {currentCourse.title}
             </button>
             <span className="text-slate-300 font-bold">&gt;</span>
-            <span className="tag font-semibold">
-              {currentSubject.title}
-            </span>
+            <span className="tag font-semibold">{currentSubject.title}</span>
           </div>
 
           {/* Section Heading with Left Vertical Blue Accent Bar (Matches Image 1) */}
@@ -957,13 +1060,15 @@ export default function Education({ onNavigate, onOpenStudio }: Props) {
 
           {/* Chapter Cards Grid (Matches Image 1 exact 4-card row with stats and progress) */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {currentSubject.chapters.map(chap => {
+            {currentSubject.chapters.map((chap) => {
               // Calculate dynamic progress
-              const completedCount = chap.lectures.filter(l => completedLessonIds.has(l.id)).length;
+              const completedCount = chap.lectures.filter((l) =>
+                completedLessonIds.has(l.id),
+              ).length
               const progressPct =
                 chap.lectures.length > 0
                   ? Math.round((completedCount / chap.lectures.length) * 100)
-                  : chap.progressPct || 0;
+                  : chap.progressPct || 0
 
               return (
                 <div
@@ -976,7 +1081,8 @@ export default function Education({ onNavigate, onOpenStudio }: Props) {
                       {chap.title}
                     </h4>
                     <p className="text-xs text-slate-500 mt-1 font-normal">
-                      {chap.lecturesCount} Lectures | {chap.notesCount} Notes | {chap.dppCount} DPP | {chap.exercisesCount} Exercises
+                      {chap.lecturesCount} Lectures | {chap.notesCount} Notes |{" "}
+                      {chap.dppCount} DPP | {chap.exercisesCount} Exercises
                     </p>
                   </div>
 
@@ -993,7 +1099,7 @@ export default function Education({ onNavigate, onOpenStudio }: Props) {
                     </div>
                   </div>
                 </div>
-              );
+              )
             })}
           </div>
         </div>
@@ -1018,7 +1124,13 @@ export default function Education({ onNavigate, onOpenStudio }: Props) {
               onClick={() => setViewLevel("batches_catalog")}
               className="hover:text-blue-600 flex items-center gap-1.5 font-medium cursor-pointer transition"
             >
-              <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+              <svg
+                className="w-3.5 h-3.5"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
                 <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
               </svg>
               Batches
@@ -1038,9 +1150,7 @@ export default function Education({ onNavigate, onOpenStudio }: Props) {
               {currentSubject.title}
             </button>
             <span className="text-slate-300 font-bold">&gt;</span>
-            <span className="tag font-semibold">
-              {currentChapter.title}
-            </span>
+            <span className="tag font-semibold">{currentChapter.title}</span>
           </div>
 
           {/* Section Heading with Left Vertical Blue Accent Bar (Matches Image 3) */}
@@ -1053,21 +1163,26 @@ export default function Education({ onNavigate, onOpenStudio }: Props) {
 
           {/* Sub-tabs Container (Matches Image 3: Lectures | Notes | DPP PDF | Solutions | DPP Quiz) using portal tab-bar system */}
           <div className="tab-bar p-1 rounded-xl flex flex-wrap items-center gap-1">
-            {(["Lectures", "Notes", "DPP PDF", "Solutions", "DPP Quiz", "AI Doubts"] as const).map(
-              tab => (
-                <button
-                  key={tab}
-                  onClick={() => setChapterTab(tab)}
-                  className={`tab-item px-3.5 py-1.5 rounded-lg text-xs transition cursor-pointer ${
-                    chapterTab === tab
-                      ? "active bg-blue-600 text-white font-semibold shadow-xs"
-                      : "text-slate-600 hover:text-slate-900 font-medium"
-                  }`}
-                >
-                  {tab}
-                </button>
-              )
-            )}
+            {([
+              "Lectures",
+              "Notes",
+              "DPP PDF",
+              "Solutions",
+              "DPP Quiz",
+              "AI Doubts",
+            ] as const).map((tab) => (
+              <button
+                key={tab}
+                onClick={() => setChapterTab(tab)}
+                className={`tab-item px-3.5 py-1.5 rounded-lg text-xs transition cursor-pointer ${
+                  chapterTab === tab
+                    ? "active bg-blue-600 text-white font-semibold shadow-xs"
+                    : "text-slate-600 hover:text-slate-900 font-medium"
+                }`}
+              >
+                {tab}
+              </button>
+            ))}
           </div>
 
           {/* ── SUB-TAB 1: LECTURES (Matches Image 3 exact 5-column lecture cards) ── */}
@@ -1077,7 +1192,7 @@ export default function Education({ onNavigate, onOpenStudio }: Props) {
                 ? currentChapter.lectures
                 : currentCourse.lessons
               ).map((lec, idx) => {
-                const isDone = completedLessonIds.has(lec.id);
+                const isDone = completedLessonIds.has(lec.id)
 
                 return (
                   <div
@@ -1134,8 +1249,8 @@ export default function Education({ onNavigate, onOpenStudio }: Props) {
                       <div className="pt-2 border-t border-slate-100 flex items-center gap-2">
                         <button
                           onClick={() => {
-                            setSelectedLessonId(lec.id);
-                            setChapterTab("Notes");
+                            setSelectedLessonId(lec.id)
+                            setChapterTab("Notes")
                           }}
                           className="btn-outline btn-sm rounded-lg text-[11px] font-medium text-blue-700 bg-blue-50/60 border-blue-200 hover:bg-blue-100 flex-1 flex items-center justify-center gap-1 cursor-pointer"
                         >
@@ -1143,7 +1258,9 @@ export default function Education({ onNavigate, onOpenStudio }: Props) {
                         </button>
 
                         <button
-                          onClick={() => handleToggleComplete(lec.id, lec.title)}
+                          onClick={() =>
+                            handleToggleComplete(lec.id, lec.title)
+                          }
                           className={`w-8 h-8 rounded-lg border flex items-center justify-center text-xs font-semibold transition cursor-pointer ${
                             isDone
                               ? "bg-emerald-100 border-emerald-300 text-emerald-700"
@@ -1156,7 +1273,7 @@ export default function Education({ onNavigate, onOpenStudio }: Props) {
                       </div>
                     </div>
                   </div>
-                );
+                )
               })}
             </div>
           )}
@@ -1170,22 +1287,23 @@ export default function Education({ onNavigate, onOpenStudio }: Props) {
                     Official Slide Deck & Class Notes: {currentLesson.title}
                   </h3>
                   <p className="text-xs text-slate-400 font-normal">
-                    Slide {activeSlideIndex + 1} of {currentLesson.slideDeck?.length || 1}
+                    Slide {activeSlideIndex + 1} of{" "}
+                    {currentLesson.slideDeck?.length || 1}
                   </p>
                 </div>
                 <button
                   onClick={() => {
-                    const el = document.createElement("a");
+                    const el = document.createElement("a")
                     el.href =
                       "data:text/plain;charset=utf-8," +
                       encodeURIComponent(
                         `# Class Notes: ${currentLesson.title}\nFaculty: ${currentLesson.speaker}\n\nSummary:\n${currentLesson.summary}\n\nFormulas / Rules:\n${currentLesson.keyFormulas?.join(
-                          "\n"
-                        )}`
-                      );
-                    el.download = `${currentLesson.title.slice(0, 30)}_Notes.txt`;
-                    el.click();
-                    showToast("Downloaded PDF notes");
+                          "\n",
+                        )}`,
+                      )
+                    el.download = `${currentLesson.title.slice(0, 30)}_Notes.txt`
+                    el.click()
+                    showToast("Downloaded PDF notes")
                   }}
                   className="btn-primary btn-sm rounded-xl cursor-pointer self-start"
                 >
@@ -1194,25 +1312,34 @@ export default function Education({ onNavigate, onOpenStudio }: Props) {
               </div>
 
               {(() => {
-                const slides = currentLesson.slideDeck || [];
-                const slide = slides[activeSlideIndex] || slides[0] || {
-                  title: "Moore and Mealy Machines Overview",
-                  subtitle: "Finite State Transducers with Output Signals",
-                  bulletPoints: [
-                    "Finite State Automata with output map input sequences to output sequences.",
-                    "Moore machine output is determined by the current state alone.",
-                    "Mealy machine output is determined by state transitions and input symbols.",
-                  ],
-                  callout: "Remember: Moore machine output length = n + 1 for input length n.",
-                };
+                const slides = currentLesson.slideDeck || []
+                const slide = slides[activeSlideIndex] ||
+                  slides[0] || {
+                    title: "Moore and Mealy Machines Overview",
+                    subtitle: "Finite State Transducers with Output Signals",
+                    bulletPoints: [
+                      "Finite State Automata with output map input sequences to output sequences.",
+                      "Moore machine output is determined by the current state alone.",
+                      "Mealy machine output is determined by state transitions and input symbols.",
+                    ],
+                    callout:
+                      "Remember: Moore machine output length = n + 1 for input length n.",
+                  }
 
                 return (
                   <div className="bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-3">
-                    <h4 className="text-base font-bold text-slate-900 tracking-tight">{slide.title}</h4>
-                    <p className="text-xs font-medium text-slate-500">{slide.subtitle}</p>
+                    <h4 className="text-base font-bold text-slate-900 tracking-tight">
+                      {slide.title}
+                    </h4>
+                    <p className="text-xs font-medium text-slate-500">
+                      {slide.subtitle}
+                    </p>
                     <div className="space-y-2 my-2">
                       {slide.bulletPoints?.map((bp, i) => (
-                        <div key={i} className="flex items-start gap-2 text-xs sm:text-sm text-slate-700 font-normal">
+                        <div
+                          key={i}
+                          className="flex items-start gap-2 text-xs sm:text-sm text-slate-700 font-normal"
+                        >
                           <span className="text-blue-600 font-bold">●</span>
                           <span>{bp}</span>
                         </div>
@@ -1220,12 +1347,14 @@ export default function Education({ onNavigate, onOpenStudio }: Props) {
                     </div>
                     {slide.callout && (
                       <div className="p-3 rounded-xl bg-blue-50 border border-blue-200 text-xs font-medium text-blue-700">
-                        Note:  {slide.callout}
+                        Note: {slide.callout}
                       </div>
                     )}
                     <div className="flex items-center justify-between pt-2 border-t border-slate-200">
                       <button
-                        onClick={() => setActiveSlideIndex(i => Math.max(0, i - 1))}
+                        onClick={() =>
+                          setActiveSlideIndex((i) => Math.max(0, i - 1))
+                        }
                         disabled={activeSlideIndex === 0}
                         className="btn-outline btn-sm rounded-lg text-xs font-medium disabled:opacity-30 cursor-pointer"
                       >
@@ -1236,8 +1365,8 @@ export default function Education({ onNavigate, onOpenStudio }: Props) {
                       </span>
                       <button
                         onClick={() =>
-                          setActiveSlideIndex(i =>
-                            Math.min((slides.length || 1) - 1, i + 1)
+                          setActiveSlideIndex((i) =>
+                            Math.min((slides.length || 1) - 1, i + 1),
                           )
                         }
                         disabled={activeSlideIndex >= (slides.length || 1) - 1}
@@ -1247,7 +1376,7 @@ export default function Education({ onNavigate, onOpenStudio }: Props) {
                       </button>
                     </div>
                   </div>
-                );
+                )
               })()}
             </div>
           )}
@@ -1258,26 +1387,31 @@ export default function Education({ onNavigate, onOpenStudio }: Props) {
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
                 <div>
                   <h4 className="font-semibold text-sm text-slate-900">
-                    Daily Practice Problems (DPP Sheet #{currentLesson.lessonNumber || 1})
+                    Daily Practice Problems (DPP Sheet #
+                    {currentLesson.lessonNumber || 1})
                   </h4>
                   <p className="text-xs text-slate-400 font-normal">
-                    {currentLesson.dppCards?.length || 2} high-yield problems with complete solution keys
+                    {currentLesson.dppCards?.length || 2} high-yield problems
+                    with complete solution keys
                   </p>
                 </div>
                 <button
                   onClick={() => {
-                    const el = document.createElement("a");
+                    const el = document.createElement("a")
                     el.href =
                       "data:text/plain;charset=utf-8," +
                       encodeURIComponent(
                         `# DPP Sheet: ${currentLesson.title}\n\n` +
                           (currentLesson.dppCards || [])
-                            .map((c, i) => `Q${i + 1}: ${c.front}\nAns: ${c.back}\n`)
-                            .join("\n")
-                      );
-                    el.download = `DPP_${currentLesson.title.slice(0, 20)}.txt`;
-                    el.click();
-                    showToast("Downloaded DPP Sheet");
+                            .map(
+                              (c, i) =>
+                                `Q${i + 1}: ${c.front}\nAns: ${c.back}\n`,
+                            )
+                            .join("\n"),
+                      )
+                    el.download = `DPP_${currentLesson.title.slice(0, 20)}.txt`
+                    el.click()
+                    showToast("Downloaded DPP Sheet")
                   }}
                   className="btn-primary btn-sm rounded-xl cursor-pointer self-start"
                 >
@@ -1291,14 +1425,16 @@ export default function Education({ onNavigate, onOpenStudio }: Props) {
                   : [
                       {
                         id: "d1",
-                        front: "For an input string of length n, what is the output length of a Moore machine?",
+                        front:
+                          "For an input string of length n, what is the output length of a Moore machine?",
                         back: "n + 1 (initial state output symbol + 1 output for each input consumed).",
                         tag: "Moore Machine",
                         difficulty: "Easy" as const,
                       },
                       {
                         id: "d2",
-                        front: "When is state expansion mandatory during Mealy to Moore machine conversion?",
+                        front:
+                          "When is state expansion mandatory during Mealy to Moore machine conversion?",
                         back: "When a Mealy state receives transitions with conflicting output symbols.",
                         tag: "State Splitting",
                         difficulty: "Medium" as const,
@@ -1310,14 +1446,16 @@ export default function Education({ onNavigate, onOpenStudio }: Props) {
                     className="p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs space-y-1.5 font-normal"
                   >
                     <div className="flex items-center justify-between">
-                      <span className="font-semibold text-blue-700">Problem {idx + 1}</span>
-                      <span className="tag font-semibold">
-                        {c.difficulty}
+                      <span className="font-semibold text-blue-700">
+                        Problem {idx + 1}
                       </span>
+                      <span className="tag font-semibold">{c.difficulty}</span>
                     </div>
                     <p className="font-medium text-slate-900">{c.front}</p>
                     <div className="pt-2 border-t border-slate-200/60 text-slate-600">
-                      <strong className="text-slate-800 font-semibold">Answer Key: </strong>
+                      <strong className="text-slate-800 font-semibold">
+                        Answer Key:{" "}
+                      </strong>
                       {c.back}
                     </div>
                   </div>
@@ -1364,10 +1502,11 @@ export default function Education({ onNavigate, onOpenStudio }: Props) {
                           q: "What is the output length of a Moore machine on an input string of length 10?",
                           options: ["9", "10", "11", "20"],
                           correct: 2,
-                          explanation: "A Moore machine outputs the start state's label before reading any input, giving length 10 + 1 = 11.",
+                          explanation:
+                            "A Moore machine outputs the start state's label before reading any input, giving length 10 + 1 = 11.",
                         },
-                      ];
-                  const q = questions[quizIndex] || questions[0];
+                      ]
+                  const q = questions[quizIndex] || questions[0]
 
                   return (
                     <div className="space-y-4">
@@ -1375,28 +1514,28 @@ export default function Education({ onNavigate, onOpenStudio }: Props) {
                         <span className="text-xs font-medium text-slate-500">
                           Question {quizIndex + 1} of {questions.length}
                         </span>
-                        <span className="tag font-semibold">
-                          Live DPP Test
-                        </span>
+                        <span className="tag font-semibold">Live DPP Test</span>
                       </div>
 
-                      <h4 className="font-semibold text-sm text-slate-900 leading-snug">{q.q}</h4>
+                      <h4 className="font-semibold text-sm text-slate-900 leading-snug">
+                        {q.q}
+                      </h4>
 
                       <div className="space-y-2">
                         {q.options.map((opt, oi) => {
-                          let bg = "white";
-                          let color = "#1e293b";
-                          let border = "#e2e8f0";
+                          let bg = "white"
+                          let color = "#1e293b"
+                          let border = "#e2e8f0"
 
                           if (isQuizAnswered) {
                             if (oi === q.correct) {
-                              bg = "#dcfce7";
-                              color = "#15803d";
-                              border = "#86efac";
+                              bg = "#dcfce7"
+                              color = "#15803d"
+                              border = "#86efac"
                             } else if (oi === selectedQuizOption) {
-                              bg = "#fee2e2";
-                              color = "#b91c1c";
-                              border = "#fca5a5";
+                              bg = "#fee2e2"
+                              color = "#b91c1c"
+                              border = "#fca5a5"
                             }
                           }
                           return (
@@ -1404,21 +1543,27 @@ export default function Education({ onNavigate, onOpenStudio }: Props) {
                               key={oi}
                               onClick={() => handleQuizAnswer(oi)}
                               className="w-full text-left p-3 rounded-xl text-xs font-medium border transition cursor-pointer shadow-2xs"
-                              style={{ background: bg, color, borderColor: border }}
+                              style={{
+                                background: bg,
+                                color,
+                                borderColor: border,
+                              }}
                             >
                               <span className="font-semibold mr-2 text-slate-400">
                                 {String.fromCharCode(65 + oi)}.
                               </span>
                               {opt}
                             </button>
-                          );
+                          )
                         })}
                       </div>
 
                       {isQuizAnswered && (
                         <div className="p-3.5 rounded-xl bg-blue-50 border border-blue-200 text-xs text-slate-700 space-y-1 font-normal">
                           <div className="font-semibold text-blue-700">
-                            {selectedQuizOption === q.correct ? "OK Correct Answer!" : "x Incorrect"}
+                            {selectedQuizOption === q.correct
+                              ? "OK Correct Answer!"
+                              : "x Incorrect"}
                           </div>
                           <div>{q.explanation}</div>
                         </div>
@@ -1429,28 +1574,32 @@ export default function Education({ onNavigate, onOpenStudio }: Props) {
                           onClick={handleQuizNext}
                           className="w-full btn-primary btn-sm py-2.5 rounded-xl text-xs font-semibold cursor-pointer"
                         >
-                          {quizIndex < questions.length - 1 ? "Next Question →" : "Submit DPP Test "}
+                          {quizIndex < questions.length - 1
+                            ? "Next Question →"
+                            : "Submit DPP Test "}
                         </button>
                       )}
                     </div>
-                  );
+                  )
                 })()
               ) : (
                 <div className="text-center py-6 space-y-3">
                   <div className="text-4xl"></div>
                   <h3 className="text-lg font-bold text-slate-900 tracking-tight">
-                    {quizScore} / {currentLesson.quizQuestions?.length || 1} Score
+                    {quizScore} / {currentLesson.quizQuestions?.length || 1}{" "}
+                    Score
                   </h3>
                   <p className="text-xs text-slate-500 font-normal">
-                    Your DPP performance has been verified and registered in your student profile.
+                    Your DPP performance has been verified and registered in
+                    your student profile.
                   </p>
                   <button
                     onClick={() => {
-                      setQuizIndex(0);
-                      setSelectedQuizOption(null);
-                      setIsQuizAnswered(false);
-                      setQuizScore(0);
-                      setQuizFinished(false);
+                      setQuizIndex(0)
+                      setSelectedQuizOption(null)
+                      setIsQuizAnswered(false)
+                      setQuizScore(0)
+                      setQuizFinished(false)
                     }}
                     className="btn-primary btn-sm rounded-xl text-xs font-semibold cursor-pointer mt-2"
                   >
@@ -1468,8 +1617,10 @@ export default function Education({ onNavigate, onOpenStudio }: Props) {
                 <input
                   type="text"
                   value={doubtInput}
-                  onChange={e => setDoubtInput(e.target.value)}
-                  onKeyDown={e => e.key === "Enter" && handlePostDoubt(doubtInput)}
+                  onChange={(e) => setDoubtInput(e.target.value)}
+                  onKeyDown={(e) =>
+                    e.key === "Enter" && handlePostDoubt(doubtInput)
+                  }
                   placeholder="Ask any conceptual question on this lecture..."
                   className="search-input flex-1 px-3.5 py-2 rounded-xl border border-slate-200 text-xs bg-white text-slate-800 placeholder-slate-400 focus:outline-hidden focus:border-blue-600 font-normal"
                 />
@@ -1482,11 +1633,18 @@ export default function Education({ onNavigate, onOpenStudio }: Props) {
               </div>
 
               <div className="space-y-2.5">
-                {doubtLog.map(d => (
-                  <div key={d.id} className="p-3.5 rounded-xl border border-slate-200 bg-slate-50 space-y-1.5 font-normal">
+                {doubtLog.map((d) => (
+                  <div
+                    key={d.id}
+                    className="p-3.5 rounded-xl border border-slate-200 bg-slate-50 space-y-1.5 font-normal"
+                  >
                     <div className="flex items-center justify-between text-[11px] text-slate-400">
-                      <span className="font-mono text-blue-700 font-semibold">Q: {d.q}</span>
-                      <span className="text-emerald-600 font-medium">● Polar AI Assistant</span>
+                      <span className="font-mono text-blue-700 font-semibold">
+                        Q: {d.q}
+                      </span>
+                      <span className="text-emerald-600 font-medium">
+                        ● Polar AI Assistant
+                      </span>
                     </div>
                     <div className="text-xs text-slate-700 whitespace-pre-line bg-white p-2.5 rounded-lg border border-slate-100">
                       {d.a}
@@ -1526,17 +1684,22 @@ export default function Education({ onNavigate, onOpenStudio }: Props) {
 
               <div className="absolute top-3 left-3 right-3 flex items-center justify-between">
                 <span className="flex items-center gap-1.5 bg-black/75 text-emerald-400 text-[10px] font-mono font-medium px-2.5 py-1 rounded-lg border border-emerald-500/30 backdrop-blur-xs">
-                  <span className={`w-2 h-2 rounded-full bg-emerald-400 ${isPlaying ? "animate-pulse" : ""}`} />
+                  <span
+                    className={`w-2 h-2 rounded-full bg-emerald-400 ${
+                      isPlaying ? "animate-pulse" : ""
+                    }`}
+                  />
                   {isPlaying ? "LIVE LECTURE" : "PAUSED"}
                 </span>
                 <span className="bg-blue-600 text-white font-mono text-[10px] font-medium px-2.5 py-1 rounded-lg backdrop-blur-xs">
-                  Chapter {currentChapterIndex + 1}/{(currentLesson.chapters?.length || 1)}
+                  Chapter {currentChapterIndex + 1}/
+                  {currentLesson.chapters?.length || 1}
                 </span>
               </div>
 
               <div className="absolute bottom-12 left-4 right-4 text-white">
                 <div className="text-xs font-medium text-blue-200">
-                   {currentLesson.speaker} · {currentLesson.institution}
+                  {currentLesson.speaker} · {currentLesson.institution}
                 </div>
                 <h2 className="text-base sm:text-lg font-bold text-white truncate mt-0.5 tracking-tight">
                   {currentLesson.title}
@@ -1545,7 +1708,9 @@ export default function Education({ onNavigate, onOpenStudio }: Props) {
 
               <div className="absolute bottom-2.5 left-4 right-4 bg-black/80 backdrop-blur-xs border border-white/10 rounded-xl px-3 py-1.5 text-xs text-slate-200 flex items-center gap-2">
                 <span className="text-blue-400 font-bold"></span>
-                <span className="truncate flex-1 font-normal">{activeLectureChapter.transcriptSnippet}</span>
+                <span className="truncate flex-1 font-normal">
+                  {activeLectureChapter.transcriptSnippet}
+                </span>
               </div>
             </div>
 
@@ -1555,20 +1720,24 @@ export default function Education({ onNavigate, onOpenStudio }: Props) {
                 <div
                   className="bg-blue-600 h-full rounded-full transition-all"
                   style={{
-                    width: `${(((currentChapterIndex + 1) / (currentLesson.chapters?.length || 1)) * 100)}%`,
+                    width: `${((currentChapterIndex + 1) / (currentLesson.chapters?.length || 1)) * 100}%`,
                   }}
                 />
               </div>
               <div className="flex items-center justify-between text-xs text-white pt-1">
                 <div className="flex items-center gap-2.5">
                   <button
-                    onClick={() => setIsPlaying(p => !p)}
+                    onClick={() => setIsPlaying((p) => !p)}
                     className="btn-primary btn-sm rounded-lg text-xs font-semibold cursor-pointer font-mono"
                   >
                     {isPlaying ? "Pause" : "Play"}
                   </button>
                   <button
-                    onClick={() => setPlaybackSpeed(s => (s === 1 ? 1.25 : s === 1.25 ? 1.5 : 1))}
+                    onClick={() =>
+                      setPlaybackSpeed((s) =>
+                        s === 1 ? 1.25 : s === 1.25 ? 1.5 : 1,
+                      )
+                    }
                     className="px-2 py-1 rounded bg-slate-800 text-slate-300 font-mono text-[11px] border border-slate-700 cursor-pointer"
                   >
                     {playbackSpeed}x
@@ -1579,7 +1748,9 @@ export default function Education({ onNavigate, onOpenStudio }: Props) {
                 </div>
                 <div className="flex items-center gap-2 text-slate-400 text-xs">
                   <button
-                    onClick={() => setCurrentChapterIndex(c => Math.max(0, c - 1))}
+                    onClick={() =>
+                      setCurrentChapterIndex((c) => Math.max(0, c - 1))
+                    }
                     disabled={currentChapterIndex === 0}
                     className="p-1 hover:text-white disabled:opacity-30 cursor-pointer font-mono font-bold"
                   >
@@ -1590,11 +1761,17 @@ export default function Education({ onNavigate, onOpenStudio }: Props) {
                   </span>
                   <button
                     onClick={() =>
-                      setCurrentChapterIndex(c =>
-                        Math.min((currentLesson.chapters?.length || 1) - 1, c + 1)
+                      setCurrentChapterIndex((c) =>
+                        Math.min(
+                          (currentLesson.chapters?.length || 1) - 1,
+                          c + 1,
+                        ),
                       )
                     }
-                    disabled={currentChapterIndex >= (currentLesson.chapters?.length || 1) - 1}
+                    disabled={
+                      currentChapterIndex >=
+                      (currentLesson.chapters?.length || 1) - 1
+                    }
                     className="p-1 hover:text-white disabled:opacity-30 cursor-pointer font-mono font-bold"
                   >
                     Next
@@ -1612,7 +1789,9 @@ export default function Education({ onNavigate, onOpenStudio }: Props) {
           <div className="card max-w-2xl w-full border border-slate-200 shadow-2xl overflow-hidden flex flex-col max-h-[85vh]">
             <div className="p-5 border-b border-slate-100 flex items-center justify-between">
               <div>
-                <h3 className="font-bold text-base text-slate-900 tracking-tight">Explore & Add Batches</h3>
+                <h3 className="font-bold text-base text-slate-900 tracking-tight">
+                  Explore & Add Batches
+                </h3>
                 <p className="text-xs text-slate-500 mt-0.5 font-normal">
                   Select any live Polar Science or Expedition batch to open
                 </p>
@@ -1626,8 +1805,8 @@ export default function Education({ onNavigate, onOpenStudio }: Props) {
             </div>
 
             <div className="p-5 overflow-y-auto space-y-3 flex-1">
-              {lmsCourses.map(course => {
-                const isCurrent = course.id === selectedCourseId;
+              {lmsCourses.map((course) => {
+                const isCurrent = course.id === selectedCourseId
                 return (
                   <div
                     key={course.id}
@@ -1641,7 +1820,10 @@ export default function Education({ onNavigate, onOpenStudio }: Props) {
                     <div className="flex items-center gap-3.5 min-w-0">
                       <div className="w-14 h-14 rounded-xl overflow-hidden bg-slate-900 flex-shrink-0">
                         <img
-                          src={course.bannerImage || course.lessons?.[0]?.videoThumb}
+                          src={
+                            course.bannerImage ||
+                            course.lessons?.[0]?.videoThumb
+                          }
                           alt={course.title}
                           className="w-full h-full object-cover"
                         />
@@ -1652,13 +1834,11 @@ export default function Education({ onNavigate, onOpenStudio }: Props) {
                             {course.title}
                           </h4>
                           {isCurrent && (
-                            <span className="tag font-semibold">
-                              Active
-                            </span>
+                            <span className="tag font-semibold">Active</span>
                           )}
                         </div>
                         <p className="text-xs text-slate-500 mt-0.5 truncate font-normal">
-                           {course.faculty}
+                          {course.faculty}
                         </p>
                         <div className="flex items-center gap-2 mt-1 text-[11px] text-slate-400 font-normal">
                           <span>{course.totalLectures} Lectures</span>
@@ -1672,7 +1852,7 @@ export default function Education({ onNavigate, onOpenStudio }: Props) {
                       {isCurrent ? "Viewing" : "Open Batch →"}
                     </button>
                   </div>
-                );
+                )
               })}
             </div>
           </div>
@@ -1684,8 +1864,12 @@ export default function Education({ onNavigate, onOpenStudio }: Props) {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
           <div className="card max-w-md w-full border border-slate-200 shadow-2xl p-6 text-center space-y-4">
             <div className="w-12 h-12 rounded-2xl bg-[#229ED9]/10 text-[#229ED9] mx-auto flex items-center justify-center">
-              <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6 fill-[#229ED9]" viewBox="0 0 24 24">
-                <path d="M9.036 15.675l-.396 5.59c.567 0 .813-.244 1.108-.537l2.66-2.54 5.514 4.036c1.011.558 1.726.265 1.988-.937l3.607-16.92.001-.001c.311-1.453-.525-2.02-1.508-1.648L1.14 9.403c-1.412.549-1.392 1.326-.24 1.682l5.906 1.844L19.84 5.9c.613-.39 1.17-.174.71.216"/>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="w-6 h-6 fill-[#229ED9]"
+                viewBox="0 0 24 24"
+              >
+                <path d="M9.036 15.675l-.396 5.59c.567 0 .813-.244 1.108-.537l2.66-2.54 5.514 4.036c1.011.558 1.726.265 1.988-.937l3.607-16.92.001-.001c.311-1.453-.525-2.02-1.508-1.648L1.14 9.403c-1.412.549-1.392 1.326-.24 1.682l5.906 1.844L19.84 5.9c.613-.39 1.17-.174.71.216" />
               </svg>
             </div>
             <div>
@@ -1693,7 +1877,8 @@ export default function Education({ onNavigate, onOpenStudio }: Props) {
                 Join Official Telegram Channel
               </h3>
               <p className="text-xs text-slate-500 mt-1 font-normal leading-relaxed">
-                Access PDF class notes, daily practice sheets, lecture alerts, and peer doubt discussions with faculty.
+                Access PDF class notes, daily practice sheets, lecture alerts,
+                and peer doubt discussions with faculty.
               </p>
             </div>
             <div className="p-2.5 bg-slate-50 rounded-xl border border-slate-200 text-xs font-mono text-slate-600">
@@ -1702,8 +1887,10 @@ export default function Education({ onNavigate, onOpenStudio }: Props) {
             <div className="flex gap-2">
               <button
                 onClick={() => {
-                  navigator.clipboard?.writeText("https://t.me/PolarLMS_NCPOR2026");
-                  showToast("Copied Telegram Link");
+                  navigator.clipboard?.writeText(
+                    "https://t.me/PolarLMS_NCPOR2026",
+                  )
+                  showToast("Copied Telegram Link")
                 }}
                 className="btn-outline btn-sm flex-1 rounded-xl cursor-pointer"
               >
@@ -1711,8 +1898,8 @@ export default function Education({ onNavigate, onOpenStudio }: Props) {
               </button>
               <button
                 onClick={() => {
-                  window.open("https://telegram.me", "_blank");
-                  setTelegramModalOpen(false);
+                  window.open("https://telegram.me", "_blank")
+                  setTelegramModalOpen(false)
                 }}
                 className="btn-primary btn-sm flex-1 rounded-xl cursor-pointer"
               >
@@ -1734,8 +1921,12 @@ export default function Education({ onNavigate, onOpenStudio }: Props) {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
           <div className="card max-w-md w-full border border-slate-200 shadow-2xl p-6 text-center space-y-4">
             <div className="w-12 h-12 rounded-2xl bg-[#25D366]/10 text-[#25D366] mx-auto flex items-center justify-center">
-              <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6 fill-[#25D366]" viewBox="0 0 24 24">
-                <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.669-.699c.969.54 1.772.82 2.791.82 3.181 0 5.767-2.587 5.768-5.766.001-3.181-2.584-5.766-5.768-5.766zm3.385 8.212c-.144.405-.837.774-1.17.824-.312.045-.694.062-1.121-.073-.263-.083-.6-.195-1.033-.385-1.832-.803-3.029-2.658-3.12-2.781-.092-.122-.741-.986-.741-1.882 0-.896.469-1.336.636-1.519.167-.183.365-.229.487-.229.122 0 .244.002.35.006.113.004.264-.043.413.315.153.366.523 1.275.569 1.367.046.092.076.2.015.321-.061.122-.092.198-.183.305-.091.107-.193.24-.275.322-.092.092-.188.192-.081.376.107.183.475.783 1.021 1.269.704.627 1.297.82 1.48.912.183.091.29.076.397-.046.107-.122.457-.534.579-.717.122-.183.244-.153.412-.092.167.062 1.066.503 1.25.594.183.092.305.137.35.214.045.076.045.442-.099.847z"/>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="w-6 h-6 fill-[#25D366]"
+                viewBox="0 0 24 24"
+              >
+                <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.669-.699c.969.54 1.772.82 2.791.82 3.181 0 5.767-2.587 5.768-5.766.001-3.181-2.584-5.766-5.768-5.766zm3.385 8.212c-.144.405-.837.774-1.17.824-.312.045-.694.062-1.121-.073-.263-.083-.6-.195-1.033-.385-1.832-.803-3.029-2.658-3.12-2.781-.092-.122-.741-.986-.741-1.882 0-.896.469-1.336.636-1.519.167-.183.365-.229.487-.229.122 0 .244.002.35.006.113.004.264-.043.413.315.153.366.523 1.275.569 1.367.046.092.076.2.015.321-.061.122-.092.198-.183.305-.091.107-.193.24-.275.322-.092.092-.188.192-.081.376.107.183.475.783 1.021 1.269.704.627 1.297.82 1.48.912.183.091.29.076.397-.046.107-.122.457-.534.579-.717.122-.183.244-.153.412-.092.167.062 1.066.503 1.25.594.183.092.305.137.35.214.045.076.045.442-.099.847z" />
               </svg>
             </div>
             <div>
@@ -1743,7 +1934,8 @@ export default function Education({ onNavigate, onOpenStudio }: Props) {
                 Join Official WhatsApp Community
               </h3>
               <p className="text-xs text-slate-500 mt-1 font-normal leading-relaxed">
-                Receive instant notifications on newly uploaded lectures, test schedules, and exam updates directly on your phone.
+                Receive instant notifications on newly uploaded lectures, test
+                schedules, and exam updates directly on your phone.
               </p>
             </div>
             <div className="p-2.5 bg-slate-50 rounded-xl border border-slate-200 text-xs font-mono text-slate-600">
@@ -1752,8 +1944,10 @@ export default function Education({ onNavigate, onOpenStudio }: Props) {
             <div className="flex gap-2">
               <button
                 onClick={() => {
-                  navigator.clipboard?.writeText("https://chat.whatsapp.com/PolarScienceNCPOR2026");
-                  showToast("Copied WhatsApp Link");
+                  navigator.clipboard?.writeText(
+                    "https://chat.whatsapp.com/PolarScienceNCPOR2026",
+                  )
+                  showToast("Copied WhatsApp Link")
                 }}
                 className="btn-outline btn-sm flex-1 rounded-xl cursor-pointer"
               >
@@ -1761,8 +1955,8 @@ export default function Education({ onNavigate, onOpenStudio }: Props) {
               </button>
               <button
                 onClick={() => {
-                  window.open("https://whatsapp.com", "_blank");
-                  setWhatsappModalOpen(false);
+                  window.open("https://whatsapp.com", "_blank")
+                  setWhatsappModalOpen(false)
                 }}
                 className="btn-primary btn-sm flex-1 rounded-xl bg-emerald-600 hover:bg-emerald-700 cursor-pointer"
               >
@@ -1782,9 +1976,10 @@ export default function Education({ onNavigate, onOpenStudio }: Props) {
       {/* ── FOOTER ─────────────────────────────────────────────────────── */}
       <footer className="bg-white border-t border-slate-200 text-center py-5 px-4 mt-auto">
         <p className="text-slate-400 text-xs font-normal">
-          © 2024-2026 Polar Knowledge Portal • National Centre for Polar and Ocean Research (NCPOR). All Rights Reserved.
+          © 2024-2026 Polar Knowledge Portal • National Centre for Polar and
+          Ocean Research (NCPOR). All Rights Reserved.
         </p>
       </footer>
     </div>
-  );
+  )
 }

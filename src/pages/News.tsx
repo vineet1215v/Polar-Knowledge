@@ -1,88 +1,216 @@
-import { useState } from "react";
-import { newsItems } from "../data";
+import { useState, useEffect, useRef, useMemo } from "react"
+import { newsItems } from "../data"
 
-type ContentAudience = "Researcher" | "Teacher" | "Student" | "Public" | "Media";
-type ContentChannel = "Article" | "Social Post" | "Short Video Script" | "Infographic Brief" | "Student Lesson";
+type ContentAudience = "Researcher" | "Teacher" | "Student" | "Public" | "Media"
+type ContentChannel = "Article" | "Social Post" | "Short Video Script" | "Infographic Brief" | "Student Lesson"
 
 const generatedContent: Record<ContentChannel, string> = {
-  "Article": "DRAFT — AI Generated — Requires Editorial Review\n\n**46th Indian Antarctic Expedition Underway**\n\nThe National Centre for Polar and Ocean Research (NCPOR) has launched India's 46th Antarctic Expedition (46th IAE), marking a new chapter in the country's commitment to polar science. The expedition includes researchers from multiple disciplines including glaciology, oceanography, atmospheric science and marine biology.\n\nThe team will operate from India's two permanent Antarctic research stations, Maitri and Bharati, conducting multi-year climate observations, sea ice surveys and biodiversity assessments.\n\n[Source: 46th IAE Science Plan · NCPOR Expedition Archive · Status: DRAFT]\n[Review required before publication]",
-  "Social Post": "DRAFT — AI Generated — Not approved for posting\n\n India's 46th Antarctic Expedition is now underway! Our scientists are heading to Maitri and Bharati stations to study sea ice, climate change and polar biodiversity.\n\nFollow along as we explore one of Earth's most remote frontiers. #NCPOR #AntarcticExploration #PolarScience #India\n\n[Source: NCPOR Expedition Archive · Status: DRAFT · Character count: 243]",
-  "Short Video Script": "DRAFT — AI Generated — Requires Video Team Review\n\n[OPENING SHOT: Antarctic landscape, music builds]\n\nNARRATOR: Every year, Indian scientists venture to one of the most remote places on Earth...\n\n[SHOT: Maitri station exterior]\n\nNARRATOR: Antarctica. Home to India's two research stations — Maitri and Bharati — and the base for 46 scientific expeditions since 1981.\n\n[SHOT: Scientists working]\n\nNARRATOR: The 46th Indian Antarctic Expedition is now underway, studying sea ice, climate change and the mysteries of the Southern Ocean.\n\n[CLOSING SHOT: NCPOR logo]\n\n[Duration: ~60 seconds · Source: NCPOR Expedition Archive]",
-  "Infographic Brief": "DRAFT — AI Generated — Requires Design Team Review\n\nINFOGRAPHIC BRIEF: 46th IAE at a Glance\n\nHEADLINE: India's 46th Antarctic Mission\nSUBHEAD: 42 years of polar exploration\n\nKEY STATS:\n• 42 total expeditions conducted\n• 2 permanent stations (Maitri + Bharati)\n• 350+ datasets collected\n• 1,200+ publications\n\nRECOMMENDED VISUALS: Antarctic landscape, station exteriors, map showing expedition routes, researcher photos\n\nSOURCE: NCPOR Expedition Archive · [Review required]",
-  "Student Lesson": "DRAFT — AI Generated — Requires Educator Review\n\nLESSON PLAN: India Goes to Antarctica\nAge group: 10–14 years · Duration: 45 minutes\n\nLEARNING OBJECTIVES:\n• Understand why India conducts Antarctic expeditions\n• Identify India's research stations on a map\n• Explain two types of research conducted in Antarctica\n\nACTIVITY 1 (10 min): Map activity — locate Maitri and Bharati stations\nACTIVITY 2 (15 min): Watch the expedition launch video (link)\nACTIVITY 3 (10 min): Class discussion: Why is polar science important?\nQUIZ (10 min): 5 questions from NCPOR Polar Knowledge quiz bank\n\nSource: NCPOR Expedition Archive, Education Module\n[Requires educator review before classroom use]",
-};
+  Article:
+    "DRAFT — AI Generated — Requires Editorial Review\n\n**46th Indian Antarctic Expedition Underway**\n\nThe National Centre for Polar and Ocean Research (NCPOR) has launched India's 46th Antarctic Expedition (46th IAE), marking a new chapter in the country's commitment to polar science. The expedition includes researchers from multiple disciplines including glaciology, oceanography, atmospheric science and marine biology.\n\nThe team will operate from India's two permanent Antarctic research stations, Maitri and Bharati, conducting multi-year climate observations, sea ice surveys and biodiversity assessments.\n\n[Source: 46th IAE Science Plan · NCPOR Expedition Archive · Status: DRAFT]\n[Review required before publication]",
+  "Social Post":
+    "DRAFT — AI Generated — Not approved for posting\n\n India's 46th Antarctic Expedition is now underway! Our scientists are heading to Maitri and Bharati stations to study sea ice, climate change and polar biodiversity.\n\nFollow along as we explore one of Earth's most remote frontiers. #NCPOR #AntarcticExploration #PolarScience #India\n\n[Source: NCPOR Expedition Archive · Status: DRAFT · Character count: 243]",
+  "Short Video Script":
+    "DRAFT — AI Generated — Requires Video Team Review\n\n[OPENING SHOT: Antarctic landscape, music builds]\n\nNARRATOR: Every year, Indian scientists venture to one of the most remote places on Earth...\n\n[SHOT: Maitri station exterior]\n\nNARRATOR: Antarctica. Home to India's two research stations — Maitri and Bharati — and the base for 46 scientific expeditions since 1981.\n\n[SHOT: Scientists working]\n\nNARRATOR: The 46th Indian Antarctic Expedition is now underway, studying sea ice, climate change and the mysteries of the Southern Ocean.\n\n[CLOSING SHOT: NCPOR logo]\n\n[Duration: ~60 seconds · Source: NCPOR Expedition Archive]",
+  "Infographic Brief":
+    "DRAFT — AI Generated — Requires Design Team Review\n\nINFOGRAPHIC BRIEF: 46th IAE at a Glance\n\nHEADLINE: India's 46th Antarctic Mission\nSUBHEAD: 42 years of polar exploration\n\nKEY STATS:\n• 42 total expeditions conducted\n• 2 permanent stations (Maitri + Bharati)\n• 350+ datasets collected\n• 1,200+ publications\n\nRECOMMENDED VISUALS: Antarctic landscape, station exteriors, map showing expedition routes, researcher photos\n\nSOURCE: NCPOR Expedition Archive · [Review required]",
+  "Student Lesson":
+    "DRAFT — AI Generated — Requires Educator Review\n\nLESSON PLAN: India Goes to Antarctica\nAge group: 10–14 years · Duration: 45 minutes\n\nLEARNING OBJECTIVES:\n• Understand why India conducts Antarctic expeditions\n• Identify India's research stations on a map\n• Explain two types of research conducted in Antarctica\n\nACTIVITY 1 (10 min): Map activity — locate Maitri and Bharati stations\nACTIVITY 2 (15 min): Watch the expedition launch video (link)\nACTIVITY 3 (10 min): Class discussion: Why is polar science important?\nQUIZ (10 min): 5 questions from NCPOR Polar Knowledge quiz bank\n\nSource: NCPOR Expedition Archive, Education Module\n[Requires educator review before classroom use]",
+}
 
-type WorkflowStatus = "DRAFT" | "SUBMITTED" | "UNDER_REVIEW" | "APPROVED" | "PUBLISHED";
+type WorkflowStatus = "DRAFT" | "SUBMITTED" | "UNDER_REVIEW" | "APPROVED" | "PUBLISHED"
 
-const workflowSteps: WorkflowStatus[] = ["DRAFT", "SUBMITTED", "UNDER_REVIEW", "APPROVED", "PUBLISHED"];
+const workflowSteps: WorkflowStatus[] = [
+  "DRAFT",
+  "SUBMITTED",
+  "UNDER_REVIEW",
+  "APPROVED",
+  "PUBLISHED",
+]
 
 const workflowLabels: Record<WorkflowStatus, string> = {
-  DRAFT: "Draft", SUBMITTED: "Submitted", UNDER_REVIEW: "Under Review", APPROVED: "Approved", PUBLISHED: "Published"
-};
+  DRAFT: "Draft",
+  SUBMITTED: "Submitted",
+  UNDER_REVIEW: "Under Review",
+  APPROVED: "Approved",
+  PUBLISHED: "Published",
+}
 
-function ContentStudio({ newsItem, onClose }: { newsItem: typeof newsItems[0]; onClose: () => void }) {
-  const [audience, setAudience] = useState<ContentAudience>("Researcher");
-  const [channel, setChannel] = useState<ContentChannel>("Article");
-  const [generated, setGenerated] = useState(false);
-  const [reviewStatus, setReviewStatus] = useState<WorkflowStatus>("DRAFT");
-  const [studioTab, setStudioTab] = useState<"create" | "governance" | "audit">("create");
+function ContentStudio({
+  newsItem,
+  onClose,
+}: {
+  newsItem: typeof newsItems[0]
+  onClose: () => void
+}) {
+  const [audience, setAudience] = useState<ContentAudience>("Researcher")
+  const [channel, setChannel] = useState<ContentChannel>("Article")
+  const [generated, setGenerated] = useState(false)
+  const [reviewStatus, setReviewStatus] = useState<WorkflowStatus>("DRAFT")
+  const [studioTab, setStudioTab] = useState<"create" | "governance" | "audit">(
+    "create",
+  )
   const [auditLog, setAuditLog] = useState([
-    { who: "System", action: "Content generated by AI", when: "Just now", status: "DRAFT" as WorkflowStatus },
-  ]);
+    {
+      who: "System",
+      action: "Content generated by AI",
+      when: "Just now",
+      status: "DRAFT" as WorkflowStatus,
+    },
+  ])
 
-  const audiences: ContentAudience[] = ["Researcher", "Teacher", "Student", "Public", "Media"];
-  const channels: ContentChannel[] = ["Article", "Social Post", "Short Video Script", "Infographic Brief", "Student Lesson"];
+  const audiences: ContentAudience[] = [
+    "Researcher",
+    "Teacher",
+    "Student",
+    "Public",
+    "Media",
+  ]
+  const channels: ContentChannel[] = [
+    "Article",
+    "Social Post",
+    "Short Video Script",
+    "Infographic Brief",
+    "Student Lesson",
+  ]
 
   return (
-    <div className="fixed inset-0 z-40 flex" style={{ background: "rgba(0,0,0,0.5)" }} onClick={onClose}>
-      <div className="ml-auto w-full max-w-2xl h-full bg-white flex flex-col overflow-hidden shadow-2xl" onClick={e => e.stopPropagation()}>
-        <div className="flex-shrink-0 p-4 border-b" style={{ borderColor: "var(--border)" }}>
-          <div className="flex items-start justify-between mb-1">
-            <div>
-              <div className="text-[10px] font-semibold uppercase text-blue-600 mb-0.5">Content Studio — One Source, Many Audiences</div>
-              <h2 className="font-bold text-sm" style={{ color: "var(--text-primary)" }}>Create from Source</h2>
+    <div className="min-h-full bg-slate-50 flex flex-col pb-16">
+      {/* Top Header Ribbon */}
+      <div className="sticky top-0 z-30 bg-white border-b border-slate-200 px-4 sm:px-6 py-3.5 shadow-2xs flex flex-wrap items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <button
+            onClick={onClose}
+            className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-[#003366] text-white hover:bg-[#002244] text-xs font-bold transition shadow-2xs cursor-pointer"
+          >
+            <span>←</span>
+            <span>Back to News & Media Hub</span>
+          </button>
+          <div className="h-5 w-px bg-slate-200 hidden sm:block" />
+          <div>
+            <div className="text-[10px] font-bold uppercase text-blue-600">
+              Content Studio — One Source, Many Audiences
             </div>
-            <button onClick={onClose} className="text-slate-400" aria-label="Close">x</button>
-          </div>
-          {generated && (
-            <div className="tab-bar mt-2">
-              <button className={`tab-item flex-1 ${studioTab === "create" ? "active" : ""}`} onClick={() => setStudioTab("create")}> Create</button>
-              <button className={`tab-item flex-1 ${studioTab === "governance" ? "active" : ""}`} onClick={() => setStudioTab("governance")}> Governance</button>
-              <button className={`tab-item flex-1 ${studioTab === "audit" ? "active" : ""}`} onClick={() => setStudioTab("audit")}> Audit</button>
-            </div>
-          )}
-          <div className="rounded-lg p-2.5 text-xs mt-2" style={{ background: "#f8fafc", border: "1px solid var(--border)" }}>
-            <div className="text-[9px] uppercase font-semibold mb-0.5" style={{ color: "var(--text-muted)" }}>Source</div>
-            <div className="font-medium" style={{ color: "var(--text-primary)" }}>{newsItem.title}</div>
-            <div className="text-[10px]" style={{ color: "var(--text-muted)" }}>{newsItem.date} · {newsItem.category} · Source ID: news_{newsItem.id}</div>
+            <h2
+              className="font-bold text-sm text-slate-900 truncate max-w-md"
+            >
+              Create from: {newsItem.title}
+            </h2>
           </div>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-4 space-y-4">
+        {generated && (
+            <div className="tab-bar mt-2">
+              <button
+                className={`tab-item flex-1 ${
+                  studioTab === "create" ? "active" : ""
+                }`}
+                onClick={() => setStudioTab("create")}
+              >
+                {" "}
+                Create
+              </button>
+              <button
+                className={`tab-item flex-1 ${
+                  studioTab === "governance" ? "active" : ""
+                }`}
+                onClick={() => setStudioTab("governance")}
+              >
+                {" "}
+                Governance
+              </button>
+              <button
+                className={`tab-item flex-1 ${
+                  studioTab === "audit" ? "active" : ""
+                }`}
+                onClick={() => setStudioTab("audit")}
+              >
+                {" "}
+                Audit
+              </button>
+            </div>
+          )}
+          <div
+            className="rounded-lg p-2.5 text-xs mt-2"
+            style={{ background: "#f8fafc", border: "1px solid var(--border)" }}
+          >
+            <div
+              className="text-[9px] uppercase font-semibold mb-0.5"
+              style={{ color: "var(--text-muted)" }}
+            >
+              Source
+            </div>
+            <div
+              className="font-medium"
+              style={{ color: "var(--text-primary)" }}
+            >
+              {newsItem.title}
+            </div>
+            <div className="text-[10px]" style={{ color: "var(--text-muted)" }}>
+              {newsItem.date} · {newsItem.category} · Source ID: news_
+              {newsItem.id}
+            </div>
+          </div>
+        </div>
+
+        <div className="flex-1 overflow-y-auto">
+        <div className="max-w-4xl mx-auto w-full p-4 sm:p-6 space-y-6">
           {/* Audience selector */}
           <div>
-            <div className="text-xs font-semibold mb-2" style={{ color: "var(--text-primary)" }}>Target Audience</div>
+            <div
+              className="text-xs font-semibold mb-2"
+              style={{ color: "var(--text-primary)" }}
+            >
+              Target Audience
+            </div>
             <div className="flex flex-wrap gap-2">
-              {audiences.map(a => (
-                <button key={a} onClick={() => setAudience(a)} className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-all ${audience === a ? "border-blue-400 bg-blue-50 text-blue-700" : "border-slate-200 text-slate-600 hover:border-slate-300"}`}>{a}</button>
+              {audiences.map((a) => (
+                <button
+                  key={a}
+                  onClick={() => setAudience(a)}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-all ${
+                    audience === a
+                      ? "border-blue-400 bg-blue-50 text-blue-700"
+                      : "border-slate-200 text-slate-600 hover:border-slate-300"
+                  }`}
+                >
+                  {a}
+                </button>
               ))}
             </div>
           </div>
 
           {/* Channel selector */}
           <div>
-            <div className="text-xs font-semibold mb-2" style={{ color: "var(--text-primary)" }}>Content Format</div>
+            <div
+              className="text-xs font-semibold mb-2"
+              style={{ color: "var(--text-primary)" }}
+            >
+              Content Format
+            </div>
             <div className="flex flex-wrap gap-2">
-              {channels.map(c => (
-                <button key={c} onClick={() => setChannel(c)} className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-all ${channel === c ? "border-blue-400 bg-blue-50 text-blue-700" : "border-slate-200 text-slate-600 hover:border-slate-300"}`}>{c}</button>
+              {channels.map((c) => (
+                <button
+                  key={c}
+                  onClick={() => setChannel(c)}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-all ${
+                    channel === c
+                      ? "border-blue-400 bg-blue-50 text-blue-700"
+                      : "border-slate-200 text-slate-600 hover:border-slate-300"
+                  }`}
+                >
+                  {c}
+                </button>
               ))}
             </div>
           </div>
 
           {/* Generate button */}
           {!generated && (
-            <button className="btn-primary w-full" onClick={() => setGenerated(true)}>
-               Generate {channel} for {audience}
+            <button
+              className="btn-primary w-full"
+              onClick={() => setGenerated(true)}
+            >
+              Generate {channel} for {audience}
             </button>
           )}
 
@@ -90,29 +218,77 @@ function ContentStudio({ newsItem, onClose }: { newsItem: typeof newsItems[0]; o
           {generated && (
             <div>
               <div className="flex items-center justify-between mb-2">
-                <div className="text-xs font-semibold" style={{ color: "var(--text-primary)" }}>Generated Content</div>
+                <div
+                  className="text-xs font-semibold"
+                  style={{ color: "var(--text-primary)" }}
+                >
+                  Generated Content
+                </div>
                 <div className="flex gap-2">
                   <span className="tag tag-orange">{reviewStatus}</span>
                   <span className="tag">AI Generated</span>
                 </div>
               </div>
-              <div className="rounded-lg p-4 text-xs whitespace-pre-wrap leading-relaxed" style={{ background: "#fffbeb", border: "1px solid #fef08a", color: "#78350f" }}>
+              <div
+                className="rounded-lg p-4 text-xs whitespace-pre-wrap leading-relaxed"
+                style={{
+                  background: "#fffbeb",
+                  border: "1px solid #fef08a",
+                  color: "#78350f",
+                }}
+              >
                 {generatedContent[channel]}
               </div>
-              <div className="mt-3 p-3 rounded-lg text-[10px]" style={{ background: "#f0fdf4", color: "#166534" }}>
+              <div
+                className="mt-3 p-3 rounded-lg text-[10px]"
+                style={{ background: "#f0fdf4", color: "#166534" }}
+              >
                 <div className="font-semibold mb-1">Provenance preserved</div>
-                Source ID: news_{newsItem.id} · Generated for audience: {audience} · Channel: {channel} · Status: {reviewStatus} — must be reviewed and approved before publication. AI-generated content does not become official merely by existing.
+                Source ID: news_{newsItem.id} · Generated for audience:{" "}
+                {audience} · Channel: {channel} · Status: {reviewStatus} — must
+                be reviewed and approved before publication. AI-generated
+                content does not become official merely by existing.
               </div>
               <div className="mt-3 flex gap-2 flex-wrap">
                 {reviewStatus === "DRAFT" && (
-                  <button className="btn-primary btn-sm" onClick={() => {
-                    setReviewStatus("SUBMITTED");
-                    setAuditLog(l => [...l, { who: "Researcher", action: "Submitted for editorial review", when: "Just now", status: "SUBMITTED" }]);
-                    setStudioTab("governance");
-                  }}>Submit for Review →</button>
+                  <button
+                    className="btn-primary btn-sm"
+                    onClick={() => {
+                      setReviewStatus("SUBMITTED")
+                      setAuditLog((l) => [
+                        ...l,
+                        {
+                          who: "Researcher",
+                          action: "Submitted for editorial review",
+                          when: "Just now",
+                          status: "SUBMITTED",
+                        },
+                      ])
+                      setStudioTab("governance")
+                    }}
+                  >
+                    Submit for Review →
+                  </button>
                 )}
                 <button className="btn-outline btn-sm">Save Draft</button>
-                <button className="btn-outline btn-sm" onClick={() => { setGenerated(false); setReviewStatus("DRAFT"); setStudioTab("create"); setAuditLog([{ who: "System", action: "Content generated by AI", when: "Just now", status: "DRAFT" }]); }}>Regenerate</button>
+                <button
+                  className="btn-outline btn-sm"
+                  onClick={() => {
+                    setGenerated(false)
+                    setReviewStatus("DRAFT")
+                    setStudioTab("create")
+                    setAuditLog([
+                      {
+                        who: "System",
+                        action: "Content generated by AI",
+                        when: "Just now",
+                        status: "DRAFT",
+                      },
+                    ])
+                  }}
+                >
+                  Regenerate
+                </button>
               </div>
             </div>
           )}
@@ -120,62 +296,176 @@ function ContentStudio({ newsItem, onClose }: { newsItem: typeof newsItems[0]; o
           {generated && studioTab === "governance" && (
             <div className="space-y-4">
               <div>
-                <div className="text-xs font-semibold mb-3" style={{ color: "var(--text-primary)" }}>Workflow Status</div>
+                <div
+                  className="text-xs font-semibold mb-3"
+                  style={{ color: "var(--text-primary)" }}
+                >
+                  Workflow Status
+                </div>
                 <div className="flex items-center gap-0 overflow-x-auto">
                   {workflowSteps.map((step, i) => {
-                    const idx = workflowSteps.indexOf(reviewStatus);
-                    const done = i < idx;
-                    const active = i === idx;
+                    const idx = workflowSteps.indexOf(reviewStatus)
+                    const done = i < idx
+                    const active = i === idx
                     return (
-                      <div key={step} className="flex items-center flex-shrink-0">
+                      <div
+                        key={step}
+                        className="flex items-center flex-shrink-0"
+                      >
                         <div className={`flex flex-col items-center`}>
-                          <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold ${done ? "bg-green-500 text-white" : active ? "bg-blue-600 text-white" : "bg-slate-200 text-slate-400"}`}>
+                          <div
+                            className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold ${
+                              done
+                                ? "bg-green-500 text-white"
+                                : active
+                                  ? "bg-blue-600 text-white"
+                                  : "bg-slate-200 text-slate-400"
+                            }`}
+                          >
                             {done ? "OK" : i + 1}
                           </div>
-                          <div className={`text-[9px] mt-1 text-center w-14 ${active ? "font-semibold text-blue-700" : done ? "text-green-700" : ""}`} style={{ color: active ? "#1d4ed8" : done ? "#16a34a" : "var(--text-muted)" }}>
+                          <div
+                            className={`text-[9px] mt-1 text-center w-14 ${
+                              active
+                                ? "font-semibold text-blue-700"
+                                : done
+                                  ? "text-green-700"
+                                  : ""
+                            }`}
+                            style={{
+                              color: active
+                                ? "#1d4ed8"
+                                : done
+                                  ? "#16a34a"
+                                  : "var(--text-muted)",
+                            }}
+                          >
                             {workflowLabels[step]}
                           </div>
                         </div>
-                        {i < workflowSteps.length - 1 && <div className={`w-8 h-px flex-shrink-0 mb-4 ${done ? "bg-green-400" : "bg-slate-200"}`}/>}
+                        {i < workflowSteps.length - 1 && (
+                          <div
+                            className={`w-8 h-px flex-shrink-0 mb-4 ${
+                              done ? "bg-green-400" : "bg-slate-200"
+                            }`}
+                          />
+                        )}
                       </div>
-                    );
+                    )
                   })}
                 </div>
               </div>
 
               <div className="card p-3 space-y-2">
-                <div className="text-xs font-semibold" style={{ color: "var(--text-primary)" }}>Governance Rules</div>
+                <div
+                  className="text-xs font-semibold"
+                  style={{ color: "var(--text-primary)" }}
+                >
+                  Governance Rules
+                </div>
                 {[
-                  { rule: "AI-generated content requires editorial review before publication", ok: true },
-                  { rule: "Source provenance must be preserved (Source ID: news_" + newsItem.id + ")", ok: true },
-                  { rule: "Content is marked DRAFT until approved by a Publisher", ok: reviewStatus !== "PUBLISHED" },
-                  { rule: "Approval required from designated Reviewer", ok: reviewStatus === "APPROVED" || reviewStatus === "PUBLISHED" },
-                ].map(r => (
-                  <div key={r.rule} className="flex items-start gap-2 text-[10px]">
-                    <span className={`flex-shrink-0 font-bold ${r.ok ? "text-green-600" : "text-amber-500"}`}>{r.ok ? "OK" : "PENDING"}</span>
-                    <span style={{ color: "var(--text-secondary)" }}>{r.rule}</span>
+                  {
+                    rule: "AI-generated content requires editorial review before publication",
+                    ok: true,
+                  },
+                  {
+                    rule:
+                      "Source provenance must be preserved (Source ID: news_" +
+                      newsItem.id +
+                      ")",
+                    ok: true,
+                  },
+                  {
+                    rule: "Content is marked DRAFT until approved by a Publisher",
+                    ok: reviewStatus !== "PUBLISHED",
+                  },
+                  {
+                    rule: "Approval required from designated Reviewer",
+                    ok:
+                      reviewStatus === "APPROVED" ||
+                      reviewStatus === "PUBLISHED",
+                  },
+                ].map((r) => (
+                  <div
+                    key={r.rule}
+                    className="flex items-start gap-2 text-[10px]"
+                  >
+                    <span
+                      className={`flex-shrink-0 font-bold ${
+                        r.ok ? "text-green-600" : "text-amber-500"
+                      }`}
+                    >
+                      {r.ok ? "OK" : "PENDING"}
+                    </span>
+                    <span style={{ color: "var(--text-secondary)" }}>
+                      {r.rule}
+                    </span>
                   </div>
                 ))}
               </div>
 
               <div className="flex flex-wrap gap-2">
                 {reviewStatus === "SUBMITTED" && (
-                  <button className="btn-primary btn-sm" onClick={() => { setReviewStatus("UNDER_REVIEW"); setAuditLog(l => [...l, { who: "Editor (demo)", action: "Picked up for review", when: "Moments ago", status: "UNDER_REVIEW" }]); }}>
+                  <button
+                    className="btn-primary btn-sm"
+                    onClick={() => {
+                      setReviewStatus("UNDER_REVIEW")
+                      setAuditLog((l) => [
+                        ...l,
+                        {
+                          who: "Editor (demo)",
+                          action: "Picked up for review",
+                          when: "Moments ago",
+                          status: "UNDER_REVIEW",
+                        },
+                      ])
+                    }}
+                  >
                     Begin Review (Editor)
                   </button>
                 )}
                 {reviewStatus === "UNDER_REVIEW" && (
-                  <button className="btn-primary btn-sm" onClick={() => { setReviewStatus("APPROVED"); setAuditLog(l => [...l, { who: "Editor (demo)", action: "Approved — ready to publish", when: "Moments ago", status: "APPROVED" }]); }}>
+                  <button
+                    className="btn-primary btn-sm"
+                    onClick={() => {
+                      setReviewStatus("APPROVED")
+                      setAuditLog((l) => [
+                        ...l,
+                        {
+                          who: "Editor (demo)",
+                          action: "Approved — ready to publish",
+                          when: "Moments ago",
+                          status: "APPROVED",
+                        },
+                      ])
+                    }}
+                  >
                     Approve
                   </button>
                 )}
                 {reviewStatus === "APPROVED" && (
-                  <button className="btn-primary btn-sm" onClick={() => { setReviewStatus("PUBLISHED"); setAuditLog(l => [...l, { who: "Publisher (demo)", action: "Published to official channel", when: "Moments ago", status: "PUBLISHED" }]); }}>
+                  <button
+                    className="btn-primary btn-sm"
+                    onClick={() => {
+                      setReviewStatus("PUBLISHED")
+                      setAuditLog((l) => [
+                        ...l,
+                        {
+                          who: "Publisher (demo)",
+                          action: "Published to official channel",
+                          when: "Moments ago",
+                          status: "PUBLISHED",
+                        },
+                      ])
+                    }}
+                  >
                     Publish
                   </button>
                 )}
                 {reviewStatus === "PUBLISHED" && (
-                  <div className="text-xs font-semibold text-green-700 bg-green-50 px-3 py-1.5 rounded-lg">OK Published — content is live</div>
+                  <div className="text-xs font-semibold text-green-700 bg-green-50 px-3 py-1.5 rounded-lg">
+                    OK Published — content is live
+                  </div>
                 )}
                 <button className="btn-outline btn-sm">Request Changes</button>
               </div>
@@ -184,105 +474,1590 @@ function ContentStudio({ newsItem, onClose }: { newsItem: typeof newsItems[0]; o
 
           {generated && studioTab === "audit" && (
             <div className="space-y-3">
-              <div className="text-xs font-semibold mb-2" style={{ color: "var(--text-primary)" }}>Editorial Audit Trail</div>
+              <div
+                className="text-xs font-semibold mb-2"
+                style={{ color: "var(--text-primary)" }}
+              >
+                Editorial Audit Trail
+              </div>
               <div className="space-y-2">
                 {auditLog.map((entry, i) => (
-                  <div key={i} className="flex items-start gap-3 p-2.5 rounded-lg" style={{ background: "#f8fafc" }}>
-                    <div className="w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center text-[10px] font-bold flex-shrink-0" style={{ color: "var(--text-secondary)" }}>
+                  <div
+                    key={i}
+                    className="flex items-start gap-3 p-2.5 rounded-lg"
+                    style={{ background: "#f8fafc" }}
+                  >
+                    <div
+                      className="w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center text-[10px] font-bold flex-shrink-0"
+                      style={{ color: "var(--text-secondary)" }}
+                    >
                       {entry.who.charAt(0)}
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between gap-2">
-                        <span className="text-xs font-medium" style={{ color: "var(--text-primary)" }}>{entry.who}</span>
-                        <span className="text-[9px]" style={{ color: "var(--text-muted)" }}>{entry.when}</span>
+                        <span
+                          className="text-xs font-medium"
+                          style={{ color: "var(--text-primary)" }}
+                        >
+                          {entry.who}
+                        </span>
+                        <span
+                          className="text-[9px]"
+                          style={{ color: "var(--text-muted)" }}
+                        >
+                          {entry.when}
+                        </span>
                       </div>
-                      <div className="text-[10px] mt-0.5" style={{ color: "var(--text-secondary)" }}>{entry.action}</div>
-                      <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-semibold mt-1 inline-block ${entry.status === "PUBLISHED" ? "bg-green-100 text-green-700" : entry.status === "APPROVED" ? "bg-blue-100 text-blue-700" : "bg-amber-100 text-amber-700"}`}>{workflowLabels[entry.status]}</span>
+                      <div
+                        className="text-[10px] mt-0.5"
+                        style={{ color: "var(--text-secondary)" }}
+                      >
+                        {entry.action}
+                      </div>
+                      <span
+                        className={`text-[9px] px-1.5 py-0.5 rounded-full font-semibold mt-1 inline-block ${
+                          entry.status === "PUBLISHED"
+                            ? "bg-green-100 text-green-700"
+                            : entry.status === "APPROVED"
+                              ? "bg-blue-100 text-blue-700"
+                              : "bg-amber-100 text-amber-700"
+                        }`}
+                      >
+                        {workflowLabels[entry.status]}
+                      </span>
                     </div>
                   </div>
                 ))}
               </div>
-              <div className="text-[10px]" style={{ color: "var(--text-muted)" }}>
-                Audit trail is maintained per NCPOR content governance policy. All actions are logged and cannot be deleted.
+              <div
+                className="text-[10px]"
+                style={{ color: "var(--text-muted)" }}
+              >
+                Audit trail is maintained per NCPOR content governance policy.
+                All actions are logged and cannot be deleted.
               </div>
             </div>
           )}
         </div>
       </div>
     </div>
-  );
+  )
 }
 
 interface NewsProps {
-  onOpenSocial?: (initialTopic?: string, initialContent?: string) => void;
+  onOpenSocial?: (initialTopic?: string, initialContent?: string) => void
 }
 
+export interface Way2NewsStory {
+  id: number
+  title: string
+  date: string
+  category: "Expeditions" | "Cryosphere" | "Arctic Watch" | "Technology" | "Marine Life" | "Atmosphere"
+  categoryColor: string
+  location: string
+  heroImage: string
+  thumb: string
+  bullets: string[]
+  keyStat: { label: string; value: string }
+  source: string
+  readTime: string
+  likes: number
+  shares: number
+  tags: string[]
+  isVerified: boolean
+}
+
+export const WAY2NEWS_STORIES: Way2NewsStory[] = [
+  {
+    id: 1,
+    title: "46th Indian Antarctic Expedition Launched with 58 Multi-Disciplinary Scientists",
+    date: "12 Aug 2024",
+    category: "Expeditions",
+    categoryColor: "bg-blue-600",
+    location: "Mormugao Port, Goa · Antarctica",
+    heroImage: "https://images.unsplash.com/photo-1486566584569-b9319dc74315?w=1200&q=80",
+    thumb: "https://images.unsplash.com/photo-1486566584569-b9319dc74315?w=200&q=80",
+    bullets: [
+      "NCPOR flag vessel departed Goa carrying 58 researchers from 14 national scientific institutes including IMD, WIHG, and ISRO.",
+      "Flagship science objectives include retrieving 120m paleoclimate ice cores along Princess Astrid Coast and deep CTD profiling in Prydz Bay.",
+      "Commissioned containerized solar-wind hybrid microgrid at Maitri Station, cutting winter diesel dependency by 22%."
+    ],
+    keyStat: { label: "Scientists Deployed", value: "58" },
+    source: "NCPOR Expedition Command · MoES India",
+    readTime: "60 Words · 1 min",
+    likes: 418,
+    shares: 142,
+    tags: ["#IAE46", "#Antarctica", "#Maitri", "#GreenEnergy"],
+    isVerified: true
+  },
+  {
+    id: 2,
+    title: "Antarctic Sea Ice Shrinks to Record Low 1.79M km² Triggering Ocean Warming Loop",
+    date: "5 Aug 2024",
+    category: "Cryosphere",
+    categoryColor: "bg-cyan-600",
+    location: "Weddell & Ross Seas (Southern Ocean)",
+    heroImage: "https://images.unsplash.com/photo-1672570289260-d430df31d893?w=1200&q=80",
+    thumb: "https://images.unsplash.com/photo-1672570289260-d430df31d893?w=200&q=80",
+    bullets: [
+      "Satellite microwave radiometry confirms Antarctic sea ice extent plunged to 1.79M km² in February 2023, the lowest in 44 satellite years.",
+      "Albedo collapse: Open dark waters absorb 93% incident solar radiation vs 85% reflection by perennial snow pack, heating upper ocean by +1.8°C.",
+      "NCPOR lag-correlation links Weddell ice retreat directly to delayed onset of the Indian Summer Monsoon by 4 to 9 days."
+    ],
+    keyStat: { label: "Historic Minimum", value: "1.79M km²" },
+    source: "NCPOR Glaciology Division · Journal of Glaciology",
+    readTime: "60 Words · 1 min",
+    likes: 892,
+    shares: 310,
+    tags: ["#SeaIce", "#ClimateChange", "#Albedo", "#MonsoonTeleconnection"],
+    isVerified: true
+  },
+  {
+    id: 3,
+    title: "192m IndARC Underwater Mooring Tracks Accelerated Arctic Fjord Atlantification",
+    date: "26 Jul 2024",
+    category: "Arctic Watch",
+    categoryColor: "bg-indigo-600",
+    location: "Kongsfjorden, Ny-Ålesund, Svalbard (78°55′N)",
+    heroImage: "https://images.unsplash.com/photo-1551415923-a2297c7fda79?w=1200&q=80",
+    thumb: "https://images.unsplash.com/photo-1551415923-a2297c7fda79?w=200&q=80",
+    bullets: [
+      "India's IndARC multi-sensor underwater observatory stationed at 192m depth captured unbroken telemetry throughout the 4-month Arctic polar night.",
+      "Sensors recorded unprecedented pulses of warm, saline West Spitsbergen Current water intruding into Kongsfjorden, preventing fjord surface freezing.",
+      "Telemetry confirms Svalbard surface air is warming at 3.5× the global rate, accelerating glacial terminus retreat."
+    ],
+    keyStat: { label: "Mooring Depth", value: "192 m" },
+    source: "Indian Arctic Programme · Himadri Station",
+    readTime: "60 Words · 1 min",
+    likes: 635,
+    shares: 204,
+    tags: ["#IndARC", "#ArcticResearch", "#Atlantification", "#Himadri"],
+    isVerified: true
+  },
+  {
+    id: 4,
+    title: "Bharati Station Commissions High-Speed ISRO Dual-Band Remote Sensing Radomes",
+    date: "20 Jul 2024",
+    category: "Technology",
+    categoryColor: "bg-emerald-600",
+    location: "Larsemann Hills, East Antarctica (69°24′S)",
+    heroImage: "https://images.unsplash.com/photo-1687904368738-ca6423635666?w=1200&q=80",
+    thumb: "https://images.unsplash.com/photo-1687904368738-ca6423635666?w=200&q=80",
+    bullets: [
+      "NCPOR and ISRO successfully commissioned dual X/S-band satellite tracking radomes at Bharati Station in Prydz Bay.",
+      "Enables direct real-time downlink of remote sensing telemetry from Oceansat-3, Cartosat, and RISAT spacecraft constellations.",
+      "Elevated aerodynamic container architecture maintained full operational integrity during sustained 160 km/h blizzard winds."
+    ],
+    keyStat: { label: "Downlink Capacity", value: "1.2 Gbps" },
+    source: "ISRO Ground Segment & Bharati Command",
+    readTime: "60 Words · 1 min",
+    likes: 524,
+    shares: 178,
+    tags: ["#Bharati", "#ISRO", "#RemoteSensing", "#Radome"],
+    isVerified: true
+  },
+  {
+    id: 5,
+    title: "2,450 Antarctic Fish Otolith Specimens Digitized on Open Polar Portal",
+    date: "15 Jul 2024",
+    category: "Marine Life",
+    categoryColor: "bg-purple-600",
+    location: "Southern Ocean Living Resources BioLab",
+    heroImage: "https://images.unsplash.com/photo-1766465405501-ab1cce22d097?w=1200&q=80",
+    thumb: "https://images.unsplash.com/photo-1766465405501-ab1cce22d097?w=200&q=80",
+    bullets: [
+      "NCPOR Marine Living Resources team uploaded micro-computed tomography scans of 2,450 sagittal otoliths from Antarctic toothfish.",
+      "Digital vouchers allow researchers worldwide to track annual growth rings, calcium carbonate accretion, and Southern Ocean acidification.",
+      "Dataset links morphometric otolith shapes to 32 deep-water CTD transects across the Indian sector of the Southern Ocean."
+    ],
+    keyStat: { label: "Digitized Otoliths", value: "2,450+" },
+    source: "NCPOR Marine Living Resources Division",
+    readTime: "60 Words · 1 min",
+    likes: 310,
+    shares: 98,
+    tags: ["#Otolith", "#Toothfish", "#eDNA", "#MarineEcology"],
+    isVerified: true
+  },
+  {
+    id: 6,
+    title: "Maitri Station Completes 35 Unbroken Years of Ozone & Boundary Layer Science",
+    date: "10 Jul 2024",
+    category: "Atmosphere",
+    categoryColor: "bg-amber-600",
+    location: "Schirmacher Oasis, Antarctica (70°46′S)",
+    heroImage: "https://images.unsplash.com/photo-1504858700536-882c978a3464?w=1200&q=80",
+    thumb: "https://images.unsplash.com/photo-1504858700536-882c978a3464?w=200&q=80",
+    bullets: [
+      "Maitri Station marks 35 years of uninterrupted scientific watch since its dedication during the 9th Indian Antarctic Expedition in 1989.",
+      "High-precision Brewer spectrophotometer time series reveals steady post-2000 stabilization and gradual recovery of the Antarctic ozone hole.",
+      "Subterranean heated water pumping line from glacial Lake Priyadarshini achieved 100% uptime through -38°C austral winter."
+    ],
+    keyStat: { label: "Active Operations", value: "35 Years" },
+    source: "NCPOR Atmospheric Science Division · IMD",
+    readTime: "60 Words · 1 min",
+    likes: 742,
+    shares: 289,
+    tags: ["#Maitri", "#OzoneHole", "#Priyadarshini", "#AntarcticScience"],
+    isVerified: true
+  }
+]
+
 export default function News({ onOpenSocial }: NewsProps = {}) {
-  const [tab, setTab] = useState("latest");
-  const [contentStudio, setContentStudio] = useState<typeof newsItems[0] | null>(null);
+  const [tab, setTab] = useState("latest")
+  const [contentStudio, setContentStudio] = useState<any>(null)
+
+  // Way2News Visual Experience State
+  const [viewMode, setViewMode] = useState<"reader" | "grid" | "list">("reader")
+  const [currentStoryIndex, setCurrentStoryIndex] = useState(0)
+  const [selectedCategory, setSelectedCategory] = useState<string>("All")
+  const [searchQuery, setSearchQuery] = useState("")
+  const [speakingStoryId, setSpeakingStoryId] = useState<number | null>(null)
+  const [autoAdvance, setAutoAdvance] = useState(false)
+  const [likedStories, setLikedStories] = useState<Record<number, boolean>>({})
+  const [bookmarkedStories, setBookmarkedStories] = useState<Record<number, boolean>>({})
+  const [shareModalStory, setShareModalStory] = useState<Way2NewsStory | null>(null)
+  const [toastMessage, setToastMessage] = useState<string | null>(null)
+  
+  // Full-Screen Card Mode (specifically for latest news cards, without browser fullscreen)
+  const [fullscreenCardStory, setFullscreenCardStory] = useState<Way2NewsStory | null>(null)
+  const [isCardExpanded, setIsCardExpanded] = useState(false)
+
+  const showToast = (msg: string) => {
+    setToastMessage(msg)
+    setTimeout(() => setToastMessage(null), 3000)
+  }
+
+  // Open a card in Full Screen Card Reader
+  const openCardFullscreen = (story?: Way2NewsStory, index?: number) => {
+    if (typeof index === "number") {
+      setCurrentStoryIndex(index)
+    }
+    const target = story || filteredStories[Math.min(currentStoryIndex, Math.max(0, filteredStories.length - 1))] || WAY2NEWS_STORIES[0]
+    setFullscreenCardStory(target)
+    showToast(`Full Screen Card: "${target.title.slice(0, 32)}..."`)
+  }
+
+  const closeCardFullscreen = () => {
+    setFullscreenCardStory(null)
+  }
+
+  // Filtered Way2News Stories
+  const filteredStories = useMemo(() => {
+    return WAY2NEWS_STORIES.filter((st) => {
+      const matchCat = selectedCategory === "All" || st.category === selectedCategory
+      const query = searchQuery.toLowerCase().trim()
+      const matchQuery =
+        !query ||
+        st.title.toLowerCase().includes(query) ||
+        st.location.toLowerCase().includes(query) ||
+        st.bullets.some((b) => b.toLowerCase().includes(query)) ||
+        st.tags.some((t) => t.toLowerCase().includes(query))
+      return matchCat && matchQuery
+    })
+  }, [selectedCategory, searchQuery])
+
+  // Current Story safe index
+  const safeIndex = Math.min(currentStoryIndex, Math.max(0, filteredStories.length - 1))
+  const currentStory = filteredStories[safeIndex] || WAY2NEWS_STORIES[0]
+
+  // Web Speech Synthesis (TTS Read Aloud)
+  const toggleSpeakStory = (story: Way2NewsStory) => {
+    if (!("speechSynthesis" in window)) {
+      showToast("Speech synthesis not supported in this browser.")
+      return
+    }
+
+    if (speakingStoryId === story.id) {
+      window.speechSynthesis.cancel()
+      setSpeakingStoryId(null)
+      showToast("Audio reading paused.")
+      return
+    }
+
+    window.speechSynthesis.cancel()
+    setSpeakingStoryId(story.id)
+    showToast(`Reading: "${story.title.slice(0, 35)}..."`)
+
+    const textToRead = `${story.title}. Location: ${story.location}. Key facts: ${story.bullets.join(". ")}. Published by ${story.source}.`
+    const utterance = new SpeechSynthesisUtterance(textToRead)
+    utterance.rate = 1.05
+    utterance.pitch = 1.0
+
+    // Try finding an English voice
+    const voices = window.speechSynthesis.getVoices()
+    const engVoice = voices.find((v) => v.lang.startsWith("en"))
+    if (engVoice) utterance.voice = engVoice
+
+    utterance.onend = () => setSpeakingStoryId(null)
+    utterance.onerror = () => setSpeakingStoryId(null)
+
+    window.speechSynthesis.speak(utterance)
+  }
+
+  // Stop TTS on unmount or tab change
+  useEffect(() => {
+    return () => {
+      if ("speechSynthesis" in window) {
+        window.speechSynthesis.cancel()
+      }
+    }
+  }, [tab])
+
+  // Slideshow auto-advance timer
+  useEffect(() => {
+    let timer: any = null
+    if (autoAdvance && (viewMode === "reader" || fullscreenCardStory !== null) && filteredStories.length > 1) {
+      timer = setInterval(() => {
+        setCurrentStoryIndex((prev) => {
+          const nextIdx = (prev + 1) % filteredStories.length
+          if (fullscreenCardStory) {
+            setFullscreenCardStory(filteredStories[nextIdx])
+          }
+          return nextIdx
+        })
+      }, 8000)
+    }
+    return () => clearInterval(timer)
+  }, [autoAdvance, viewMode, filteredStories.length, fullscreenCardStory, filteredStories])
+
+  // Keyboard navigation for Way2News Reader and Full Screen Card Mode
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && fullscreenCardStory !== null) {
+        setFullscreenCardStory(null)
+        return
+      }
+      // F key shortcut for full screen card when viewing latest news
+      if ((e.key === "f" || e.key === "F") && tab === "latest" && !e.ctrlKey && !e.metaKey && document.activeElement?.tagName !== "INPUT") {
+        e.preventDefault()
+        if (fullscreenCardStory !== null) {
+          setFullscreenCardStory(null)
+        } else {
+          openCardFullscreen()
+        }
+        return
+      }
+      if ((tab !== "latest" && !fullscreenCardStory) || (viewMode !== "reader" && !fullscreenCardStory) || filteredStories.length <= 1) return
+      if (e.key === "ArrowDown" || e.key === "ArrowRight") {
+        setCurrentStoryIndex((prev) => {
+          const nextIdx = (prev + 1) % filteredStories.length
+          if (fullscreenCardStory) {
+            setFullscreenCardStory(filteredStories[nextIdx])
+          }
+          return nextIdx
+        })
+      } else if (e.key === "ArrowUp" || e.key === "ArrowLeft") {
+        setCurrentStoryIndex((prev) => {
+          const prevIdx = (prev - 1 + filteredStories.length) % filteredStories.length
+          if (fullscreenCardStory) {
+            setFullscreenCardStory(filteredStories[prevIdx])
+          }
+          return prevIdx
+        })
+      }
+    }
+    window.addEventListener("keydown", handleKeyDown)
+    return () => window.removeEventListener("keydown", handleKeyDown)
+  }, [tab, viewMode, filteredStories.length, fullscreenCardStory, filteredStories])
+
+  // Handle Like
+  const toggleLike = (id: number) => {
+    setLikedStories((prev) => {
+      const isLiked = !prev[id]
+      if (isLiked) showToast("Liked this story! ❤️")
+      return { ...prev, [id]: isLiked }
+    })
+  }
+
+  // Handle Bookmark
+  const toggleBookmark = (id: number) => {
+    setBookmarkedStories((prev) => {
+      const isBookmarked = !prev[id]
+      showToast(isBookmarked ? "Saved to your Reading List 🔖" : "Removed from Reading List")
+      return { ...prev, [id]: isBookmarked }
+    })
+  }
+
+  // Categories list
+  const categories = ["All", "Expeditions", "Cryosphere", "Arctic Watch", "Technology", "Marine Life", "Atmosphere"]
 
   const pressReleases = [
-    { title: "NCPOR Signs MOU with SCAR for Enhanced Polar Collaboration", date: "1 Jul 2024", category: "Press Release", thumb: "https://images.unsplash.com/photo-1486566584569-b9319dc74315?w=120&q=80", excerpt: "MOU signed to enhance data sharing and joint expeditions." },
-    { title: "India's 46th Antarctic Expedition: Ministry of Earth Sciences Statement", date: "15 Jun 2024", category: "Press Release", thumb: "https://images.unsplash.com/photo-1766465405501-ab1cce22d097?w=120&q=80", excerpt: "Official statement on expedition launch and scientific objectives." },
-    { title: "NCPOR Publishes Comprehensive Arctic Strategy 2030", date: "3 May 2024", category: "Press Release", thumb: "https://images.unsplash.com/photo-1504858700536-882c978a3464?w=120&q=80", excerpt: "Ten-year strategic plan for Arctic research and Himadri station expansion." },
-  ];
+    {
+      title: "NCPOR Signs MOU with SCAR for Enhanced Polar Collaboration",
+      date: "1 Jul 2024",
+      category: "Press Release",
+      thumb: "https://images.unsplash.com/photo-1486566584569-b9319dc74315?w=120&q=80",
+      excerpt: "MOU signed to enhance data sharing and joint expeditions.",
+    },
+    {
+      title: "India's 46th Antarctic Expedition: Ministry of Earth Sciences Statement",
+      date: "15 Jun 2024",
+      category: "Press Release",
+      thumb: "https://images.unsplash.com/photo-1766465405501-ab1cce22d097?w=120&q=80",
+      excerpt: "Official statement on expedition launch and scientific objectives.",
+    },
+    {
+      title: "NCPOR Publishes Comprehensive Arctic Strategy 2030",
+      date: "3 May 2024",
+      category: "Press Release",
+      thumb: "https://images.unsplash.com/photo-1504858700536-882c978a3464?w=120&q=80",
+      excerpt: "Ten-year strategic plan for Arctic research and Himadri station expansion.",
+    },
+  ]
 
   const socialHighlights = [
-    { title: "Our scientists just witnessed a stunning Aurora Australis from Maitri station! ", date: "10 Aug 2024", platform: "Twitter/X", image: "https://images.unsplash.com/photo-1504858700536-882c978a3464?w=300&q=80", likes: "2.4K", shares: "847" },
-    { title: "46th IAE team reaches Antarctica safely. Expedition begins! EXP", date: "5 Aug 2024", platform: "Twitter/X", image: "https://images.unsplash.com/photo-1551415923-a2297c7fda79?w=300&q=80", likes: "5.1K", shares: "1.2K" },
-    { title: "New sea ice dataset released on our open data portal. Download now!", date: "1 Aug 2024", platform: "LinkedIn", image: "https://images.unsplash.com/photo-1486566584569-b9319dc74315?w=300&q=80", likes: "342", shares: "89" },
-  ];
+    {
+      title: "Our scientists just witnessed a stunning Aurora Australis from Maitri station! 🌌",
+      date: "10 Aug 2024",
+      platform: "Twitter/X",
+      image: "https://images.unsplash.com/photo-1504858700536-882c978a3464?w=300&q=80",
+      likes: "2.4K",
+      shares: "847",
+    },
+    {
+      title: "46th IAE team reaches Antarctica safely. Expedition begins! 🚢",
+      date: "5 Aug 2024",
+      platform: "Twitter/X",
+      image: "https://images.unsplash.com/photo-1551415923-a2297c7fda79?w=300&q=80",
+      likes: "5.1K",
+      shares: "1.2K",
+    },
+    {
+      title: "New sea ice dataset released on our open data portal. Download now!",
+      date: "1 Aug 2024",
+      platform: "LinkedIn",
+      image: "https://images.unsplash.com/photo-1486566584569-b9319dc74315?w=300&q=80",
+      likes: "342",
+      shares: "89",
+    },
+  ]
 
-  const displayedItems = tab === "latest" ? newsItems : tab === "press" ? pressReleases : [];
+  // ── FULL PAGE CONTENT STUDIO VIEW ─────────────────────────────────
+  if (contentStudio) {
+    return (
+      <ContentStudio
+        newsItem={contentStudio}
+        onClose={() => setContentStudio(null)}
+      />
+    )
+  }
 
-  return (
-    <div className="h-full overflow-y-auto" style={{ background: "var(--content-bg)" }}>
-      <div className="p-6">
-        <div className="mb-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div>
-            <h1 className="page-header-title">Content Creation</h1>
-            <p className="page-header-sub">Stay updated with the latest news, stories and media content.</p>
+  // ── FULL PAGE WAY2NEWS ARTICLE VIEW (NO FLOATING MODAL) ────────────
+  if (fullscreenCardStory) {
+    const currentIdx = filteredStories.findIndex((s) => s.id === fullscreenCardStory.id)
+    return (
+      <div className="min-h-full bg-slate-50 flex flex-col pb-16">
+        {/* Sticky Top Navigation & Controls Header Ribbon */}
+        <div className="sticky top-0 z-30 bg-white border-b border-slate-200 px-4 sm:px-6 py-3 shadow-2xs flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={closeCardFullscreen}
+              className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-[#003366] text-white hover:bg-[#002244] text-xs font-bold transition shadow-2xs cursor-pointer"
+            >
+              <span>←</span>
+              <span>Back to News Feed</span>
+            </button>
+            <div className="h-5 w-px bg-slate-200 hidden sm:block" />
+            <div className="flex items-center gap-1.5">
+              <span className="font-extrabold text-xs tracking-wider text-[#003366] uppercase">
+                POLAR WAY2NEWS
+              </span>
+              <span className="text-slate-300">·</span>
+              <span className="text-xs font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
+                FULL ARTICLE
+              </span>
+              <span className="text-xs text-slate-400 font-mono hidden md:inline">
+                Card {currentIdx + 1} of {filteredStories.length}
+              </span>
+            </div>
           </div>
-          <button
-            onClick={() => onOpenSocial?.()}
-            className="btn-primary btn-sm flex items-center gap-1.5 self-start sm:self-auto shadow-sm"
-            style={{ background: "linear-gradient(135deg, #1e40af 0%, #2563eb 100%)" }}
-          >
-            <span></span>
-            <span>Syndicate to Socials</span>
-          </button>
+
+          <div className="flex items-center gap-2 flex-wrap">
+            {/* Prev / Next */}
+            <div className="flex items-center bg-slate-100 rounded-xl p-0.5 border border-slate-200 text-xs">
+              <button
+                onClick={() => {
+                  const prevIdx = (currentIdx - 1 + filteredStories.length) % filteredStories.length
+                  setFullscreenCardStory(filteredStories[prevIdx])
+                  setCurrentStoryIndex(prevIdx)
+                }}
+                className="px-2.5 py-1 font-semibold text-slate-700 hover:text-blue-700 cursor-pointer"
+              >
+                ← Prev
+              </button>
+              <span className="text-slate-300">|</span>
+              <button
+                onClick={() => {
+                  const nextIdx = (currentIdx + 1) % filteredStories.length
+                  setFullscreenCardStory(filteredStories[nextIdx])
+                  setCurrentStoryIndex(nextIdx)
+                }}
+                className="px-2.5 py-1 font-semibold text-slate-700 hover:text-blue-700 cursor-pointer"
+              >
+                Next →
+              </button>
+            </div>
+
+            {/* Read Aloud Button */}
+            <button
+              onClick={() => toggleSpeakStory(fullscreenCardStory)}
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer flex items-center gap-1.5 shadow-2xs ${
+                speakingStoryId === fullscreenCardStory.id
+                  ? "bg-emerald-600 text-white animate-pulse"
+                  : "bg-white hover:bg-slate-100 text-slate-800 border border-slate-200"
+              }`}
+            >
+              <span>{speakingStoryId === fullscreenCardStory.id ? "🔊" : "🔈"}</span>
+              <span>{speakingStoryId === fullscreenCardStory.id ? "Reading..." : "Listen (60s)"}</span>
+            </button>
+
+            {/* Create Studio Content */}
+            <button
+              onClick={() => {
+                const selected = fullscreenCardStory
+                setContentStudio({
+                  id: selected.id,
+                  title: selected.title,
+                  sourceText: `${selected.title}\n\nKey Takeaways:\n${selected.bullets.join("\n")}\n\nStation: ${selected.location}\nVerification: MoES Verified National Polar Data.`,
+                  category: selected.category,
+                  format: "news",
+                })
+              }}
+              className="px-3 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold transition cursor-pointer flex items-center gap-1 shadow-2xs"
+            >
+              <span>⚡</span>
+              <span>Create Studio Content</span>
+            </button>
+
+            {/* Reactions */}
+            <button
+              onClick={() => toggleLike(fullscreenCardStory.id)}
+              className={`p-2 rounded-xl transition cursor-pointer flex items-center gap-1 text-xs ${
+                likedStories[fullscreenCardStory.id]
+                  ? "bg-rose-50 text-rose-600 font-bold border border-rose-200"
+                  : "bg-white hover:bg-slate-100 text-slate-600 border border-slate-200"
+              }`}
+            >
+              <span>{likedStories[fullscreenCardStory.id] ? "❤️" : "🤍"}</span>
+              <span>{fullscreenCardStory.likes + (likedStories[fullscreenCardStory.id] ? 1 : 0)}</span>
+            </button>
+
+            <button
+              onClick={() => toggleBookmark(fullscreenCardStory.id)}
+              className={`p-2 rounded-xl transition cursor-pointer text-xs ${
+                bookmarkedStories[fullscreenCardStory.id]
+                  ? "bg-amber-50 text-amber-600 font-bold border border-amber-200"
+                  : "bg-white hover:bg-slate-100 text-slate-600 border border-slate-200"
+              }`}
+            >
+              <span>{bookmarkedStories[fullscreenCardStory.id] ? "🔖" : "📑"}</span>
+            </button>
+
+            <button
+              onClick={() => setShareModalStory(fullscreenCardStory)}
+              className="px-3 py-1.5 rounded-xl bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 text-xs font-semibold transition cursor-pointer flex items-center gap-1"
+            >
+              <span>🚀</span>
+              <span>Share</span>
+            </button>
+          </div>
         </div>
 
-        <div className="tab-bar w-fit mb-5">
-          {[["latest","Latest News"],["press","Press Releases"],["social","Social Media Highlights"]].map(([id, label]) => (
-            <button key={id} className={`tab-item ${tab === id ? "active" : ""}`} onClick={() => setTab(id)}>{label}</button>
+        {/* Full-Page Article Body (Centered reading column) */}
+        <div className="max-w-4xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 space-y-6 flex-1">
+          {/* Hero Image Section */}
+          <div className="relative aspect-video sm:aspect-21/9 w-full rounded-2xl overflow-hidden shadow-md bg-slate-900 border border-slate-200">
+            <img
+              src={fullscreenCardStory.heroImage}
+              alt={fullscreenCardStory.title}
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-linear-to-t from-slate-950/85 via-transparent to-black/25 pointer-events-none" />
+
+            <div className="absolute top-4 left-4 flex items-center gap-2">
+              <span className="px-3 py-1 rounded-full bg-[#003366]/90 backdrop-blur-md text-white text-xs font-bold shadow-xs border border-white/20">
+                {fullscreenCardStory.category}
+              </span>
+              <span className="px-3 py-1 rounded-full bg-emerald-500/90 backdrop-blur-md text-white text-xs font-bold shadow-xs flex items-center gap-1 border border-white/20">
+                <span>✓</span>
+                <span>MoES Verified</span>
+              </span>
+            </div>
+
+            <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between text-white text-xs font-medium drop-shadow-md">
+              <span className="flex items-center gap-1">
+                <span>📍</span>
+                <span className="truncate max-w-sm">{fullscreenCardStory.location}</span>
+              </span>
+              <span className="px-2.5 py-1 rounded-lg bg-black/60 backdrop-blur-xs text-xs font-mono">
+                {fullscreenCardStory.readTime}
+              </span>
+            </div>
+          </div>
+
+          {/* Article Main Content Card */}
+          <div className="bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-slate-200 space-y-6">
+            <div>
+              <div className="flex items-center gap-2 text-xs text-slate-500 mb-2">
+                <span>📅 {fullscreenCardStory.date}</span>
+                <span>·</span>
+                <span>🏛️ {fullscreenCardStory.source}</span>
+              </div>
+              <h1 className="font-extrabold text-slate-900 text-2xl sm:text-3xl leading-snug tracking-tight">
+                {fullscreenCardStory.title}
+              </h1>
+            </div>
+
+            {/* 3-Point Digest */}
+            <div className="space-y-3.5 bg-blue-50/60 p-5 rounded-2xl border border-blue-100">
+              <div className="text-xs font-bold uppercase tracking-wider text-blue-900 flex items-center gap-2">
+                <span>📌</span>
+                <span>Key Bullet Highlights (60-Word Executive Digest)</span>
+              </div>
+              {fullscreenCardStory.bullets.map((b, idx) => (
+                <div key={idx} className="flex items-start gap-3">
+                  <div className="w-6 h-6 rounded-full bg-[#003366] text-white font-extrabold text-xs flex items-center justify-center flex-shrink-0 mt-0.5 shadow-2xs">
+                    {idx + 1}
+                  </div>
+                  <p className="text-sm sm:text-base text-slate-800 leading-relaxed font-normal">
+                    {b}
+                  </p>
+                </div>
+              ))}
+            </div>
+
+            {/* Key Stat Telemetry Callout */}
+            <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between gap-4">
+              <div>
+                <span className="text-[11px] font-bold uppercase text-slate-500 tracking-wider">
+                  Verified Telemetry Focus
+                </span>
+                <div className="text-sm font-semibold text-slate-800">
+                  {fullscreenCardStory.keyStat.label}
+                </div>
+              </div>
+              <div className="font-extrabold text-[#003366] text-2xl font-mono">
+                {fullscreenCardStory.keyStat.value}
+              </div>
+            </div>
+
+            {/* Complete Contextual Paragraphs & Scientific Significance */}
+            <div className="space-y-4 text-sm sm:text-base text-slate-700 leading-relaxed pt-2 border-t border-slate-100">
+              <p>
+                Continuous environmental sensing from polar expeditions provides critical observational grounding for global earth system models. This discovery directly informs national polar strategies and ongoing inter-institutional investigations conducted under the aegis of the Ministry of Earth Sciences (MoES).
+              </p>
+              <p>
+                Researchers and citizens can access raw data streams, associated cruise telemetry, and NetCDF files directly through the Polar Knowledge Portal data explorer.
+              </p>
+            </div>
+
+            {/* Tags and Metadata */}
+            <div className="pt-4 border-t border-slate-100 flex flex-wrap items-center justify-between gap-3 text-xs text-slate-500">
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="font-semibold text-slate-700">Tags:</span>
+                {fullscreenCardStory.tags.map((tg, i) => (
+                  <span key={i} className="text-xs text-blue-700 bg-blue-50 px-2.5 py-1 rounded-lg border border-blue-100 font-medium">
+                    #{tg}
+                  </span>
+                ))}
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => {
+                    const text = `${fullscreenCardStory.title}\n\n${fullscreenCardStory.bullets.join("\n")}`
+                    navigator.clipboard?.writeText(text)
+                    showToast("Copied story digest to clipboard")
+                  }}
+                  className="px-3 py-1.5 rounded-lg border border-slate-200 hover:bg-slate-50 text-slate-700 font-medium transition cursor-pointer"
+                >
+                  📋 Copy Summary
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom Card Navigation Bar */}
+          <div className="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 flex items-center justify-between">
+            <button
+              onClick={() => {
+                const prevIdx = (currentIdx - 1 + filteredStories.length) % filteredStories.length
+                setFullscreenCardStory(filteredStories[prevIdx])
+                setCurrentStoryIndex(prevIdx)
+              }}
+              className="flex items-center gap-2 font-bold text-[#003366] hover:text-blue-700 text-xs sm:text-sm cursor-pointer"
+            >
+              <span>←</span>
+              <span>Previous Story</span>
+            </button>
+
+            <span className="text-xs text-slate-500 font-mono">
+              Card {currentIdx + 1} of {filteredStories.length}
+            </span>
+
+            <button
+              onClick={() => {
+                const nextIdx = (currentIdx + 1) % filteredStories.length
+                setFullscreenCardStory(filteredStories[nextIdx])
+                setCurrentStoryIndex(nextIdx)
+              }}
+              className="flex items-center gap-2 font-bold text-[#003366] hover:text-blue-700 text-xs sm:text-sm cursor-pointer"
+            >
+              <span>Next Story</span>
+              <span>→</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Share Modal if open within Full Page Card */}
+        {shareModalStory && (
+          <div
+            className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 pt-20 animate-in fade-in duration-150"
+            onClick={() => setShareModalStory(null)}
+          >
+            <div
+              className="w-full max-w-md bg-white rounded-3xl p-6 shadow-2xl border border-slate-200 space-y-4"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-start justify-between">
+                <div>
+                  <span className="text-[10px] font-bold text-blue-600 uppercase tracking-wider">
+                    DISPATCH SYNDICATION
+                  </span>
+                  <h3 className="font-extrabold text-base text-slate-900 mt-0.5">
+                    Share Polar News
+                  </h3>
+                </div>
+                <button
+                  onClick={() => setShareModalStory(null)}
+                  className="w-7 h-7 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center text-xs font-bold transition cursor-pointer"
+                >
+                  ✕
+                </button>
+              </div>
+
+              <p className="text-xs text-slate-600 leading-relaxed line-clamp-2">
+                {shareModalStory.title}
+              </p>
+
+              <div className="grid grid-cols-2 gap-2.5 pt-2">
+                <button
+                  onClick={() => {
+                    const text = encodeURIComponent(`*${shareModalStory.title}*\n${shareModalStory.bullets[0]}\nRead verified polar news: ${window.location.origin}`)
+                    window.open(`https://api.whatsapp.com/send?text=${text}`, "_blank")
+                    showToast("Opening WhatsApp...")
+                    setShareModalStory(null)
+                  }}
+                  className="p-3 rounded-2xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-800 text-xs font-bold flex items-center justify-center gap-2 cursor-pointer transition"
+                >
+                  <span>💬</span>
+                  <span>WhatsApp</span>
+                </button>
+
+                <button
+                  onClick={() => {
+                    const text = encodeURIComponent(`${shareModalStory.title} via @NCPOR_India #PolarResearch`)
+                    window.open(`https://twitter.com/intent/tweet?text=${text}`, "_blank")
+                    showToast("Opening Twitter/X...")
+                    setShareModalStory(null)
+                  }}
+                  className="p-3 rounded-2xl bg-slate-900 hover:bg-black text-white text-xs font-bold flex items-center justify-center gap-2 cursor-pointer transition"
+                >
+                  <span>𝕏</span>
+                  <span>Twitter/X</span>
+                </button>
+
+                <button
+                  onClick={() => {
+                    const text = encodeURIComponent(`${shareModalStory.title} — Verified Polar News`)
+                    window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.origin)}&title=${text}`, "_blank")
+                    showToast("Opening LinkedIn...")
+                    setShareModalStory(null)
+                  }}
+                  className="p-3 rounded-2xl bg-blue-50 hover:bg-blue-100 border border-blue-200 text-blue-800 text-xs font-bold flex items-center justify-center gap-2 cursor-pointer transition"
+                >
+                  <span>💼</span>
+                  <span>LinkedIn</span>
+                </button>
+
+                <button
+                  onClick={() => {
+                    const text = `${shareModalStory.title}\n\n${shareModalStory.bullets.join("\n")}\n\nSource: NCPOR / MoES`
+                    navigator.clipboard?.writeText(text)
+                    showToast("Copied dispatch summary to clipboard!")
+                    setShareModalStory(null)
+                  }}
+                  className="p-3 rounded-2xl bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-800 text-xs font-bold flex items-center justify-center gap-2 cursor-pointer transition"
+                >
+                  <span>📋</span>
+                  <span>Copy Summary</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    )
+  }
+
+  return (
+    <div
+      className="h-full overflow-y-auto"
+      style={{ background: "var(--content-bg, #f8fafc)" }}
+    >
+      <div className="p-4 md:p-6 max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <div className="flex items-center gap-2 mb-1">
+              <span className="text-[10px] font-mono font-bold uppercase tracking-wider bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full">
+                POLAR CONTENT &amp; MEDIA HUB
+              </span>
+              <span className="text-[10px] font-bold text-slate-500">
+                MoES · NCPOR
+              </span>
+            </div>
+            <h1 className="text-2xl md:text-3xl font-extrabold text-[#003366] tracking-tight">
+              Content Creation &amp; News
+            </h1>
+            <p className="text-xs md:text-sm text-slate-600 mt-0.5">
+              Curate verified polar news, generate audience-tailored briefs, and syndicate across global media.
+            </p>
+          </div>
+
+          <div className="flex items-center gap-2.5">
+            <button
+              onClick={() => onOpenSocial?.("NCPOR Polar Research Dispatch")}
+              className="px-4 py-2.5 rounded-xl bg-linear-to-r from-[#003366] to-[#0284c7] hover:from-[#002244] hover:to-[#0369a1] text-white text-xs font-bold flex items-center gap-2 shadow-md hover:shadow-lg transition cursor-pointer"
+            >
+              <span>🚀</span>
+              <span>Syndicate to Socials</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Tab Navigation */}
+        <div className="tab-bar w-fit mb-6 bg-slate-100 p-1 rounded-2xl border border-slate-200">
+          {[
+            ["latest", "⚡ Latest News (Way2News Visual)"],
+            ["press", "🏛️ Press Releases"],
+            ["social", "🌐 Social Highlights"],
+          ].map(([id, label]) => (
+            <button
+              key={id}
+              className={`px-4 py-2 rounded-xl text-xs font-bold transition cursor-pointer ${
+                tab === id
+                  ? "bg-[#003366] text-white shadow-xs"
+                  : "text-slate-600 hover:text-slate-900"
+              }`}
+              onClick={() => setTab(id)}
+            >
+              {label}
+            </button>
           ))}
         </div>
 
-        {(tab === "latest" || tab === "press") && (
+        {/* ── 1. LATEST NEWS: AUTHENTIC WAY2NEWS VISUAL FEATURE ─────────────────── */}
+        {tab === "latest" && (
+          <div className="space-y-6">
+            {/* Top Toolbar: Search + Category Filters + View Switcher */}
+            <div className="bg-white p-4 rounded-2xl border border-slate-200/90 shadow-2xs space-y-3">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
+                {/* Search Bar */}
+                <div className="relative flex-1 max-w-md">
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => {
+                      setSearchQuery(e.target.value)
+                      setCurrentStoryIndex(0)
+                    }}
+                    placeholder="Search 60-word polar dispatches (e.g. ice, Maitri, microgrid)..."
+                    className="w-full pl-9 pr-4 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs focus:bg-white focus:border-[#003366] focus:outline-hidden transition"
+                  />
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                    className="w-4 h-4 text-slate-400 absolute left-3 top-2.5 pointer-events-none"
+                  >
+                    <circle cx="11" cy="11" r="8" />
+                    <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                  </svg>
+                  {searchQuery && (
+                    <button
+                      onClick={() => setSearchQuery("")}
+                      className="absolute right-3 top-2 text-xs text-slate-400 hover:text-slate-700"
+                    >
+                      &times;
+                    </button>
+                  )}
+                </div>
+
+                {/* View Switcher Pills & Fullscreen Action */}
+                <div className="flex items-center gap-2 self-start md:self-auto flex-wrap">
+                  <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200">
+                    <button
+                      onClick={() => setViewMode("reader")}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer flex items-center gap-1.5 ${
+                        viewMode === "reader"
+                          ? "bg-[#003366] text-white shadow-xs"
+                          : "text-slate-600 hover:text-slate-900"
+                      }`}
+                      title="Immersive Way2News Flip Card Reader"
+                    >
+                      <span>📱</span>
+                      <span>Card Reader</span>
+                    </button>
+                    <button
+                      onClick={() => setViewMode("grid")}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer flex items-center gap-1.5 ${
+                        viewMode === "grid"
+                          ? "bg-[#003366] text-white shadow-xs"
+                          : "text-slate-600 hover:text-slate-900"
+                      }`}
+                      title="Way2News 3-Column Magazine Grid"
+                    >
+                      <span>🎴</span>
+                      <span>Cards Grid</span>
+                    </button>
+                    <button
+                      onClick={() => setViewMode("list")}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer flex items-center gap-1.5 ${
+                        viewMode === "list"
+                          ? "bg-[#003366] text-white shadow-xs"
+                          : "text-slate-600 hover:text-slate-900"
+                      }`}
+                      title="Compact Table List"
+                    >
+                      <span>📋</span>
+                      <span>List</span>
+                    </button>
+                  </div>
+
+                  {/* Dedicated Full Screen Card Mode Launcher */}
+                  <button
+                    onClick={() => openCardFullscreen()}
+                    className="px-3.5 py-1.5 rounded-xl bg-linear-to-r from-[#003366] to-[#0284c7] hover:from-[#002244] hover:to-[#0369a1] text-white text-xs font-bold flex items-center gap-1.5 shadow-sm hover:shadow transition cursor-pointer"
+                    title="Open Card in Full Screen Mode (Press F)"
+                  >
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.2} className="w-3.5 h-3.5">
+                      <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" />
+                    </svg>
+                    <span>Full Screen Card</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Category Filter Pills */}
+              <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs">
+                <span className="text-[11px] font-bold text-slate-400 mr-1 flex-shrink-0">
+                  TOPICS:
+                </span>
+                {categories.map((cat) => (
+                  <button
+                    key={cat}
+                    onClick={() => {
+                      setSelectedCategory(cat)
+                      setCurrentStoryIndex(0)
+                    }}
+                    className={`px-3 py-1 rounded-full font-semibold transition cursor-pointer flex-shrink-0 ${
+                      selectedCategory === cat
+                        ? "bg-[#003366] text-white shadow-xs"
+                        : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                    }`}
+                  >
+                    {cat}
+                  </button>
+                ))}
+                <span className="ml-auto text-[11px] text-slate-400 font-mono hidden sm:inline">
+                  {filteredStories.length} stories available
+                </span>
+              </div>
+            </div>
+
+            {/* ── VIEW MODE 1: IMMERSIVE WAY2NEWS CARD READER (FLIP DECK) ────── */}
+            {viewMode === "reader" && (
+              <div className="relative py-2">
+                {filteredStories.length === 0 ? (
+                  <div className="p-12 text-center bg-white rounded-3xl border border-slate-200 text-slate-500">
+                    No polar dispatches matching "{searchQuery}". Try selecting another category or clearing search.
+                  </div>
+                ) : (
+                  <div className="flex flex-col items-center">
+                    {/* Floating Controls Bar */}
+                    <div className="w-full max-w-xl mb-3 flex items-center justify-between text-xs px-2 flex-wrap gap-2">
+                      <div className="flex items-center gap-2">
+                        <span className="font-mono font-bold text-[#003366] bg-blue-50 px-2.5 py-1 rounded-lg border border-blue-200">
+                          STORY {safeIndex + 1} OF {filteredStories.length}
+                        </span>
+                        <button
+                          onClick={() => setAutoAdvance(!autoAdvance)}
+                          className={`px-2.5 py-1 rounded-lg font-semibold transition cursor-pointer flex items-center gap-1 text-[11px] ${
+                            autoAdvance
+                              ? "bg-emerald-500 text-white shadow-xs"
+                              : "bg-slate-200/80 text-slate-700 hover:bg-slate-300"
+                          }`}
+                        >
+                          <span>{autoAdvance ? "⏸️ Auto ON (8s)" : "▶️ Auto-Play"}</span>
+                        </button>
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => openCardFullscreen(currentStory, safeIndex)}
+                          className="px-2.5 py-1 rounded-lg font-bold transition cursor-pointer flex items-center gap-1 text-[11px] bg-blue-100 hover:bg-blue-200 text-[#003366] border border-blue-200 shadow-2xs"
+                          title="Open Card in Full Screen Mode (Press F)"
+                        >
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.2} className="w-3.5 h-3.5">
+                            <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" />
+                          </svg>
+                          <span>Full Screen Card</span>
+                        </button>
+
+                        <div className="hidden sm:flex items-center gap-1.5 text-slate-500 text-[11px]">
+                          <span>Use</span>
+                          <kbd className="px-1.5 py-0.5 rounded bg-slate-200 text-slate-700 font-mono text-[10px]">
+                            &uarr; &darr;
+                          </kbd>
+                          <span>to Flip</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Progress Bar */}
+                    <div className="w-full max-w-xl h-1.5 bg-slate-200 rounded-full mb-4 overflow-hidden">
+                      <div
+                        className="h-full bg-linear-to-r from-[#003366] to-cyan-500 rounded-full transition-all duration-300"
+                        style={{
+                          width: `${((safeIndex + 1) / filteredStories.length) * 100}%`,
+                        }}
+                      />
+                    </div>
+
+                    {/* THE WAY2NEWS CARD CONTAINER */}
+                    <div className="relative w-full max-w-xl flex items-center justify-center">
+                      {/* Left Arrow Button */}
+                      <button
+                        onClick={() =>
+                          setCurrentStoryIndex(
+                            (prev) => (prev - 1 + filteredStories.length) % filteredStories.length,
+                          )
+                        }
+                        className="hidden md:flex absolute -left-14 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white border border-slate-200 shadow-md hover:bg-slate-100 text-slate-700 items-center justify-center transition cursor-pointer z-10"
+                        title="Previous Story (Up Arrow)"
+                      >
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} className="w-5 h-5">
+                          <polyline points="15 18 9 12 15 6" />
+                        </svg>
+                      </button>
+
+                      {/* Right Arrow Button */}
+                      <button
+                        onClick={() =>
+                          setCurrentStoryIndex((prev) => (prev + 1) % filteredStories.length)
+                        }
+                        className="hidden md:flex absolute -right-14 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white border border-slate-200 shadow-md hover:bg-slate-100 text-slate-700 items-center justify-center transition cursor-pointer z-10"
+                        title="Next Story (Down Arrow)"
+                      >
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} className="w-5 h-5">
+                          <polyline points="9 18 15 12 9 6" />
+                        </svg>
+                      </button>
+
+                      {/* Main Way2News Magazine Card */}
+                      <div className="w-full bg-white rounded-3xl border border-slate-200 shadow-xl overflow-hidden flex flex-col transition-all">
+                        {/* Top Way2News Branding Bar */}
+                        <div className="bg-[#003366] text-white px-5 py-2.5 flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <span className="font-extrabold text-sm tracking-wider text-amber-400">
+                              POLAR WAY2NEWS
+                            </span>
+                            <span className="text-[10px] text-blue-200">|</span>
+                            <div className="flex items-center gap-1.5 text-[10px] font-semibold text-cyan-300">
+                              <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping inline-block" />
+                              <span>60-SEC VERIFIED DISPATCH</span>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span className="text-[10px] font-mono text-blue-200">
+                              {currentStory.date}
+                            </span>
+                            <button
+                              onClick={() => openCardFullscreen(currentStory, safeIndex)}
+                              className="px-2 py-0.5 rounded bg-white/15 hover:bg-white/25 text-white text-[10px] font-semibold transition cursor-pointer flex items-center gap-1"
+                              title="View Card in Full Screen (F)"
+                            >
+                              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.2} className="w-3 h-3">
+                                <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" />
+                              </svg>
+                              <span>Full Screen Card</span>
+                            </button>
+                          </div>
+                        </div>
+
+                        {/* Hero Image Section with Gradient & Badges */}
+                        <div className="relative aspect-video w-full bg-slate-900 overflow-hidden">
+                          <img
+                            src={currentStory.heroImage}
+                            alt={currentStory.title}
+                            className="w-full h-full object-cover"
+                          />
+                          <div className="absolute inset-0 bg-linear-to-t from-slate-950/80 via-transparent to-black/30 pointer-events-none" />
+
+                          {/* Overlaid Badges */}
+                          <div className="absolute top-3.5 left-3.5 flex items-center gap-2">
+                            <span className="px-2.5 py-1 rounded-full bg-[#003366]/90 backdrop-blur-md text-white text-[10px] font-bold shadow-xs border border-white/20">
+                              {currentStory.category}
+                            </span>
+                            <span className="px-2.5 py-1 rounded-full bg-emerald-500/90 backdrop-blur-md text-white text-[10px] font-bold shadow-xs flex items-center gap-1 border border-white/20">
+                              <span>✓</span>
+                              <span>MoES Verified</span>
+                            </span>
+                          </div>
+
+                          <div className="absolute bottom-3 left-3.5 right-3.5 flex items-center justify-between text-white text-[11px] font-medium drop-shadow-md">
+                            <span className="flex items-center gap-1">
+                              <span>📍</span>
+                              <span className="truncate max-w-xs">{currentStory.location}</span>
+                            </span>
+                            <span className="px-2 py-0.5 rounded bg-black/60 backdrop-blur-xs text-[10px] font-mono">
+                              {currentStory.readTime}
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Way2News Content Core */}
+                        <div className="p-5 md:p-6 space-y-4">
+                          {/* Main Headline */}
+                          <h2 className="font-extrabold text-slate-900 text-lg md:text-xl leading-snug tracking-tight">
+                            {currentStory.title}
+                          </h2>
+
+                          {/* 3-Bullet 60-Word Way2News Digest Format */}
+                          <div className="space-y-2.5 py-1">
+                            {currentStory.bullets.map((bullet, idx) => (
+                              <div key={idx} className="flex items-start gap-3">
+                                <div className="w-5 h-5 rounded-full bg-blue-100 text-[#003366] font-bold text-xs flex items-center justify-center flex-shrink-0 mt-0.5">
+                                  {idx + 1}
+                                </div>
+                                <p className="text-xs md:text-sm text-slate-700 leading-relaxed font-normal">
+                                  {bullet}
+                                </p>
+                              </div>
+                            ))}
+                          </div>
+
+                          {/* Key Stat Callout Pill */}
+                          <div className="p-3 rounded-2xl bg-linear-to-r from-blue-50 to-indigo-50 border border-blue-100 flex items-center justify-between">
+                            <div className="text-xs font-semibold text-slate-700">
+                              <span className="text-[10px] uppercase font-bold text-blue-700 block">
+                                Key Empirical Metric
+                              </span>
+                              {currentStory.keyStat.label}
+                            </div>
+                            <div className="font-extrabold text-[#003366] text-base font-mono">
+                              {currentStory.keyStat.value}
+                            </div>
+                          </div>
+
+                          {/* Source & Tags */}
+                          <div className="pt-2 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-500">
+                            <div className="flex items-center gap-1.5">
+                              <span>🏛️</span>
+                              <span className="font-semibold text-slate-700">{currentStory.source}</span>
+                            </div>
+                            <div className="flex items-center gap-1 flex-wrap">
+                              {currentStory.tags.map((tg, i) => (
+                                <span key={i} className="text-[10px] text-blue-600 bg-blue-50 px-2 py-0.5 rounded">
+                                  {tg}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Way2News Action Bar */}
+                        <div className="px-5 py-3.5 bg-slate-50 border-t border-slate-100 flex items-center justify-between flex-wrap gap-2">
+                          <div className="flex items-center gap-2">
+                            {/* Read Aloud Button (TTS) */}
+                            <button
+                              onClick={() => toggleSpeakStory(currentStory)}
+                              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer flex items-center gap-1.5 shadow-2xs ${
+                                speakingStoryId === currentStory.id
+                                  ? "bg-emerald-600 text-white animate-pulse"
+                                  : "bg-white hover:bg-slate-100 text-slate-800 border border-slate-200"
+                              }`}
+                            >
+                              <span>{speakingStoryId === currentStory.id ? "⏸️" : "🔊"}</span>
+                              <span>{speakingStoryId === currentStory.id ? "Reading..." : "Listen (60s)"}</span>
+                            </button>
+
+                            {/* Create Studio Content Button */}
+                            <button
+                              onClick={() =>
+                                setContentStudio({
+                                  id: currentStory.id,
+                                  title: currentStory.title,
+                                  date: currentStory.date,
+                                  category: currentStory.category,
+                                  thumb: currentStory.thumb,
+                                  excerpt: currentStory.bullets.join(" "),
+                                } as any)
+                              }
+                              className="px-3.5 py-1.5 rounded-xl bg-[#003366] hover:bg-[#002244] text-white text-xs font-bold transition cursor-pointer flex items-center gap-1 shadow-2xs"
+                              title="Turn this verified news into an Article, Social Campaign, Video Script, or Student Lesson"
+                            >
+                              <span>⚡</span>
+                              <span>Create Studio Content</span>
+                            </button>
+                          </div>
+
+                          {/* Quick Reactions & Share */}
+                          <div className="flex items-center gap-2">
+                            {/* Like Heart */}
+                            <button
+                              onClick={() => toggleLike(currentStory.id)}
+                              className={`p-2 rounded-xl transition cursor-pointer flex items-center gap-1 text-xs ${
+                                likedStories[currentStory.id]
+                                  ? "bg-rose-50 text-rose-600 font-bold"
+                                  : "bg-white hover:bg-slate-100 text-slate-600 border border-slate-200"
+                              }`}
+                              title="Like story"
+                            >
+                              <span>{likedStories[currentStory.id] ? "❤️" : "🤍"}</span>
+                              <span>{currentStory.likes + (likedStories[currentStory.id] ? 1 : 0)}</span>
+                            </button>
+
+                            {/* Bookmark */}
+                            <button
+                              onClick={() => toggleBookmark(currentStory.id)}
+                              className={`p-2 rounded-xl transition cursor-pointer text-xs ${
+                                bookmarkedStories[currentStory.id]
+                                  ? "bg-amber-50 text-amber-600 font-bold border border-amber-200"
+                                  : "bg-white hover:bg-slate-100 text-slate-600 border border-slate-200"
+                              }`}
+                              title="Save to Reading List"
+                            >
+                              <span>{bookmarkedStories[currentStory.id] ? "🔖" : "📑"}</span>
+                            </button>
+
+                            {/* Share */}
+                            <button
+                              onClick={() => setShareModalStory(currentStory)}
+                              className="px-3 py-1.5 rounded-xl bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 text-xs font-semibold transition cursor-pointer flex items-center gap-1"
+                              title="Share to WhatsApp, Twitter/X, LinkedIn, Facebook"
+                            >
+                              <span>🚀</span>
+                              <span>Share</span>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Bottom Mobile Prev/Next Bar */}
+                    <div className="w-full max-w-xl mt-4 flex items-center justify-between gap-3">
+                      <button
+                        onClick={() =>
+                          setCurrentStoryIndex(
+                            (prev) => (prev - 1 + filteredStories.length) % filteredStories.length,
+                          )
+                        }
+                        className="flex-1 py-2.5 rounded-2xl bg-white hover:bg-slate-100 border border-slate-200 text-slate-800 text-xs font-bold flex items-center justify-center gap-1.5 transition cursor-pointer shadow-2xs"
+                      >
+                        <span>&larr;</span>
+                        <span>Previous Story</span>
+                      </button>
+                      <button
+                        onClick={() =>
+                          setCurrentStoryIndex((prev) => (prev + 1) % filteredStories.length)
+                        }
+                        className="flex-1 py-2.5 rounded-2xl bg-[#003366] hover:bg-[#002244] text-white text-xs font-bold flex items-center justify-center gap-1.5 transition cursor-pointer shadow-md"
+                      >
+                        <span>Next Story</span>
+                        <span>&rarr;</span>
+                      </button>
+                    </div>
+
+                    {/* Thumbnail Quick-Jump Strip */}
+                    <div className="w-full max-w-xl mt-6 pt-4 border-t border-slate-200">
+                      <div className="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2.5 flex items-center justify-between">
+                        <span>All Dispatches ({filteredStories.length})</span>
+                        <span className="text-[10px] text-blue-600">Click to Jump</span>
+                      </div>
+                      <div className="grid grid-cols-6 gap-2">
+                        {filteredStories.map((st, idx) => (
+                          <div
+                            key={st.id}
+                            onClick={() => setCurrentStoryIndex(idx)}
+                            className={`rounded-xl overflow-hidden border-2 cursor-pointer transition-all aspect-video relative group ${
+                              safeIndex === idx
+                                ? "border-[#003366] shadow-md scale-105"
+                                : "border-slate-200 opacity-60 hover:opacity-100"
+                            }`}
+                          >
+                            <img src={st.thumb} alt={st.title} className="w-full h-full object-cover" />
+                            <div className="absolute inset-0 bg-black/40 group-hover:bg-transparent transition" />
+                            <span className="absolute bottom-1 right-1 text-[9px] font-mono text-white bg-black/70 px-1 rounded">
+                              {idx + 1}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* ── VIEW MODE 2: WAY2NEWS 3-COLUMN CARDS GRID ───────────────────── */}
+            {viewMode === "grid" && (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-in fade-in duration-200">
+                {filteredStories.map((story) => (
+                  <div
+                    key={story.id}
+                    className="bg-white rounded-3xl border border-slate-200 shadow-md hover:shadow-xl transition-all overflow-hidden flex flex-col group"
+                  >
+                    {/* Header */}
+                    <div className="bg-[#003366] text-white px-4 py-2 flex items-center justify-between text-[11px]">
+                      <span className="font-extrabold text-amber-400">WAY2NEWS · 60s</span>
+                      <div className="flex items-center gap-2">
+                        <span className="font-mono text-blue-200">{story.date}</span>
+                        <button
+                          onClick={() => openCardFullscreen(story, filteredStories.findIndex(s => s.id === story.id))}
+                          className="px-1.5 py-0.5 rounded bg-white/15 hover:bg-white/30 text-white text-[10px] font-medium transition cursor-pointer flex items-center gap-1"
+                          title="Read Card in Full Screen"
+                        >
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.2} className="w-3 h-3">
+                            <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" />
+                          </svg>
+                          <span>Full Screen</span>
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Image */}
+                    <div
+                      className="relative aspect-video w-full bg-slate-900 overflow-hidden cursor-pointer"
+                      onClick={() => openCardFullscreen(story, filteredStories.findIndex(s => s.id === story.id))}
+                      title="Click to view full screen"
+                    >
+                      <img
+                        src={story.heroImage}
+                        alt={story.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                      <div className="absolute inset-0 bg-linear-to-t from-slate-950/80 via-transparent to-transparent pointer-events-none" />
+                      <span className="absolute top-2.5 left-2.5 px-2.5 py-0.5 rounded-full bg-[#003366]/90 backdrop-blur-md text-white text-[10px] font-bold">
+                        {story.category}
+                      </span>
+                      <span className="absolute bottom-2 left-2.5 text-white text-[10px] font-medium drop-shadow-sm flex items-center gap-1">
+                        <span>📍</span>
+                        <span className="truncate max-w-[200px]">{story.location}</span>
+                      </span>
+
+                      {/* Hover Full Screen Pill */}
+                      <div className="absolute inset-0 m-auto w-fit h-fit px-3.5 py-1.5 rounded-full bg-black/75 hover:bg-[#003366] text-white text-xs font-bold opacity-0 group-hover:opacity-100 transition-all backdrop-blur-sm flex items-center gap-1.5 shadow-lg transform group-hover:scale-105 pointer-events-none">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.2} className="w-3.5 h-3.5">
+                          <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" />
+                        </svg>
+                        <span>Read Fullscreen</span>
+                      </div>
+                    </div>
+
+                    {/* Content */}
+                    <div className="p-4 flex-1 flex flex-col justify-between space-y-3">
+                      <div>
+                        <h3 className="font-bold text-slate-900 text-sm leading-snug line-clamp-2">
+                          {story.title}
+                        </h3>
+                        <div className="mt-2 space-y-1.5">
+                          {story.bullets.map((b, idx) => (
+                            <div key={idx} className="flex items-start gap-2 text-xs text-slate-600 leading-relaxed">
+                              <span className="text-blue-500 font-bold">•</span>
+                              <span className="line-clamp-2">{b}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Stat */}
+                      <div className="p-2 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-between text-xs">
+                        <span className="text-[10px] font-bold text-slate-600">{story.keyStat.label}</span>
+                        <span className="font-bold text-[#003366] font-mono">{story.keyStat.value}</span>
+                      </div>
+                    </div>
+
+                    {/* Actions */}
+                    <div className="p-3 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
+                      <div className="flex items-center gap-1.5">
+                        <button
+                          onClick={() => toggleSpeakStory(story)}
+                          className={`p-2 rounded-xl text-xs font-bold transition cursor-pointer flex items-center gap-1 ${
+                            speakingStoryId === story.id
+                              ? "bg-emerald-600 text-white"
+                              : "bg-white hover:bg-slate-100 text-slate-700 border border-slate-200"
+                          }`}
+                          title="Listen"
+                        >
+                          <span>{speakingStoryId === story.id ? "⏸️" : "🔊"}</span>
+                        </button>
+
+                        <button
+                          onClick={() => openCardFullscreen(story, filteredStories.findIndex(s => s.id === story.id))}
+                          className="p-2 rounded-xl bg-white hover:bg-slate-100 text-[#003366] border border-slate-200 text-xs font-bold transition cursor-pointer"
+                          title="Read Card in Full Screen"
+                        >
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.2} className="w-3.5 h-3.5">
+                            <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" />
+                          </svg>
+                        </button>
+                      </div>
+
+                      <div className="flex items-center gap-1.5">
+                        <button
+                          onClick={() =>
+                            setContentStudio({
+                              id: story.id,
+                              title: story.title,
+                              date: story.date,
+                              category: story.category,
+                              thumb: story.thumb,
+                              excerpt: story.bullets.join(" "),
+                            } as any)
+                          }
+                          className="px-2.5 py-1 rounded-xl bg-[#003366] text-white text-[11px] font-bold cursor-pointer hover:bg-[#002244] transition"
+                        >
+                          ⚡ Create
+                        </button>
+                        <button
+                          onClick={() => setShareModalStory(story)}
+                          className="p-1.5 rounded-xl bg-white border border-slate-200 hover:bg-slate-100 text-slate-600 cursor-pointer text-xs"
+                          title="Share"
+                        >
+                          🚀
+                        </button>
+                        <button
+                          onClick={() => toggleLike(story.id)}
+                          className="p-1.5 rounded-xl bg-white border border-slate-200 hover:bg-slate-100 text-slate-600 cursor-pointer text-xs"
+                          title="Like"
+                        >
+                          {likedStories[story.id] ? "❤️" : "🤍"}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* ── VIEW MODE 3: COMPACT LIST ───────────────────────────────────── */}
+            {viewMode === "list" && (
+              <div className="card divide-y" style={{ borderColor: "var(--border)" }}>
+                {filteredStories.map((item) => (
+                  <div
+                    key={item.id}
+                    className="flex items-start gap-4 p-4 hover:bg-slate-50 transition-colors"
+                  >
+                    <img
+                      src={item.thumb}
+                      alt={item.title}
+                      className="w-24 h-16 object-cover rounded-xl flex-shrink-0"
+                    />
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-start justify-between gap-2">
+                        <h3 className="font-bold text-sm text-slate-900">{item.title}</h3>
+                        <span className="tag flex-shrink-0">{item.category}</span>
+                      </div>
+                      <p className="text-xs mt-1 leading-relaxed text-slate-600 line-clamp-2">
+                        {item.bullets[0]}
+                      </p>
+                      <div className="text-[10px] mt-1 text-slate-400 flex items-center gap-2">
+                        <span>{item.date}</span>
+                        <span>·</span>
+                        <span>📍 {item.location}</span>
+                      </div>
+                    </div>
+                    <div className="flex gap-2 flex-shrink-0 items-center">
+                      <button
+                        onClick={() => openCardFullscreen(item, filteredStories.findIndex(s => s.id === item.id))}
+                        className="btn-outline btn-xs flex items-center gap-1 text-[#003366] border-blue-200 hover:bg-blue-50 cursor-pointer"
+                        title="Read Card in Full Screen"
+                      >
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.2} className="w-3 h-3">
+                          <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" />
+                        </svg>
+                        <span>Full Screen</span>
+                      </button>
+                      <button
+                        onClick={() => toggleSpeakStory(item)}
+                        className="btn-outline btn-xs"
+                      >
+                        {speakingStoryId === item.id ? "Pause" : "Listen"}
+                      </button>
+                      <button
+                        className="btn-outline btn-xs text-blue-600 border-blue-200 hover:bg-blue-50"
+                        onClick={() => onOpenSocial?.(item.title, item.bullets.join("\n\n"))}
+                      >
+                        Syndicate
+                      </button>
+                      <button
+                        className="btn-primary btn-xs"
+                        onClick={() =>
+                          setContentStudio({
+                            id: item.id,
+                            title: item.title,
+                            date: item.date,
+                            category: item.category,
+                            thumb: item.thumb,
+                            excerpt: item.bullets.join(" "),
+                          } as any)
+                        }
+                      >
+                        Create
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* ── 2. PRESS RELEASES TAB ──────────────────────────────────────────── */}
+        {tab === "press" && (
           <div className="card divide-y" style={{ borderColor: "var(--border)" }}>
-            {displayedItems.map((item, i) => (
+            {pressReleases.map((item, i) => (
               <div key={i} className="flex items-start gap-4 p-4 hover:bg-slate-50 transition-colors">
-                <img src={item.thumb} alt={item.title} className="w-20 h-14 object-cover rounded-lg flex-shrink-0"/>
+                <img src={item.thumb} alt={item.title} className="w-20 h-14 object-cover rounded-lg flex-shrink-0" />
                 <div className="flex-1 min-w-0">
                   <div className="flex items-start justify-between gap-2">
-                    <h3 className="font-semibold text-sm" style={{ color: "var(--text-primary)" }}>{item.title}</h3>
+                    <h3 className="font-semibold text-sm" style={{ color: "var(--text-primary)" }}>
+                      {item.title}
+                    </h3>
                     <span className="tag flex-shrink-0">{item.category}</span>
                   </div>
-                  {"excerpt" in item && <p className="text-xs mt-1 leading-relaxed" style={{ color: "var(--text-secondary)" }}>{(item as any).excerpt}</p>}
-                  <div className="text-[10px] mt-1" style={{ color: "var(--text-muted)" }}>{item.date}</div>
+                  <p className="text-xs mt-1 leading-relaxed" style={{ color: "var(--text-secondary)" }}>
+                    {item.excerpt}
+                  </p>
+                  <div className="text-[10px] mt-1" style={{ color: "var(--text-muted)" }}>
+                    {item.date}
+                  </div>
                 </div>
                 <div className="flex gap-2 flex-shrink-0 items-center">
                   <button
-                    className="btn-outline btn-sm text-blue-600 border-blue-200 hover:bg-blue-50 flex items-center gap-1"
-                    onClick={() => onOpenSocial?.(item.title, "excerpt" in item ? (item as any).excerpt : item.title)}
-                    title="Syndicate this news to Twitter, Facebook, Instagram, LinkedIn, etc."
+                    className="btn-outline btn-sm text-blue-600 border-blue-200 hover:bg-blue-50 flex items-center gap-1 cursor-pointer"
+                    onClick={() => onOpenSocial?.(item.title, item.excerpt)}
+                    title="Syndicate this news"
                   >
-                    <span></span>
                     <span>Syndicate</span>
                   </button>
-                  <button className="btn-outline btn-sm" onClick={() => setContentStudio(newsItems[Math.min(i, newsItems.length - 1)])}>
-                     Create
+                  <button
+                    className="btn-outline btn-sm cursor-pointer"
+                    onClick={() => setContentStudio(newsItems[Math.min(i, newsItems.length - 1)])}
+                  >
+                    Create
                   </button>
                 </div>
               </div>
@@ -290,19 +2065,44 @@ export default function News({ onOpenSocial }: NewsProps = {}) {
           </div>
         )}
 
+        {/* ── 3. SOCIAL MEDIA HIGHLIGHTS TAB ─────────────────────────────────── */}
+
         {tab === "social" && (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {socialHighlights.map((item, i) => (
-              <div key={i} className="card overflow-hidden hover:shadow-md transition-shadow cursor-pointer">
-                <img src={item.image} alt="Social" className="w-full object-cover" style={{ height: 150 }}/>
+              <div
+                key={i}
+                className="card overflow-hidden hover:shadow-md transition-shadow cursor-pointer"
+              >
+                <img
+                  src={item.image}
+                  alt="Social"
+                  className="w-full object-cover"
+                  style={{ height: 150 }}
+                />
                 <div className="p-4">
                   <div className="flex items-center gap-1.5 mb-2">
-                    <span className="text-xs font-semibold" style={{ color: "var(--accent)" }}>@NCPOR_Official</span>
+                    <span
+                      className="text-xs font-semibold"
+                      style={{ color: "var(--accent)" }}
+                    >
+                      @NCPOR_Official
+                    </span>
                     <span className="tag">{item.platform}</span>
                   </div>
-                  <p className="text-xs leading-relaxed mb-3" style={{ color: "var(--text-primary)" }}>{item.title}</p>
-                  <div className="flex items-center gap-4 text-[11px]" style={{ color: "var(--text-muted)" }}>
-                    <span> {item.likes}</span><span> {item.shares}</span><span className="ml-auto">{item.date}</span>
+                  <p
+                    className="text-xs leading-relaxed mb-3"
+                    style={{ color: "var(--text-primary)" }}
+                  >
+                    {item.title}
+                  </p>
+                  <div
+                    className="flex items-center gap-4 text-[11px]"
+                    style={{ color: "var(--text-muted)" }}
+                  >
+                    <span> {item.likes}</span>
+                    <span> {item.shares}</span>
+                    <span className="ml-auto">{item.date}</span>
                   </div>
                 </div>
               </div>
@@ -311,7 +2111,111 @@ export default function News({ onOpenSocial }: NewsProps = {}) {
         )}
       </div>
 
-      {contentStudio && <ContentStudio newsItem={contentStudio} onClose={() => setContentStudio(null)}/>}
+      {/* ── SHARE MODAL ──────────────────────────────────────────────── */}
+      {shareModalStory && (
+        <div
+          className="fixed inset-0 z-60 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 animate-in fade-in duration-150"
+          onClick={() => setShareModalStory(null)}
+        >
+          <div
+            className="w-full max-w-md bg-white rounded-3xl p-6 shadow-2xl border border-slate-200 space-y-4"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-start justify-between">
+              <div>
+                <span className="text-[10px] font-bold text-blue-600 uppercase tracking-wider">
+                  DISPATCH SYNDICATION
+                </span>
+                <h3 className="font-extrabold text-base text-slate-900 mt-0.5">
+                  Share Polar News
+                </h3>
+              </div>
+              <button
+                onClick={() => setShareModalStory(null)}
+                className="w-7 h-7 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center text-sm font-bold cursor-pointer"
+              >
+                ✕
+              </button>
+            </div>
+
+            <p className="text-xs text-slate-600 line-clamp-2 italic bg-slate-50 p-2.5 rounded-xl border border-slate-200/80">
+              "{shareModalStory.title}"
+            </p>
+
+            <div className="grid grid-cols-2 gap-2.5 pt-1">
+              <button
+                onClick={() => {
+                  window.open(
+                    `https://api.whatsapp.com/send?text=${encodeURIComponent(
+                      `*${shareModalStory.title}*\n\n${shareModalStory.bullets.join("\n• ")}\n\nRead more on NCPOR Polar Knowledge Portal.`,
+                    )}`,
+                    "_blank",
+                  )
+                  showToast("Opened WhatsApp share!")
+                }}
+                className="p-3 rounded-2xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-800 text-xs font-bold flex items-center justify-center gap-2 cursor-pointer transition"
+              >
+                <span>💬</span>
+                <span>WhatsApp</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  window.open(
+                    `https://twitter.com/intent/tweet?text=${encodeURIComponent(
+                      `${shareModalStory.title.slice(0, 160)}... #NCPOR #PolarScience #India`,
+                    )}`,
+                    "_blank",
+                  )
+                  showToast("Opened Twitter/X share!")
+                }}
+                className="p-3 rounded-2xl bg-sky-50 hover:bg-sky-100 border border-sky-200 text-sky-800 text-xs font-bold flex items-center justify-center gap-2 cursor-pointer transition"
+              >
+                <span>🐦</span>
+                <span>𝕏 (Twitter)</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  window.open(
+                    `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
+                      window.location.href,
+                    )}`,
+                    "_blank",
+                  )
+                  showToast("Opened LinkedIn share!")
+                }}
+                className="p-3 rounded-2xl bg-blue-50 hover:bg-blue-100 border border-blue-200 text-blue-800 text-xs font-bold flex items-center justify-center gap-2 cursor-pointer transition"
+              >
+                <span>💼</span>
+                <span>LinkedIn</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  navigator.clipboard.writeText(
+                    `${shareModalStory.title}\n\n${shareModalStory.bullets.join("\n• ")}\n\nSource: ${shareModalStory.source}`,
+                  )
+                  showToast("Copied dispatch text to clipboard! 📋")
+                  setShareModalStory(null)
+                }}
+                className="p-3 rounded-2xl bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-800 text-xs font-bold flex items-center justify-center gap-2 cursor-pointer transition"
+              >
+                <span>📋</span>
+                <span>Copy Summary</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── TOAST NOTIFICATION ────────────────────────────────────────── */}
+      {toastMessage && (
+        <div className="fixed bottom-6 right-6 z-70 bg-slate-900 text-white px-4 py-2.5 rounded-2xl shadow-2xl border border-slate-700 text-xs font-semibold flex items-center gap-2.5 animate-in slide-in-from-bottom-3 duration-200">
+          <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping" />
+          <span>{toastMessage}</span>
+        </div>
+      )}
     </div>
-  );
+  )
 }

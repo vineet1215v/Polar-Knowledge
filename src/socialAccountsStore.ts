@@ -1,17 +1,17 @@
 // Reactive store for managing connected social media accounts with persistence
 
 export interface SocialAccount {
-  id: "twitter" | "facebook" | "instagram" | "linkedin" | "telegram" | "whatsapp";
-  name: string;
-  handle: string;
-  icon: string;
-  color: string;
-  bgLight: string;
-  connected: boolean;
-  avatarText: string;
-  followers: string;
-  permissions: string[];
-  autoPublish: boolean;
+  id: "twitter" | "facebook" | "instagram" | "linkedin" | "telegram" | "whatsapp"
+  name: string
+  handle: string
+  icon: string
+  color: string
+  bgLight: string
+  connected: boolean
+  avatarText: string
+  followers: string
+  permissions: string[]
+  autoPublish: boolean
 }
 
 const DEFAULT_ACCOUNTS: SocialAccount[] = [
@@ -93,109 +93,108 @@ const DEFAULT_ACCOUNTS: SocialAccount[] = [
     permissions: ["Send community bulletins", "Broadcast alerts"],
     autoPublish: true,
   },
-];
+]
 
-const STORAGE_KEY = "ncpor_social_accounts_v1";
+const STORAGE_KEY = "ncpor_social_accounts_v1"
 
 class SocialAccountsStore {
-  private accounts: SocialAccount[] = [];
-  private listeners: Array<() => void> = [];
+  private accounts: SocialAccount[] = []
+  private listeners: Array<() => void> = []
 
   constructor() {
-    this.load();
+    this.load()
   }
 
   private load() {
     try {
-      const stored = localStorage.getItem(STORAGE_KEY);
+      const stored = localStorage.getItem(STORAGE_KEY)
       if (stored) {
-        const parsed = JSON.parse(stored);
+        const parsed = JSON.parse(stored)
         if (Array.isArray(parsed) && parsed.length > 0) {
-          this.accounts = DEFAULT_ACCOUNTS.map(def => {
-            const found = parsed.find((p: any) => p.id === def.id);
-            return found ? { ...def, ...found } : def;
-          });
-          return;
+          this.accounts = DEFAULT_ACCOUNTS.map((def) => {
+            const found = parsed.find((p: any) => p.id === def.id)
+            return found ? { ...def, ...found } : def
+          })
+          return
         }
       }
     } catch {
       // Fallback
     }
-    this.accounts = [...DEFAULT_ACCOUNTS];
+    this.accounts = [...DEFAULT_ACCOUNTS]
   }
 
   private save() {
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(this.accounts));
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(this.accounts))
     } catch {
       // Storage error
     }
-    this.notify();
+    this.notify()
   }
 
   private notify() {
-    this.listeners.forEach(l => l());
+    this.listeners.forEach((l) => l())
   }
 
   public subscribe(listener: () => void) {
-    this.listeners.push(listener);
+    this.listeners.push(listener)
     return () => {
-      this.listeners = this.listeners.filter(l => l !== listener);
-    };
+      this.listeners = this.listeners.filter((l) => l !== listener)
+    }
   }
 
   public getAccounts(): SocialAccount[] {
-    return [...this.accounts];
+    return [...this.accounts]
   }
 
   public getConnectedAccounts(): SocialAccount[] {
-    return this.accounts.filter(a => a.connected);
+    return this.accounts.filter((a) => a.connected)
   }
 
   public isAnyConnected(): boolean {
-    return this.accounts.some(a => a.connected);
+    return this.accounts.some((a) => a.connected)
   }
 
   public connectAccount(id: string, handle?: string) {
-    this.accounts = this.accounts.map(a => {
+    this.accounts = this.accounts.map((a) => {
       if (a.id === id) {
-        return { ...a, connected: true, handle: handle || a.handle };
+        return { ...a, connected: true, handle: handle || a.handle }
       }
-      return a;
-    });
-    this.save();
+      return a
+    })
+    this.save()
   }
 
   public disconnectAccount(id: string) {
-    this.accounts = this.accounts.map(a => {
+    this.accounts = this.accounts.map((a) => {
       if (a.id === id) {
-        return { ...a, connected: false };
+        return { ...a, connected: false }
       }
-      return a;
-    });
-    this.save();
+      return a
+    })
+    this.save()
   }
 
   public connectAllDemo() {
-    this.accounts = this.accounts.map(a => ({ ...a, connected: true }));
-    this.save();
+    this.accounts = this.accounts.map((a) => ({ ...a, connected: true }))
+    this.save()
   }
 
   public disconnectAll() {
-    this.accounts = this.accounts.map(a => ({ ...a, connected: false }));
-    this.save();
+    this.accounts = this.accounts.map((a) => ({ ...a, connected: false }))
+    this.save()
   }
 
   public toggleAutoPublish(id: string) {
-    this.accounts = this.accounts.map(a => {
+    this.accounts = this.accounts.map((a) => {
       if (a.id === id) {
-        return { ...a, autoPublish: !a.autoPublish };
+        return { ...a, autoPublish: !a.autoPublish }
       }
-      return a;
-    });
-    this.save();
+      return a
+    })
+    this.save()
   }
 }
 
-export const socialStore = new SocialAccountsStore();
-
+export const socialStore = new SocialAccountsStore()
