@@ -49,6 +49,74 @@ function MiniChart({ label }: { label: string }) {
   )
 }
 
+function TelemetrySparkline({
+  parameter,
+  id,
+}: {
+  parameter: string
+  id: number
+}) {
+  const count = 12
+  const points: number[] = []
+  for (let i = 0; i < count; i++) {
+    const val = 18 + Math.sin(i * 0.85 + id * 1.2) * 11 + ((i * 4 + id) % 5)
+    points.push(val)
+  }
+  const max = Math.max(...points)
+  const min = Math.min(...points)
+  const range = max - min || 1
+  const coords = points
+    .map((p, i) => {
+      const x = (i / (count - 1)) * 100
+      const y = 28 - ((p - min) / range) * 22
+      return `${x},${y.toFixed(1)}`
+    })
+    .join(" ")
+
+  const colorMap: Record<string, { stroke: string; fill: string }> = {
+    "Sea Ice": { stroke: "#0284c7", fill: "rgba(2, 132, 199, 0.15)" },
+    Atmosphere: { stroke: "#0d9488", fill: "rgba(13, 148, 136, 0.15)" },
+    Oceanography: { stroke: "#2563eb", fill: "rgba(37, 99, 235, 0.15)" },
+    Cryosphere: { stroke: "#6366f1", fill: "rgba(99, 102, 241, 0.15)" },
+    Glaciology: { stroke: "#6366f1", fill: "rgba(99, 102, 241, 0.15)" },
+    "eDNA & Biology": { stroke: "#059669", fill: "rgba(5, 150, 105, 0.15)" },
+    Biogeochemistry: { stroke: "#0891b2", fill: "rgba(8, 145, 178, 0.15)" },
+  }
+  const theme = colorMap[parameter] || {
+    stroke: "#2563eb",
+    fill: "rgba(37, 99, 235, 0.15)",
+  }
+
+  return (
+    <div className="w-full h-8 relative flex items-center">
+      <svg
+        className="w-full h-full"
+        preserveAspectRatio="none"
+        viewBox="0 0 100 30"
+      >
+        <defs>
+          <linearGradient id={`grad-spark-${id}`} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor={theme.stroke} stopOpacity="0.3" />
+            <stop offset="100%" stopColor={theme.stroke} stopOpacity="0.0" />
+          </linearGradient>
+        </defs>
+        <polygon
+          points={`0,30 ${coords} 100,30`}
+          fill={`url(#grad-spark-${id})`}
+        />
+        <polyline
+          fill="none"
+          stroke={theme.stroke}
+          strokeWidth="1.8"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          points={coords}
+        />
+      </svg>
+    </div>
+  )
+}
+
 function QualityBar({
   label,
   pct,
@@ -892,48 +960,72 @@ export default function Datasets({
           </div>
         </div>
 
-        {/* Scientific Observational Metrics HUD (No Maps!) */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          <div className="card p-3.5 border border-slate-200 flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center text-lg font-bold border border-blue-100 flex-shrink-0"></div>
+        {/* Scientific Observational Metrics HUD (Telemetry Observatory Style) */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+          <div className="card p-3.5 border border-slate-200 bg-white flex items-center gap-3 shadow-2xs">
+            <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center text-lg font-bold border border-blue-100 flex-shrink-0">
+              🛰️
+            </div>
             <div>
-              <div className="text-lg font-black text-slate-900">128.4 GB</div>
-              <div className="text-[11px] text-slate-500 font-medium">
-                Curated Telemetry
+              <div className="text-xs uppercase font-bold text-slate-400 tracking-wider">
+                Ground Stations
+              </div>
+              <div className="text-base font-black text-slate-900">
+                3 Observatories
+              </div>
+              <div className="text-[11px] text-slate-500 font-medium truncate">
+                Maitri · Bharati · Himadri
               </div>
             </div>
           </div>
 
-          <div className="card p-3.5 border border-slate-200 flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center text-lg font-bold border border-emerald-100 flex-shrink-0"></div>
+          <div className="card p-3.5 border border-slate-200 bg-white flex items-center gap-3 shadow-2xs">
+            <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center text-lg font-bold border border-emerald-100 flex-shrink-0">
+              📊
+            </div>
             <div>
-              <div className="text-lg font-black text-emerald-700">99.2%</div>
-              <div className="text-[11px] text-slate-500 font-medium">
-                Calibration Integrity
+              <div className="text-xs uppercase font-bold text-slate-400 tracking-wider">
+                Telemetry Stream
+              </div>
+              <div className="text-base font-black text-emerald-700">
+                18.2 TB Ingested
+              </div>
+              <div className="text-[11px] text-slate-500 font-medium truncate">
+                NetCDF-4 · HDF5 · CSV · CTD
               </div>
             </div>
           </div>
 
-          <div className="card p-3.5 border border-slate-200 flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-purple-50 text-purple-700 flex items-center justify-center text-lg font-bold border border-purple-100 flex-shrink-0"></div>
+          <div className="card p-3.5 border border-slate-200 bg-white flex items-center gap-3 shadow-2xs">
+            <div className="w-10 h-10 rounded-xl bg-purple-50 text-purple-700 flex items-center justify-center text-lg font-bold border border-purple-100 flex-shrink-0">
+              🛡️
+            </div>
             <div>
-              <div className="text-lg font-black text-purple-700">
-                100% Open
+              <div className="text-xs uppercase font-bold text-slate-400 tracking-wider">
+                Standard Baseline
               </div>
-              <div className="text-[11px] text-slate-500 font-medium">
-                Fair Data Standard
+              <div className="text-base font-black text-purple-700">
+                100% FAIR Compliant
+              </div>
+              <div className="text-[11px] text-slate-500 font-medium truncate">
+                WMO &amp; SCAR Tier-1 Open Data
               </div>
             </div>
           </div>
 
-          <div className="card p-3.5 border border-slate-200 flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-cyan-50 text-cyan-700 flex items-center justify-center text-lg font-bold border border-cyan-100 flex-shrink-0"></div>
+          <div className="card p-3.5 border border-slate-200 bg-white flex items-center gap-3 shadow-2xs">
+            <div className="w-10 h-10 rounded-xl bg-cyan-50 text-cyan-700 flex items-center justify-center text-lg font-bold border border-cyan-100 flex-shrink-0">
+              ⚡
+            </div>
             <div>
-              <div className="text-lg font-black text-cyan-700">
-                Level-2 / L3
+              <div className="text-xs uppercase font-bold text-slate-400 tracking-wider">
+                Data Resolution
               </div>
-              <div className="text-[11px] text-slate-500 font-medium">
-                Science-Ready Formats
+              <div className="text-base font-black text-cyan-700">
+                Level-2 Calibrated
+              </div>
+              <div className="text-[11px] text-slate-500 font-medium truncate">
+                60-Point Telemetry Waveforms
               </div>
             </div>
           </div>
@@ -945,15 +1037,16 @@ export default function Datasets({
           <div className="flex flex-wrap items-center gap-1.5">
             {[
               { id: "", label: "All Parameters" },
-              { id: "Sea Ice", label: " Sea Ice" },
-              { id: "Atmosphere", label: " Atmosphere" },
-              { id: "Oceanography", label: " Oceanography" },
-              { id: "Cryosphere", label: " Cryosphere" },
+              { id: "Sea Ice", label: "❄️ Sea Ice" },
+              { id: "Atmosphere", label: "☁️ Atmosphere" },
+              { id: "Oceanography", label: "🌊 Oceanography" },
+              { id: "Cryosphere", label: "🏔️ Cryosphere" },
+              { id: "eDNA & Biology", label: "🧬 eDNA & Bio" },
             ].map((t) => (
               <button
                 key={t.id}
                 onClick={() => setParam(t.id)}
-                className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition ${
+                className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition cursor-pointer ${
                   param === t.id
                     ? "bg-blue-600 text-white shadow-2xs"
                     : "bg-slate-100 text-slate-600 hover:bg-slate-200"
@@ -1013,95 +1106,194 @@ export default function Datasets({
           </div>
         </div>
 
-        {/* View Mode 1: Interactive Cards */}
+        {/* View Mode 1: High-Tech Telemetry Cards Grid (Completely Distinct from Papers) */}
         {viewMode === "cards" && (
-          <div className="space-y-3" role="list">
-            {filtered.map((d) => (
-              <div
-                key={d.id}
-                className="card p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 hover:border-blue-300 hover:shadow-md transition-all cursor-pointer border border-slate-200"
-                onClick={() => setSelected(d)}
-                role="listitem"
-              >
-                <div className="flex items-start gap-3.5 min-w-0 flex-1">
-                  <div className="relative w-20 h-16 rounded-xl overflow-hidden flex-shrink-0 shadow-2xs border border-slate-200">
+          <div
+            className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5"
+            role="list"
+          >
+            {filtered.map((d) => {
+              const prov = datasetProvenance[d.id]
+              const stationName = d.region.includes("Arctic")
+                ? "Himadri / IndARC Mooring (78°55′N)"
+                : d.title.includes("Maitri") || d.id === 2 || d.id === 4
+                  ? "Maitri SYNOP Base (70°46′S)"
+                  : d.title.includes("Larsemann") || d.id === 8
+                    ? "Bharati Station 30m Mast (69°24′S)"
+                    : d.region.includes("Southern Ocean")
+                      ? "Southern Ocean Transect (45°S–68°S)"
+                      : "Antarctic Station Array"
+
+              const domainIcon =
+                d.parameter === "Sea Ice"
+                  ? "❄️"
+                  : d.parameter === "Atmosphere"
+                    ? "☁️"
+                    : d.parameter === "Oceanography"
+                      ? "🌊"
+                      : d.parameter.includes("Biology") ||
+                          d.parameter.includes("eDNA")
+                        ? "🧬"
+                        : "🏔️"
+
+              return (
+                <div
+                  key={d.id}
+                  onClick={() => setSelected(d)}
+                  className="bg-white rounded-2xl border border-slate-200 hover:border-blue-500 hover:shadow-xl transition-all duration-200 flex flex-col overflow-hidden group cursor-pointer"
+                  role="listitem"
+                >
+                  {/* Top Status & Stream Ribbon */}
+                  <div className="px-4 py-2.5 bg-slate-900 text-white flex items-center justify-between text-[11px] font-mono border-b border-slate-800">
+                    <div className="flex items-center gap-1.5">
+                      <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                      <span className="text-emerald-300 font-bold uppercase tracking-wider text-[10px]">
+                        Level-2 Stream
+                      </span>
+                    </div>
+                    <span className="text-slate-300 bg-slate-800 px-2 py-0.5 rounded text-[10px] font-semibold border border-slate-700">
+                      {d.format} · {d.size}
+                    </span>
+                  </div>
+
+                  {/* Card Visual Hero Banner with Image + Parameter Overlay */}
+                  <div className="relative h-32 overflow-hidden bg-slate-100 flex-shrink-0">
                     <img
                       src={d.thumb}
-                      alt=""
-                      className="w-full h-full object-cover"
+                      alt={d.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
-                    <div className="absolute inset-0 bg-slate-900/40 flex items-center justify-center">
-                      <span className="text-white text-base"></span>
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-950/35 to-transparent flex flex-col justify-between p-3">
+                      <div className="flex items-center justify-between gap-1">
+                        <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-black/60 text-white backdrop-blur-md border border-white/20 flex items-center gap-1">
+                          <span>{domainIcon}</span>
+                          <span>{d.parameter}</span>
+                        </span>
+                        <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-600/80 text-white backdrop-blur-md">
+                          {d.region}
+                        </span>
+                      </div>
+
+                      <div className="flex items-center justify-between text-white text-[11px]">
+                        <span className="font-mono text-cyan-300 font-semibold drop-shadow-sm flex items-center gap-1">
+                          <svg
+                            className="w-3 h-3 text-cyan-400"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth={2.5}
+                          >
+                            <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                          </svg>
+                          NCPOR-DATA-{d.year}-{String(d.id).padStart(3, "0")}
+                        </span>
+                        <span className="text-[10px] text-slate-300 font-medium bg-black/40 px-1.5 py-0.5 rounded">
+                          {d.year}
+                        </span>
+                      </div>
                     </div>
                   </div>
 
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-2 mb-1 flex-wrap">
-                      <span className="text-xs font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-100">
-                        {d.format}
-                      </span>
-                      <span className="text-xs font-semibold text-slate-600 bg-slate-100 px-2 py-0.5 rounded">
-                        {d.size}
-                      </span>
-                      <span className="tag tag-green">{d.region}</span>
-                      <span className="tag tag-orange">{d.category}</span>
-                      <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">
-                        Open Access
-                      </span>
+                  {/* Card Body */}
+                  <div className="p-4 flex-1 flex flex-col justify-between space-y-3">
+                    <div>
+                      <h3 className="text-sm font-bold text-slate-900 group-hover:text-blue-600 transition line-clamp-2 leading-tight">
+                        {d.title}
+                      </h3>
+                      <div className="flex items-center gap-1.5 text-xs text-slate-500 mt-1.5 font-medium">
+                        <svg
+                          className="w-3.5 h-3.5 text-slate-400 flex-shrink-0"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth={2}
+                        >
+                          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                          <circle cx="12" cy="10" r="3" />
+                        </svg>
+                        <span className="truncate">{stationName}</span>
+                      </div>
                     </div>
 
-                    <h3 className="text-sm font-bold text-slate-900 hover:text-blue-600 transition truncate">
-                      {d.title}
-                    </h3>
-                    <p className="text-xs text-slate-500 line-clamp-1 mt-0.5">
-                      Temporal coverage:{" "}
-                      {datasetProvenance[d.id]?.temporalCoverage || `${d.year}`}{" "}
-                      · Variables:{" "}
-                      {datasetProvenance[d.id]?.variables
-                        .slice(0, 3)
-                        .join(", ") || d.parameter}
-                    </p>
+                    {/* Sensor Telemetry Waveform Box */}
+                    <div className="bg-slate-50 rounded-xl p-2.5 border border-slate-100 space-y-1">
+                      <div className="flex items-center justify-between text-[10px] text-slate-500 font-mono">
+                        <span className="uppercase tracking-wider font-semibold">
+                          Sensor Telemetry Trend
+                        </span>
+                        <span className="text-blue-600 font-bold">
+                          {prov?.temporalCoverage || `${d.year}`}
+                        </span>
+                      </div>
+                      <TelemetrySparkline parameter={d.parameter} id={d.id} />
+                    </div>
+
+                    {/* Measured Variables Matrix */}
+                    <div className="space-y-1.5">
+                      <div className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">
+                        Measured Variables
+                      </div>
+                      <div className="flex flex-wrap gap-1">
+                        {(prov?.variables || [d.parameter])
+                          .slice(0, 3)
+                          .map((v) => (
+                            <span
+                              key={v}
+                              className="text-[10px] font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 px-2 py-0.5 rounded-md border border-slate-200/80 transition"
+                            >
+                              {v}
+                            </span>
+                          ))}
+                        {(prov?.variables?.length || 0) > 3 && (
+                          <span className="text-[10px] font-bold text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded">
+                            +{(prov?.variables?.length || 0) - 3} more
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Action Deck */}
+                    <div className="pt-2 border-t border-slate-100 flex items-center justify-between gap-2 mt-auto">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          handleOpenInspector(d)
+                        }}
+                        className="flex-1 py-1.5 px-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-2xs cursor-pointer"
+                      >
+                        <span>📊</span>
+                        <span>Inspect</span>
+                      </button>
+
+                      <button
+                        onClick={(e) => handleQuickDownload(d, e)}
+                        title="Download 60-row scientific CSV telemetry"
+                        className="py-1.5 px-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition flex items-center gap-1 border border-slate-200 cursor-pointer"
+                      >
+                        <span>📥</span>
+                        <span>CSV</span>
+                      </button>
+
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          setSelected(d)
+                        }}
+                        className="py-1.5 px-2 rounded-xl text-slate-500 hover:text-slate-900 text-xs font-semibold transition"
+                      >
+                        Details →
+                      </button>
+
+                      <SaveFollowButton
+                        entityId={d.id.toString()}
+                        entityType="dataset"
+                        compact
+                      />
+                    </div>
                   </div>
                 </div>
-
-                <div className="flex items-center gap-2 self-end sm:self-center flex-shrink-0">
-                  {/* Interactive Visualizer & Telemetry Trigger */}
-                  <button
-                    className="btn-primary btn-sm text-xs font-bold flex items-center gap-1.5 shadow-2xs"
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      handleOpenInspector(d)
-                    }}
-                  >
-                    <span></span> Visualize & Inspect
-                  </button>
-
-                  <button
-                    className="btn-outline btn-sm text-xs font-medium"
-                    onClick={(e) => handleQuickDownload(d, e)}
-                    title="Export CSV Telemetry"
-                  >
-                    CSV
-                  </button>
-
-                  <button
-                    className="btn-outline btn-sm text-xs font-medium"
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      setSelected(d)
-                    }}
-                  >
-                    Details →
-                  </button>
-
-                  <SaveFollowButton
-                    entityId={d.id.toString()}
-                    entityType="dataset"
-                    compact
-                  />
-                </div>
-              </div>
-            ))}
+              )
+            })}
           </div>
         )}
 
@@ -1109,12 +1301,13 @@ export default function Datasets({
         {viewMode === "table" && (
           <div className="card overflow-hidden border border-slate-200">
             <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs">
+              <table className="w-full text-left text-xs whitespace-nowrap">
                 <thead className="bg-slate-50 text-slate-600 font-semibold border-b border-slate-200">
                   <tr>
-                    <th className="py-3 px-4">Dataset Title</th>
-                    <th className="py-3 px-4">Parameter</th>
-                    <th className="py-3 px-4">Format & Size</th>
+                    <th className="py-3 px-4">Dataset &amp; Station ID</th>
+                    <th className="py-3 px-4">Parameter Domain</th>
+                    <th className="py-3 px-4">Telemetry Trend</th>
+                    <th className="py-3 px-4">Format &amp; Volume</th>
                     <th className="py-3 px-4">Region</th>
                     <th className="py-3 px-4">Year</th>
                     <th className="py-3 px-4 text-right">Actions</th>
@@ -1131,15 +1324,19 @@ export default function Datasets({
                         <div className="font-bold text-slate-900 line-clamp-1">
                           {d.title}
                         </div>
-                        <div className="font-mono text-[10px] text-slate-400">
+                        <div className="font-mono text-[10px] text-blue-600">
+                          NCPOR-DATA-{d.year}-{String(d.id).padStart(3, "0")} ·{" "}
                           {datasetProvenance[d.id]?.source ||
                             "NCPOR Sensor Feed"}
                         </div>
                       </td>
                       <td className="py-3 px-4">
-                        <span className="font-medium text-blue-700 bg-blue-50 px-2 py-0.5 rounded text-[11px]">
+                        <span className="font-medium text-blue-700 bg-blue-50 px-2 py-0.5 rounded text-[11px] border border-blue-100">
                           {d.parameter}
                         </span>
+                      </td>
+                      <td className="py-3 px-4 w-36">
+                        <TelemetrySparkline parameter={d.parameter} id={d.id} />
                       </td>
                       <td className="py-3 px-4 font-mono font-semibold text-slate-700">
                         {d.format} · {d.size}
@@ -1155,15 +1352,15 @@ export default function Datasets({
                         >
                           <button
                             onClick={() => handleOpenInspector(d)}
-                            className="px-2.5 py-1 bg-blue-600 hover:bg-blue-500 text-white rounded text-xs font-bold transition flex items-center gap-1"
+                            className="px-2.5 py-1 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-xs font-bold transition flex items-center gap-1 shadow-2xs"
                           >
-                            <span></span> Inspect
+                            <span>📊</span> Inspect
                           </button>
                           <button
                             onClick={(e) => handleQuickDownload(d, e)}
-                            className="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded text-xs font-medium transition"
+                            className="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-medium transition border border-slate-200"
                           >
-                            CSV
+                            <span>📥</span> CSV
                           </button>
                         </div>
                       </td>

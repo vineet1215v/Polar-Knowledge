@@ -548,7 +548,7 @@ interface NewsProps {
   onOpenSocial?: (initialTopic?: string, initialContent?: string) => void
 }
 
-export interface Way2NewsStory {
+export interface PolarPulseStory {
   id: number
   title: string
   date: string
@@ -567,7 +567,7 @@ export interface Way2NewsStory {
   isVerified: boolean
 }
 
-export const WAY2NEWS_STORIES: Way2NewsStory[] = [
+export const POLAR_PULSE_STORIES: PolarPulseStory[] = [
   {
     id: 1,
     title: "46th Indian Antarctic Expedition Launched with 58 Multi-Disciplinary Scientists",
@@ -706,7 +706,7 @@ export default function News({ onOpenSocial }: NewsProps = {}) {
   const [tab, setTab] = useState("latest")
   const [contentStudio, setContentStudio] = useState<any>(null)
 
-  // Way2News Visual Experience State
+  // Polar Pulse Visual Experience State
   const [viewMode, setViewMode] = useState<"reader" | "grid" | "list">("reader")
   const [currentStoryIndex, setCurrentStoryIndex] = useState(0)
   const [selectedCategory, setSelectedCategory] = useState<string>("All")
@@ -715,11 +715,11 @@ export default function News({ onOpenSocial }: NewsProps = {}) {
   const [autoAdvance, setAutoAdvance] = useState(false)
   const [likedStories, setLikedStories] = useState<Record<number, boolean>>({})
   const [bookmarkedStories, setBookmarkedStories] = useState<Record<number, boolean>>({})
-  const [shareModalStory, setShareModalStory] = useState<Way2NewsStory | null>(null)
+  const [shareModalStory, setShareModalStory] = useState<PolarPulseStory | null>(null)
   const [toastMessage, setToastMessage] = useState<string | null>(null)
   
   // Full-Screen Card Mode (specifically for latest news cards, without browser fullscreen)
-  const [fullscreenCardStory, setFullscreenCardStory] = useState<Way2NewsStory | null>(null)
+  const [fullscreenCardStory, setFullscreenCardStory] = useState<PolarPulseStory | null>(null)
   const [isCardExpanded, setIsCardExpanded] = useState(false)
 
   const showToast = (msg: string) => {
@@ -728,11 +728,11 @@ export default function News({ onOpenSocial }: NewsProps = {}) {
   }
 
   // Open a card in Full Screen Card Reader
-  const openCardFullscreen = (story?: Way2NewsStory, index?: number) => {
+  const openCardFullscreen = (story?: PolarPulseStory, index?: number) => {
     if (typeof index === "number") {
       setCurrentStoryIndex(index)
     }
-    const target = story || filteredStories[Math.min(currentStoryIndex, Math.max(0, filteredStories.length - 1))] || WAY2NEWS_STORIES[0]
+    const target = story || filteredStories[Math.min(currentStoryIndex, Math.max(0, filteredStories.length - 1))] || POLAR_PULSE_STORIES[0]
     setFullscreenCardStory(target)
     showToast(`Full Screen Card: "${target.title.slice(0, 32)}..."`)
   }
@@ -741,9 +741,9 @@ export default function News({ onOpenSocial }: NewsProps = {}) {
     setFullscreenCardStory(null)
   }
 
-  // Filtered Way2News Stories
+  // Filtered Polar Pulse Stories
   const filteredStories = useMemo(() => {
-    return WAY2NEWS_STORIES.filter((st) => {
+    return POLAR_PULSE_STORIES.filter((st) => {
       const matchCat = selectedCategory === "All" || st.category === selectedCategory
       const query = searchQuery.toLowerCase().trim()
       const matchQuery =
@@ -758,10 +758,10 @@ export default function News({ onOpenSocial }: NewsProps = {}) {
 
   // Current Story safe index
   const safeIndex = Math.min(currentStoryIndex, Math.max(0, filteredStories.length - 1))
-  const currentStory = filteredStories[safeIndex] || WAY2NEWS_STORIES[0]
+  const currentStory = filteredStories[safeIndex] || POLAR_PULSE_STORIES[0]
 
   // Web Speech Synthesis (TTS Read Aloud)
-  const toggleSpeakStory = (story: Way2NewsStory) => {
+  const toggleSpeakStory = (story: PolarPulseStory) => {
     if (!("speechSynthesis" in window)) {
       showToast("Speech synthesis not supported in this browser.")
       return
@@ -820,7 +820,7 @@ export default function News({ onOpenSocial }: NewsProps = {}) {
     return () => clearInterval(timer)
   }, [autoAdvance, viewMode, filteredStories.length, fullscreenCardStory, filteredStories])
 
-  // Keyboard navigation for Way2News Reader and Full Screen Card Mode
+  // Keyboard navigation for Polar Pulse Reader and Full Screen Card Mode
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape" && fullscreenCardStory !== null) {
@@ -942,7 +942,7 @@ export default function News({ onOpenSocial }: NewsProps = {}) {
     )
   }
 
-  // ── FULL PAGE WAY2NEWS ARTICLE VIEW (NO FLOATING MODAL) ────────────
+  // ── FULL PAGE POLAR PULSE ARTICLE VIEW (NO FLOATING MODAL) ────────────
   if (fullscreenCardStory) {
     const currentIdx = filteredStories.findIndex((s) => s.id === fullscreenCardStory.id)
     return (
@@ -960,7 +960,7 @@ export default function News({ onOpenSocial }: NewsProps = {}) {
             <div className="h-5 w-px bg-slate-200 hidden sm:block" />
             <div className="flex items-center gap-1.5">
               <span className="font-extrabold text-xs tracking-wider text-[#003366] uppercase">
-                POLAR WAY2NEWS
+                POLAR PULSE
               </span>
               <span className="text-slate-300">·</span>
               <span className="text-xs font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
@@ -1338,7 +1338,7 @@ export default function News({ onOpenSocial }: NewsProps = {}) {
         {/* Tab Navigation */}
         <div className="tab-bar w-fit mb-6 bg-slate-100 p-1 rounded-2xl border border-slate-200">
           {[
-            ["latest", "⚡ Latest News (Way2News Visual)"],
+            ["latest", "⚡ Latest News (Polar Pulse)"],
             ["press", "🏛️ Press Releases"],
             ["social", "🌐 Social Highlights"],
           ].map(([id, label]) => (
@@ -1356,7 +1356,7 @@ export default function News({ onOpenSocial }: NewsProps = {}) {
           ))}
         </div>
 
-        {/* ── 1. LATEST NEWS: AUTHENTIC WAY2NEWS VISUAL FEATURE ─────────────────── */}
+        {/* ── 1. LATEST NEWS: AUTHENTIC POLAR PULSE VISUAL FEATURE ─────────────────── */}
         {tab === "latest" && (
           <div className="space-y-6">
             {/* Top Toolbar: Search + Category Filters + View Switcher */}
@@ -1404,7 +1404,7 @@ export default function News({ onOpenSocial }: NewsProps = {}) {
                           ? "bg-[#003366] text-white shadow-xs"
                           : "text-slate-600 hover:text-slate-900"
                       }`}
-                      title="Immersive Way2News Flip Card Reader"
+                      title="Immersive Polar Pulse Flip Card Reader"
                     >
                       <span>📱</span>
                       <span>Card Reader</span>
@@ -1416,7 +1416,7 @@ export default function News({ onOpenSocial }: NewsProps = {}) {
                           ? "bg-[#003366] text-white shadow-xs"
                           : "text-slate-600 hover:text-slate-900"
                       }`}
-                      title="Way2News 3-Column Magazine Grid"
+                      title="Polar Pulse 3-Column Magazine Grid"
                     >
                       <span>🎴</span>
                       <span>Cards Grid</span>
@@ -1476,7 +1476,7 @@ export default function News({ onOpenSocial }: NewsProps = {}) {
               </div>
             </div>
 
-            {/* ── VIEW MODE 1: IMMERSIVE WAY2NEWS CARD READER (FLIP DECK) ────── */}
+            {/* ── VIEW MODE 1: IMMERSIVE POLAR PULSE CARD READER (FLIP DECK) ────── */}
             {viewMode === "reader" && (
               <div className="relative py-2">
                 {filteredStories.length === 0 ? (
@@ -1535,7 +1535,7 @@ export default function News({ onOpenSocial }: NewsProps = {}) {
                       />
                     </div>
 
-                    {/* THE WAY2NEWS CARD CONTAINER */}
+                    {/* THE POLAR PULSE CARD CONTAINER */}
                     <div className="relative w-full max-w-xl flex items-center justify-center">
                       {/* Left Arrow Button */}
                       <button
@@ -1565,13 +1565,13 @@ export default function News({ onOpenSocial }: NewsProps = {}) {
                         </svg>
                       </button>
 
-                      {/* Main Way2News Magazine Card */}
+                      {/* Main Polar Pulse Magazine Card */}
                       <div className="w-full bg-white rounded-3xl border border-slate-200 shadow-xl overflow-hidden flex flex-col transition-all">
-                        {/* Top Way2News Branding Bar */}
+                        {/* Top Polar Pulse Branding Bar */}
                         <div className="bg-[#003366] text-white px-5 py-2.5 flex items-center justify-between">
                           <div className="flex items-center gap-2">
                             <span className="font-extrabold text-sm tracking-wider text-amber-400">
-                              POLAR WAY2NEWS
+                              POLAR PULSE
                             </span>
                             <span className="text-[10px] text-blue-200">|</span>
                             <div className="flex items-center gap-1.5 text-[10px] font-semibold text-cyan-300">
@@ -1627,14 +1627,14 @@ export default function News({ onOpenSocial }: NewsProps = {}) {
                           </div>
                         </div>
 
-                        {/* Way2News Content Core */}
+                        {/* Polar Pulse Content Core */}
                         <div className="p-5 md:p-6 space-y-4">
                           {/* Main Headline */}
                           <h2 className="font-extrabold text-slate-900 text-lg md:text-xl leading-snug tracking-tight">
                             {currentStory.title}
                           </h2>
 
-                          {/* 3-Bullet 60-Word Way2News Digest Format */}
+                          {/* 3-Bullet 60-Word Polar Pulse Digest Format */}
                           <div className="space-y-2.5 py-1">
                             {currentStory.bullets.map((bullet, idx) => (
                               <div key={idx} className="flex items-start gap-3">
@@ -1677,7 +1677,7 @@ export default function News({ onOpenSocial }: NewsProps = {}) {
                           </div>
                         </div>
 
-                        {/* Way2News Action Bar */}
+                        {/* Polar Pulse Action Bar */}
                         <div className="px-5 py-3.5 bg-slate-50 border-t border-slate-100 flex items-center justify-between flex-wrap gap-2">
                           <div className="flex items-center gap-2">
                             {/* Read Aloud Button (TTS) */}
@@ -1811,7 +1811,7 @@ export default function News({ onOpenSocial }: NewsProps = {}) {
               </div>
             )}
 
-            {/* ── VIEW MODE 2: WAY2NEWS 3-COLUMN CARDS GRID ───────────────────── */}
+            {/* ── VIEW MODE 2: POLAR PULSE 3-COLUMN CARDS GRID ───────────────────── */}
             {viewMode === "grid" && (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-in fade-in duration-200">
                 {filteredStories.map((story) => (
@@ -1821,7 +1821,7 @@ export default function News({ onOpenSocial }: NewsProps = {}) {
                   >
                     {/* Header */}
                     <div className="bg-[#003366] text-white px-4 py-2 flex items-center justify-between text-[11px]">
-                      <span className="font-extrabold text-amber-400">WAY2NEWS · 60s</span>
+                      <span className="font-extrabold text-amber-400">POLAR PULSE · 60s</span>
                       <div className="flex items-center gap-2">
                         <span className="font-mono text-blue-200">{story.date}</span>
                         <button
