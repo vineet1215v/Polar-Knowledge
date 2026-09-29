@@ -65,25 +65,6 @@ export default function Publications({
     gameStore.addXP(25, `Opened Manuscript PDF: ${p.title.slice(0, 30)}...`)
   }
 
-  const handleSimplifyInNotebook = (p: PubType, e: React.MouseEvent) => {
-    e.stopPropagation()
-    const item: WorkspaceSource = {
-      id: `pub-${p.id}`,
-      type: "publication",
-      title: p.title,
-      meta: `${p.journal} · ${p.year}`,
-      version: "v1.0",
-      date: `${p.year}`,
-      origin: p.journal,
-    }
-    onAddToWorkspace?.(item)
-    gameStore.addXP(
-      20,
-      `Opened "${p.title.slice(0, 24)}..." in Notebook AI for plain-English simplification`,
-    )
-    onNavigate?.("ai")
-  }
-
   // ── FULL PAGE PDF READER VIEW (NO FLOATING MODAL) ──────────────────
   if (pdfModalPub) {
     return (
@@ -91,7 +72,6 @@ export default function Publications({
         pub={pdfModalPub}
         onClose={() => setPdfModalPub(null)}
         onNavigate={onNavigate}
-        onAddToWorkspace={onAddToWorkspace}
       />
     )
   }
@@ -324,19 +304,9 @@ export default function Publications({
                       e.stopPropagation()
                       handleOpenPdf(p)
                     }}
-                    className="btn-primary btn-sm text-xs font-bold flex items-center gap-1.5 shadow-2xs cursor-pointer"
+                    className="btn-primary btn-sm text-xs font-bold flex items-center gap-1.5 shadow-2xs"
                   >
-                    <span>📄</span> View PDF
-                  </button>
-
-                  {/* Direct Simplify in Notebook Button */}
-                  <button
-                    onClick={(e) => handleSimplifyInNotebook(p, e)}
-                    className="px-2.5 py-1.5 rounded-lg bg-gradient-to-r from-purple-50 to-indigo-50 hover:from-purple-100 hover:to-indigo-100 text-purple-700 border border-purple-200 text-xs font-bold transition flex items-center gap-1 shadow-2xs cursor-pointer"
-                    title="Too complex to understand? Open plain-English breakdown in Notebook AI"
-                  >
-                    <span className="text-purple-600">✨</span>
-                    <span>Simplify</span>
+                    <span></span> View PDF
                   </button>
 
                   <button
@@ -344,7 +314,7 @@ export default function Publications({
                       e.stopPropagation()
                       setSelected(p)
                     }}
-                    className="btn-outline btn-sm text-xs font-medium cursor-pointer"
+                    className="btn-outline btn-sm text-xs font-medium"
                   >
                     Explore →
                   </button>
@@ -407,22 +377,15 @@ export default function Publications({
                         >
                           <button
                             onClick={() => setSelected(p)}
-                            className="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded text-xs font-semibold transition cursor-pointer"
+                            className="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded text-xs font-semibold transition"
                           >
                             Explore →
                           </button>
                           <button
-                            onClick={(e) => handleSimplifyInNotebook(p, e)}
-                            className="px-2 py-1 bg-purple-50 hover:bg-purple-100 text-purple-700 rounded text-xs font-bold transition flex items-center gap-1 border border-purple-200 cursor-pointer"
-                            title="Understand in plain English"
-                          >
-                            <span>✨</span> Simplify
-                          </button>
-                          <button
                             onClick={() => handleOpenPdf(p)}
-                            className="px-2.5 py-1 bg-blue-600 hover:bg-blue-500 text-white rounded text-xs font-bold transition flex items-center gap-1 cursor-pointer"
+                            className="px-2.5 py-1 bg-blue-600 hover:bg-blue-500 text-white rounded text-xs font-bold transition flex items-center gap-1"
                           >
-                            <span>📄</span> View PDF
+                            <span></span> View PDF
                           </button>
                         </div>
                       </td>

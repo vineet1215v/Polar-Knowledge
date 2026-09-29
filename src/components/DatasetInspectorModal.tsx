@@ -2,6 +2,7 @@ import { useState } from "react"
 import { datasets } from "../data"
 import { datasetProvenance } from "../knowledgeData"
 import { gameStore } from "../gameStore"
+import { downloadDatasetCsv, generateTelemetryData } from "../utils/datasetCsvGenerator"
 
 type DatasetType = typeof datasets[0]
 
@@ -97,6 +98,7 @@ export default function DatasetInspectorModal({
   const [copiedCode, setCopiedCode] = useState<boolean>(false)
 
   const prov = datasetProvenance[dataset.id]
+  const telemetry = generateTelemetryData(dataset)
   const { vars, rows } = generateSampleRows(dataset)
 
   const activeVarName = vars[selectedVariableIndex] || vars[0] || "Value"
@@ -129,30 +131,13 @@ export default function DatasetInspectorModal({
     values.reduce((a, b) => a + b, 0) / (values.length || 1)
   ).toFixed(2)
 
-  // Download Simulated CSV
+  // Download Realistic Domain Telemetry CSV with Official NCPOR Banner
   const handleDownloadCsv = () => {
     gameStore.addXP(
       30,
       `Exported telemetry dataset: ${dataset.title.slice(0, 30)}...`,
     )
-    const header = `Timestamp,${vars[0] || "Var1"},${vars[1] || "Var2"},${vars[2] || "Var3"},QC_Status,Station\n`
-    const csvContent = displayedRows
-      .map(
-        (r) =>
-          `${r.timestamp},${r.var1},${r.var2},${r.var3},${r.qc},"${r.depthOrStation}"`,
-      )
-      .join("\n")
-    const blob = new Blob([header + csvContent], {
-      type: "text/csv;charset=utf-8;",
-    })
-    const url = URL.createObjectURL(blob)
-    const link = document.createElement("a")
-    link.href = url
-    link.download = `${dataset.title.replace(/[^a-zA-Z0-9]/g, "_")}_raw_data.csv`
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-    setTimeout(() => URL.revokeObjectURL(url), 1000)
+    downloadDatasetCsv(dataset)
   }
 
   const pythonSnippet = `# NCPOR Polar Data Access Client (Python)
@@ -436,69 +421,79 @@ print("Loaded: ${dataset.title} (${dataset.size})")
           {/* TAB 2: DATA GRID */}
           {activeTab === "data" && (
             <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-2xs">
-              <div className="px-5 py-3.5 bg-slate-100 border-b border-slate-200 flex items-center justify-between">
+              <div className="px-5 py-3.5 bg-slate-100 border-b border-slate-200 flex flex-wrap items-center justify-between gap-3">
                 <div>
                   <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider">
-                    Scientific Telemetry Matrix ({displayedRows.length} Points)
+                    Scientific Telemetry Matrix ({telemetry.rows.length} Points)
                   </h3>
                   <p className="text-[11px] text-slate-500">
-                    Pre-calibrated instrument feeds adhering to SCAR scientific
-                    data standards.
+                    Continuous calibrated instrument records adhering to WMO &amp; SCAR Level-2 scientific data standards.
                   </p>
                 </div>
                 <button
                   onClick={handleDownloadCsv}
-                  className="btn-outline btn-sm text-xs font-semibold"
+                  className="btn-outline btn-sm text-xs font-bold bg-white hover:bg-slate-50 text-blue-700 border-blue-300 shadow-2xs flex items-center gap-1.5"
                 >
-                  Download Table (.csv)
+                  <span>📥</span> Download Full Dataset (.csv)
                 </button>
               </div>
 
-              <div className="overflow-x-auto">
-                <table className="w-full text-left text-xs">
-                  <thead className="bg-slate-50 text-slate-600 font-semibold border-b border-slate-200">
+              <div className="overflow-x-auto max-h-[460px]">
+                <table className="w-full text-left text-xs whitespace-nowrap">
+                  <thead className="bg-slate-50 text-slate-600 font-semibold border-b border-slate-200 sticky top-0 z-10 shadow-2xs">
                     <tr>
-                      <th className="py-2.5 px-4 font-mono">#</th>
-                      <th className="py-2.5 px-4">Timestamp</th>
-                      <th className="py-2.5 px-4">{vars[0] || "Variable 1"}</th>
-                      <th className="py-2.5 px-4">{vars[1] || "Variable 2"}</th>
-                      <th className="py-2.5 px-4">{vars[2] || "Variable 3"}</th>
-                      <th className="py-2.5 px-4">Station / Site</th>
-                      <th className="py-2.5 px-4 text-right">QC Status</th>
+                      <th className="py-2.5 px-3 font-mono text-center">#</th>
+                      {telemetry.headers.map((h) => (
+                        <th key={h} className="py-2.5 px-3 capitalize">
+                          {h.replace(/_/g, " ")}
+                        </th>
+                      ))}
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100">
-                    {displayedRows.map((r, i) => (
-                      <tr key={r.id} className="hover:bg-blue-50/50 transition">
-                        <td className="py-2.5 px-4 font-mono text-slate-400">
+                    {telemetry.rows.map((r, i) => (
+                      <tr key={i} className="hover:bg-blue-50/50 transition">
+                        <td className="py-2 px-3 font-mono text-slate-400 text-center">
                           {i + 1}
                         </td>
-                        <td className="py-2.5 px-4 font-bold text-slate-800">
-                          {r.timestamp}
-                        </td>
-                        <td className="py-2.5 px-4 font-mono font-bold text-blue-700">
-                          {r.var1}
-                        </td>
-                        <td className="py-2.5 px-4 font-mono text-slate-700">
-                          {r.var2}
-                        </td>
-                        <td className="py-2.5 px-4 font-mono text-slate-700">
-                          {r.var3}
-                        </td>
-                        <td className="py-2.5 px-4 text-slate-600">
-                          {r.depthOrStation}
-                        </td>
-                        <td className="py-2.5 px-4 text-right">
-                          <span
-                            className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                              r.qc === "VERIFIED_L2"
-                                ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
-                                : "bg-amber-50 text-amber-700 border border-amber-200"
-                            }`}
-                          >
-                            {r.qc}
-                          </span>
-                        </td>
+                        {telemetry.headers.map((h) => {
+                          const val = r[h]
+                          const isQc =
+                            h.toLowerCase().includes("qc") ||
+                            h.toLowerCase().includes("status") ||
+                            h.toLowerCase().includes("flag")
+                          const isId =
+                            h.toLowerCase().includes("id") ||
+                            h.toLowerCase().includes("timestamp") ||
+                            h.toLowerCase().includes("date")
+                          return (
+                            <td
+                              key={h}
+                              className={`py-2 px-3 ${
+                                isId
+                                  ? "font-bold text-slate-800"
+                                  : isQc
+                                    ? "text-left"
+                                    : "font-mono text-slate-700"
+                              }`}
+                            >
+                              {isQc ? (
+                                <span
+                                  className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                                    String(val).includes("FLAG") ||
+                                    String(val).includes("INTERPOLATED")
+                                      ? "bg-amber-50 text-amber-700 border border-amber-200"
+                                      : "bg-emerald-50 text-emerald-700 border border-emerald-200"
+                                  }`}
+                                >
+                                  {val}
+                                </span>
+                              ) : (
+                                String(val)
+                              )}
+                            </td>
+                          )
+                        })}
                       </tr>
                     ))}
                   </tbody>

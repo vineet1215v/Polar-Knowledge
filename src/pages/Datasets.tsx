@@ -6,6 +6,7 @@ import RelatedKnowledge from "../components/RelatedKnowledge"
 import SaveFollowButton from "../components/SaveFollowButton"
 import AddToWorkspace from "../components/AddToWorkspace"
 import DatasetInspectorModal from "../components/DatasetInspectorModal"
+import { downloadDatasetCsv } from "../utils/datasetCsvGenerator"
 import type { WorkspaceSource } from "../workspaceStore"
 
 type DatasetType = typeof datasets[0]
@@ -448,6 +449,16 @@ function DatasetDetail({
           >
             <span>📊</span> Visualize &amp; Inspect
           </button>
+          <button
+            className="btn-outline btn-sm text-xs text-white border-slate-600 hover:bg-slate-800 flex items-center gap-1.5"
+            onClick={() => {
+              gameStore.addXP(20, `Downloaded Telemetry: ${dataset.title.slice(0, 30)}...`)
+              downloadDatasetCsv(dataset)
+            }}
+            title="Download full 60-row scientific telemetry CSV"
+          >
+            <span>📥</span> Download CSV
+          </button>
           <AddToWorkspace
             source={{
               id: `ds-${dataset.id}`,
@@ -793,16 +804,7 @@ export default function Datasets({
   const handleQuickDownload = (d: DatasetType, e: React.MouseEvent) => {
     e.stopPropagation()
     gameStore.addXP(20, `Downloaded Dataset: ${d.title.slice(0, 30)}...`)
-    const dummy = `ID,Parameter,Region,Year,Size\n${d.id},${d.parameter},${d.region},${d.year},${d.size}`
-    const blob = new Blob([dummy], { type: "text/csv" })
-    const url = URL.createObjectURL(blob)
-    const link = document.createElement("a")
-    link.href = url
-    link.download = `${d.title.replace(/[^a-zA-Z0-9]/g, "_")}.csv`
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-    setTimeout(() => URL.revokeObjectURL(url), 1000)
+    downloadDatasetCsv(d)
   }
 
   if (inspectModalDataset) {
