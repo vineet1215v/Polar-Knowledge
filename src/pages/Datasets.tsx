@@ -406,7 +406,7 @@ function DatasetDetail({
   ]
 
   return (
-    <div className="min-h-full bg-slate-50 flex flex-col pb-16">
+    <div className="h-full overflow-y-auto bg-slate-50 flex flex-col pb-16">
       {/* Top Header Ribbon */}
       <div className="sticky top-0 z-30 bg-slate-900 text-white px-4 sm:px-6 py-3.5 shadow-sm flex flex-wrap items-center justify-between gap-3 border-b border-slate-800">
         <div className="flex items-center gap-3 min-w-0">
@@ -447,12 +447,6 @@ function DatasetDetail({
             onClick={() => onInspectDataset?.(dataset)}
           >
             <span>📊</span> Visualize &amp; Inspect
-          </button>
-          <button
-            onClick={() => onNavigate?.("research-rooms")}
-            className="px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer flex items-center gap-1.5 border border-amber-200 bg-amber-50 hover:bg-amber-100 text-amber-800 shadow-2xs"
-          >
-            <span>💬</span> Research Room
           </button>
           <AddToWorkspace
             source={{

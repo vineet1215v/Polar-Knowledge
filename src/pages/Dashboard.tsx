@@ -836,7 +836,7 @@ export default function Dashboard({ onNavigate, onAddToWorkspace }: Props) {
           </div>
         </div>
 
-        {/* ── TWO-COLUMN SECTION: POLAR MAP (LEFT) + OTOLITH LAB & DYNAMIC ANALYTICS (RIGHT) ── */}
+        {/* ── TWO-COLUMN SECTION: POLAR MAP (LEFT) + DIGITAL TWIN AI & DYNAMIC ANALYTICS (RIGHT) ── */}
         <DashboardMapAnalyticsSection
           onNavigate={onNavigate}
           onToast={showToast}

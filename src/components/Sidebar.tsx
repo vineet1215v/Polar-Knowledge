@@ -1,6 +1,6 @@
 //
 
-type Page = "landing" | "login" | "dashboard" | "analytics" | "digital-twin" | "data-upload" | "explorer" | "expeditions" | "publications" | "datasets" | "media" | "map" | "research-rooms" | "ai-tools" | "bio-lab" | "otolith-lab" | "edna-lab" | "ai" | "education" | "news" | "events" | "about" | "settings" | "profile"
+type Page = "landing" | "login" | "dashboard" | "analytics" | "digital-twin" | "data-upload" | "explorer" | "expeditions" | "publications" | "datasets" | "media" | "map" | "ai" | "education" | "news" | "events" | "about" | "settings" | "profile"
 
 interface SidebarProps {
   active: Page
@@ -122,47 +122,6 @@ const navItems: {
     ),
   },
 
-  {
-    id: "research-rooms",
-
-    label: "Research Rooms",
-
-    badge: "LIVE",
-
-    icon: (
-      <svg
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth={1.8}
-        className="w-4 h-4"
-      >
-        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-        <path d="M8 9h8" />
-        <path d="M8 13h5" />
-      </svg>
-    ),
-  },
-
-  {
-    id: "ai-tools",
-
-    label: "AI Tools",
-
-    icon: (
-      <svg
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth={1.8}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        className="w-4 h-4"
-      >
-        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
-      </svg>
-    ),
-  },
 
   {
     id: "ai",
@@ -225,26 +184,7 @@ const navItems: {
     ),
   },
 
-  {
-    id: "bio-lab",
 
-    label: "eDNA & Otolith Lab",
-
-    icon: (
-      <svg
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth={1.8}
-        className="w-4 h-4"
-      >
-        <path d="M2 15c6.667-6 13.333 0 20-6" />
-        <path d="M9 22c1.798-1.998 2.518-3.995 2.807-5.993" />
-        <path d="M15 2c-1.798 1.998-2.518 3.995-2.807 5.993" />
-        <circle cx="12" cy="12" r="3" />
-      </svg>
-    ),
-  },
 
   {
     id: "events",
@@ -389,7 +329,6 @@ export default function Sidebar({
       >
         {navItems.map((item) => {
           const isExplorerItem = item.id === "explorer"
-          const isBioLabItem = item.id === "bio-lab"
 
           const isItemActive =
             active === item.id ||
@@ -397,11 +336,7 @@ export default function Sidebar({
               (active === "expeditions" ||
                 active === "publications" ||
                 active === "datasets" ||
-                active === "media")) ||
-            (isBioLabItem &&
-              (active === "bio-lab" ||
-                active === "edna-lab" ||
-                active === "otolith-lab"))
+                active === "media"))
 
           return (
             <button

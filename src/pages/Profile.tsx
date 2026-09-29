@@ -124,10 +124,10 @@ export default function Profile({ onNavigate, onToast }: Props) {
                 </button>
                 <button
                   type="button"
-                  onClick={() => onNavigate?.("bio-lab")}
+                  onClick={() => onNavigate?.("datasets")}
                   className="px-3.5 py-1.5 rounded-lg bg-[#003366] hover:bg-[#002244] text-white text-xs font-semibold shadow-xs transition cursor-pointer flex items-center gap-1.5"
                 >
-                  <span>🧬</span> Lab Workstation
+                  <span>📊</span> Data Workspace
                 </button>
               </div>
             </div>
@@ -193,7 +193,7 @@ export default function Profile({ onNavigate, onToast }: Props) {
               { id: "overview", label: "Overview & Biography", icon: "👤" },
               { id: "expeditions", label: "Field Expeditions (6)", icon: "🚢" },
               { id: "publications", label: "Selected Papers (28)", icon: "📄" },
-              { id: "biolab", label: "Bio Lab & Otolith Logs", icon: "🔬" },
+              { id: "biolab", label: "Specimen Analysis Logs", icon: "🔬" },
               { id: "badges", label: "Badges & Credentials", icon: "🏆" },
             ].map((tab) => (
               <button
@@ -484,10 +484,10 @@ export default function Profile({ onNavigate, onToast }: Props) {
                 </div>
                 <button
                   type="button"
-                  onClick={() => onNavigate?.("bio-lab")}
+                  onClick={() => onNavigate?.("datasets")}
                   className="text-xs font-semibold text-blue-700 hover:underline cursor-pointer"
                 >
-                  Open Full Bio Lab &rarr;
+                  Explore Datasets Archive &rarr;
                 </button>
               </div>
 

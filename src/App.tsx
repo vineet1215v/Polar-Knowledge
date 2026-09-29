@@ -40,13 +40,9 @@ import LandingPage from "./pages/LandingPage"
 
 import CmlreBackboneLogin from "./components/CmlreBackboneLogin"
 
-import AITools from "./pages/AITools"
-
-import BioLab from "./pages/BioLab"
-
 import Profile from "./pages/Profile"
 
-import ResearchRooms from "./pages/ResearchRooms"
+import PolarAIFloatingWidget from "./components/PolarAIFloatingWidget"
 
 import { WorkspaceSource, typeIcon } from "./workspaceStore"
 
@@ -109,7 +105,7 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
 
 // AddToWorkspaceButton lives in components/AddToWorkspace to avoid circular imports
 
-type Page = "landing" | "login" | "dashboard" | "analytics" | "digital-twin" | "data-upload" | "explorer" | "expeditions" | "publications" | "datasets" | "media" | "map" | "research-rooms" | "ai-tools" | "bio-lab" | "otolith-lab" | "edna-lab" | "ai" | "education" | "news" | "events" | "about" | "settings" | "profile"
+type Page = "landing" | "login" | "dashboard" | "analytics" | "digital-twin" | "data-upload" | "explorer" | "expeditions" | "publications" | "datasets" | "media" | "map" | "ai" | "education" | "news" | "events" | "about" | "settings" | "profile"
 
 function SearchResults({
   query,
@@ -205,38 +201,6 @@ function SearchResults({
         },
 
         { label: "Climate Change Module", meta: "Intermediate · 12 min" },
-      ],
-    },
-
-    {
-      type: "Otolith Lab",
-      count: 6,
-      dest: "otolith-lab" as Page,
-      items: [
-        {
-          label: "Polar Teleost Otolith Microstructure Atlas",
-          meta: "Antarctic Toothfish, Icefish & Polar Cod · Sclerochronology",
-        },
-        {
-          label: "Sub-Zero Growth Annuli & Biochronology Workbench",
-          meta: "Interactive Microscopy & Age Validation",
-        },
-      ],
-    },
-
-    {
-      type: "eDNA Lab",
-      count: 6,
-      dest: "edna-lab" as Page,
-      items: [
-        {
-          label: "Polar Environmental Genomics & Metabarcoding",
-          meta: "12S MiFish, 16S Cephalopod & COI Assays · Antarctic & Arctic",
-        },
-        {
-          label: "Amplicon Sequence Variants (ASVs) Explorer",
-          meta: "Non-Invasive Marine Biodiversity Profiling",
-        },
       ],
     },
   ]
@@ -601,23 +565,8 @@ export default function App() {
       case "media":
         return <DataExplorer initialTab="media" {...sharedProps} />
 
-      case "research-rooms":
-        return <ResearchRooms onNavigate={navigate} onAddToWorkspace={addToWorkspace} />
-
       case "map":
         return <PolarMap {...sharedProps} />
-
-      case "ai-tools":
-        return <AITools onNavigate={navigate} />
-
-      case "bio-lab":
-        return <BioLab initialLab="edna" onNavigate={navigate} />
-
-      case "otolith-lab":
-        return <BioLab initialLab="otolith" onNavigate={navigate} />
-
-      case "edna-lab":
-        return <BioLab initialLab="edna" onNavigate={navigate} />
 
       case "ai":
         return (
@@ -667,6 +616,7 @@ export default function App() {
             }}
           />
         )}
+        <PolarAIFloatingWidget onNavigate={navigate} />
       </div>
     )
   }
@@ -683,6 +633,7 @@ export default function App() {
             onOpenAI={() => setPage("ai")}
           />
         </ErrorBoundary>
+        <PolarAIFloatingWidget onNavigate={navigate} />
       </div>
     )
   }
@@ -718,6 +669,8 @@ export default function App() {
           right: 0,
 
           bottom: 0,
+
+          height: "calc(100vh - var(--header-height))",
 
           overflow: "auto",
 
@@ -768,6 +721,11 @@ export default function App() {
           onClose={() => setSocialModalOpen(false)}
           onNavigate={navigate}
         />
+      )}
+
+      {/* Standard Polar AI Floating Launcher across all pages */}
+      {page !== "ai" && !studioOpen && (
+        <PolarAIFloatingWidget onNavigate={navigate} />
       )}
     </div>
   )

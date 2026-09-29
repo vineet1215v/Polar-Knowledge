@@ -82,7 +82,7 @@ export default function PublicationExploreModal({
   ]
 
   return (
-    <div className="min-h-full bg-slate-50 flex flex-col pb-16">
+    <div className="h-full overflow-y-auto bg-slate-50 flex flex-col pb-16">
       {/* Top Header Ribbon */}
       <div className="sticky top-0 z-30 bg-slate-900 text-white px-4 sm:px-6 py-3.5 flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 shadow-sm flex-shrink-0">
         <div className="flex items-center gap-3 min-w-0">
@@ -124,7 +124,7 @@ export default function PublicationExploreModal({
       </div>
 
       <div className="max-w-5xl mx-auto w-full p-4 sm:p-6 lg:p-8 space-y-6 flex-1">
-        <div className="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden flex flex-col">
+        <div className="bg-white rounded-3xl shadow-sm border border-slate-200 flex flex-col">
 
         {/* Tab Navigation */}
         <div className="flex-shrink-0 bg-slate-100 px-5 py-2.5 flex flex-wrap items-center justify-between gap-3 border-b border-slate-200">
@@ -171,8 +171,8 @@ export default function PublicationExploreModal({
           </div>
         </div>
 
-        {/* Modal Scrollable Body */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-slate-50">
+        {/* Modal Body */}
+        <div className="p-6 space-y-6 bg-slate-50">
           {/* TAB 1: OVERVIEW */}
           {activeTab === "overview" && (
             <div className="space-y-5">
@@ -483,5 +483,7 @@ export default function PublicationExploreModal({
       </div>
     </div>
   </div>
-  )
+)
 }
+
+

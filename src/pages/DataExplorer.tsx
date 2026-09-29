@@ -3,10 +3,9 @@ import Expeditions from "./Expeditions"
 import Publications from "./Publications"
 import Datasets from "./Datasets"
 import MediaGallery from "./MediaGallery"
-import ResearchRooms from "./ResearchRooms"
 import type { WorkspaceSource } from "../workspaceStore"
 
-export type ExplorerTab = "expeditions" | "publications" | "datasets" | "media" | "rooms"
+export type ExplorerTab = "expeditions" | "publications" | "datasets" | "media"
 
 interface Props {
   initialTab?: ExplorerTab
@@ -132,34 +131,11 @@ export default function DataExplorer({
         </svg>
       ),
     },
-    {
-      id: "rooms",
-      title: "Research Rooms",
-      metric: "4 Active",
-      tag: "Live Comms, Audio & Collaborative Science",
-      accentColor: "#F59E0B",
-      iconBg: "bg-amber-50 text-amber-600 border-amber-200/80",
-      activeBorder: "border-amber-600",
-      activeRing: "ring-2 ring-amber-500/20",
-      icon: (
-        <svg
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth={2}
-          className="w-4 h-4"
-        >
-          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-          <path d="M8 9h8" />
-          <path d="M8 13h5" />
-        </svg>
-      ),
-    },
   ]
 
   return (
     <div
-      className="h-full flex flex-col overflow-hidden"
+      className="h-full flex flex-col"
       style={{ background: "var(--content-bg)" }}
     >
       {/* ── COMPACT TOP HEADER & 4 HORIZONTAL CARDS STRIP ───────────────────── */}
@@ -265,7 +241,7 @@ export default function DataExplorer({
       </div>
 
       {/* ── ACTIVE VIEW CONTAINER (EMBEDS THE ALREADY PRESENT PAGES DIRECTLY) ── */}
-      <div className="flex-1 min-h-0 overflow-hidden relative">
+      <div className="flex-1 min-h-0 overflow-y-auto relative flex flex-col">
         {activeTab === "expeditions" && (
           <Expeditions
             onNavigate={onNavigate}
@@ -295,13 +271,6 @@ export default function DataExplorer({
             onNavigate={onNavigate}
             onAddToWorkspace={onAddToWorkspace}
             onOpenStudio={onOpenStudio}
-          />
-        )}
-
-        {activeTab === "rooms" && (
-          <ResearchRooms
-            onNavigate={onNavigate}
-            onAddToWorkspace={onAddToWorkspace}
           />
         )}
       </div>

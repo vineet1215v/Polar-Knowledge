@@ -533,16 +533,6 @@ export default function Header({
                           type="button"
                           onClick={() => {
                             setUserMenuOpen(false)
-                            onNavigate?.("bio-lab")
-                          }}
-                          className="block w-full text-left hover:text-[#1D4ED8] transition-colors py-0.5 font-medium cursor-pointer"
-                        >
-                          🧬 eDNA &amp; Otolith Lab
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setUserMenuOpen(false)
                             onNavigate?.("ai")
                           }}
                           className="block w-full text-left hover:text-[#1D4ED8] transition-colors py-0.5 font-medium cursor-pointer"
