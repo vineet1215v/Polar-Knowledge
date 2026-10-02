@@ -148,7 +148,7 @@ export default function AuthModal({
             <div>
               <div className="flex items-center gap-1.5">
                 <span className="font-extrabold text-base text-slate-900 tracking-tight">
-                  Log in to MyGov
+                  Log in to NCPOR Portal
                 </span>
                 <span className="text-[#1D4ED8] text-xs font-bold px-2 py-0.5 rounded-full bg-blue-50 border border-blue-200">
                   NCPOR Portal
@@ -229,7 +229,7 @@ export default function AuthModal({
                   Instant Demo Login
                 </div>
                 <div className="text-slate-600 text-[11px]">
-                  Experience MyGov citizen & researcher view directly
+                  Experience citizen & researcher view directly
                 </div>
               </div>
             </div>

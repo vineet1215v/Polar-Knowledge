@@ -1250,7 +1250,7 @@ aside {
 }
 
 /* ═══════════════════════════════════════════════════
-   MYGOV OFFICIAL RADIX THEME STYLES (NCPOR PORTAL)
+   NCPOR OFFICIAL PORTAL THEME STYLES
 ═══════════════════════════════════════════════════ */
 .header {
   box-shadow: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -1px rgba(0,0,0,0.04);
@@ -1411,7 +1411,7 @@ aside {
   gap: 16px;
   position: relative;
 }
-.mygov-search-wrapper {
+.ncpor-search-wrapper {
   display: flex;
   align-items: center;
   border: 1px solid #CBD5E1;
@@ -1423,17 +1423,17 @@ aside {
   max-width: 600px;
   box-shadow: 0 1px 2px rgba(0,0,0,0.04);
 }
-.mygov-search-wrapper form {
+.ncpor-search-wrapper form {
   display: flex;
   align-items: center;
   width: 100%;
   height: 100%;
 }
-.mygov-search-wrapper:focus-within {
+.ncpor-search-wrapper:focus-within {
   border-color: #1D4ED8;
   box-shadow: 0 0 0 2px rgba(29,78,216,0.15);
 }
-.mygov-search-wrapper input.form-textfield {
+.ncpor-search-wrapper input.form-textfield {
   border: none;
   outline: none;
   background: transparent;
@@ -1444,7 +1444,7 @@ aside {
   min-width: 0;
   height: 100%;
 }
-.mygov-search-wrapper select.form-select {
+.ncpor-search-wrapper select.form-select {
   border: none;
   border-left: 1px solid #E2E8F0;
   outline: none;
@@ -1455,7 +1455,7 @@ aside {
   cursor: pointer;
   height: 100%;
 }
-.mygov-search-wrapper .form-submit.btn-primary {
+.ncpor-search-wrapper .form-submit.btn-primary {
   background-color: #1D4ED8;
   color: #fff;
   border: none;
@@ -1470,7 +1470,7 @@ aside {
   justify-content: center;
   white-space: nowrap;
 }
-.mygov-search-wrapper .form-submit.btn-primary:hover {
+.ncpor-search-wrapper .form-submit.btn-primary:hover {
   background-color: #1E40AF;
 }
 .hamburger {

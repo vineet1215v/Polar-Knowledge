@@ -91,20 +91,17 @@ const POLAR_STATIONS: StationInfo[] = [
 const HERO_SLIDES = [
   {
     id: 1,
-    isGrandBanner: true,
-    topTag: "NATIONAL",
-    highlightText: "POLAR SCIENCE DAY",
-    serifHeading: "QUIZ 2026",
-    label: "NATIONAL QUIZ 2026",
-    heading: "National Polar Science Day Quiz 2026",
+    isGrandBanner: false,
+    label: "NATIONAL CENTRE FOR POLAR & OCEAN RESEARCH (NCPOR)",
+    heading: "India's Polar Science & Antarctic Expeditions",
     description:
-      "Participate in India's premier polar science challenge organized by NCPOR & Ministry of Earth Sciences. Test your knowledge on Antarctica, Maitri, Bharati, and Arctic Himadri.",
+      "Pioneering scientific research across Antarctica, the Arctic, and the Himalayas. Discover ongoing operations at Bharati, Maitri, and Himadri research stations, deep ice-core drilling, and oceanographic surveys.",
     image:
-      "https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?w=1600&q=85",
-    primaryCta: "Take National Quiz",
-    primaryDest: "education",
-    secondaryCta: "Explore Expeditions",
-    secondaryDest: "expeditions",
+      "https://images.unsplash.com/photo-1551415923-a2297c7fda79?w=1600&q=85",
+    primaryCta: "Explore Expeditions",
+    primaryDest: "expeditions",
+    secondaryCta: "Digital Twin Cryosphere",
+    secondaryDest: "digital-twin",
   },
   {
     id: 2,
@@ -387,6 +384,15 @@ export default function LandingPage({
   // Hero Carousel State
   const [currentSlide, setCurrentSlide] = useState(0)
   const [isHeroPlaying, setIsHeroPlaying] = useState(true)
+  const [isHeroHovered, setIsHeroHovered] = useState(false)
+  const touchStartXRef = useRef<number | null>(null)
+
+  const nextHeroSlide = () => {
+    setCurrentSlide((prev) => (prev + 1) % HERO_SLIDES.length)
+  }
+  const prevHeroSlide = () => {
+    setCurrentSlide((prev) => (prev - 1 + HERO_SLIDES.length) % HERO_SLIDES.length)
+  }
 
   // Search State
   const [searchCategory, setSearchCategory] = useState("All Categories")
@@ -468,14 +474,14 @@ export default function LandingPage({
     return () => document.removeEventListener("click", handleDocClick)
   }, [])
 
-  // Autoplay Hero
+  // Autoplay Hero with Hover Pause (Increased display delay to 8.5 seconds)
   useEffect(() => {
-    if (!isHeroPlaying) return
+    if (!isHeroPlaying || isHeroHovered) return
     const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % HERO_SLIDES.length)
-    }, 6000)
+      nextHeroSlide()
+    }, 8500)
     return () => clearInterval(interval)
-  }, [isHeroPlaying])
+  }, [isHeroPlaying, isHeroHovered])
 
   // Synchronize Marquee play/pause
   useEffect(() => {
@@ -664,7 +670,7 @@ export default function LandingPage({
       }`}
     >
       {/* ================================================================
-          OFFICIAL MYGOV RADIX INSTITUTIONAL HEADER (NCPOR PORTAL)
+          OFFICIAL NCPOR INSTITUTIONAL HEADER (NCPOR PORTAL)
       ================================================================ */}
       <header className="header sticky" role="banner">
         {/* MAIN HEADER (Logo, Search, Hamburger & User) */}
@@ -715,21 +721,8 @@ export default function LandingPage({
                   </div>
                 </div>
 
-                {/* MyGov Official Bilingual Logo & Institutional NCPOR Identity */}
+                {/* Institutional NCPOR Identity */}
                 <div className="flex items-center gap-2 sm:gap-3">
-                  <div className="leading-none border-r border-white/25 pr-2 sm:pr-3">
-                    <div className="flex items-baseline gap-0.5">
-                      <span className="font-extrabold text-xl sm:text-2xl text-emerald-400 tracking-tight font-sans">
-                        my
-                      </span>
-                      <span className="font-black text-xl sm:text-2xl text-white tracking-tight font-sans">
-                        GOV
-                      </span>
-                    </div>
-                    <div className="text-[9px] sm:text-[10px] font-bold text-sky-200 tracking-tight -mt-0.5 font-sans">
-                      मेरी सरकार
-                    </div>
-                  </div>
                   <div className="leading-tight">
                     <div className="flex items-center gap-1 sm:gap-1.5">
                       <span className="font-black text-base sm:text-xl tracking-tight text-white font-sans">
@@ -749,8 +742,8 @@ export default function LandingPage({
                 </div>
               </div>
 
-              {/* Center: Exact MyGov Search Bar Wrapper */}
-              <div className="mygov-search-wrapper">
+              {/* Center: Search Bar Wrapper */}
+              <div className="ncpor-search-wrapper">
                 <form
                   onSubmit={handleSearchExecute}
                   className="flex items-center w-full h-full"
@@ -759,7 +752,7 @@ export default function LandingPage({
                     type="text"
                     value={searchKeyword}
                     onChange={(e) => setSearchKeyword(e.target.value)}
-                    placeholder="Search in MyGov"
+                    placeholder="Search NCPOR (e.g. Antarctic Expedition, Bharati station...)"
                     className="form-textfield"
                   />
                   <select
@@ -889,7 +882,7 @@ export default function LandingPage({
           </div>
         </div>
 
-        {/* 3. FULL MEGAMENU DROPDOWN (5 Columns matching MyGov) */}
+        {/* 3. FULL MEGAMENU DROPDOWN (5 Columns) */}
         {megaMenuOpen && (
           <div className="megamenu-wrap animate-in fade-in slide-in-from-top-1 duration-150">
             <div className="megamenu">
@@ -1312,7 +1305,7 @@ export default function LandingPage({
       </header>
 
       {/* ================================================================
-          RIGHT FLOATING ACTION TOOLBAR (Matching official MyGov sidebar)
+          RIGHT FLOATING ACTION TOOLBAR (NCPOR Quick Actions)
       ================================================================ */}
       <div className="floating-sidebar-toolbar fixed right-2.5 top-1/2 -translate-y-1/2 z-40 hidden lg:flex flex-col items-center gap-2 select-none">
         <button
@@ -1409,85 +1402,104 @@ export default function LandingPage({
       {/* Main Content Anchor */}
       <main id="main-content" className="flex-1">
         {/* ================================================================
-            3. EXACT HERO CAROUSEL (With Terracotta Navigation Chevrons)
+            3. HERO CAROUSEL (Smooth Horizontal Slide Animation)
         ================================================================ */}
-        <section className="relative h-[430px] sm:h-[460px] bg-slate-900 overflow-hidden select-none">
-          {HERO_SLIDES.map((slide, idx) => (
-            <div
-              key={slide.id}
-              className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${
-                idx === currentSlide
-                  ? "opacity-100 z-10"
-                  : "opacity-0 z-0 pointer-events-none"
-              }`}
-            >
-              <img
-                src={slide.image}
-                alt={slide.heading}
-                className="w-full h-full object-cover object-center"
-              />
-              {/* Subtle dark image overlay */}
-              <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/45 to-transparent"></div>
+        <section
+          className="relative h-[460px] sm:h-[500px] md:h-[520px] bg-slate-900 overflow-hidden select-none"
+          onMouseEnter={() => setIsHeroHovered(true)}
+          onMouseLeave={() => setIsHeroHovered(false)}
+          onTouchStart={(e) => {
+            touchStartXRef.current = e.touches[0].clientX
+          }}
+          onTouchEnd={(e) => {
+            if (touchStartXRef.current === null) return
+            const deltaX = touchStartXRef.current - e.changedTouches[0].clientX
+            if (deltaX > 45) {
+              nextHeroSlide()
+            } else if (deltaX < -45) {
+              prevHeroSlide()
+            }
+            touchStartXRef.current = null
+          }}
+        >
+          {/* Sliding Track: Translates horizontally with smooth transition duration */}
+          <div
+            className="flex h-full"
+            style={{
+              width: `${HERO_SLIDES.length * 100}%`,
+              transform: `translateX(-${(currentSlide * 100) / HERO_SLIDES.length}%)`,
+              transition: "transform 1100ms cubic-bezier(0.25, 1, 0.4, 1)",
+            }}
+          >
+            {HERO_SLIDES.map((slide, idx) => (
+              <div
+                key={slide.id}
+                className="h-full relative overflow-hidden flex-shrink-0"
+                style={{ width: `${100 / HERO_SLIDES.length}%` }}
+                aria-hidden={idx !== currentSlide}
+              >
+                <img
+                  src={slide.image}
+                  alt={slide.heading}
+                  className="w-full h-full object-cover object-center"
+                />
+                {/* Dark gradient overlay for crisp text readability */}
+                <div className="absolute inset-0 bg-gradient-to-r from-slate-950/90 via-slate-900/65 to-transparent"></div>
 
-              {/* Text Content */}
-              <div className="absolute inset-0 flex items-center">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-                  <div className="max-w-2xl text-white">
-                    {slide.isGrandBanner ? (
-                      <div className="mb-4">
-                        <div className="text-xs sm:text-sm font-bold uppercase tracking-[0.28em] text-white/90 mb-1">
-                          {slide.topTag}
-                        </div>
-                        <div className="text-3xl sm:text-5xl md:text-6xl font-black uppercase tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-[#38BDF8] via-[#60A5FA] to-[#93C5FD] leading-none mb-1">
-                          {slide.highlightText}
-                        </div>
-                        <div className="text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-white leading-tight">
-                          {slide.serifHeading}
-                        </div>
-                      </div>
-                    ) : (
-                      <>
-                        <div className="text-xs font-extrabold uppercase tracking-widest text-[#93C5FD] mb-2">
+                {/* Text Content */}
+                <div className="absolute inset-0 flex items-center pb-12">
+                  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+                    <div className="max-w-2xl text-white">
+                      {/* Top Label & Polar Region Pill */}
+                      <div className="flex flex-wrap items-center gap-2 mb-2.5">
+                        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-cyan-500/20 text-cyan-200 border border-cyan-400/40 text-[10px] font-bold uppercase tracking-wider">
+                          <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
+                          Antarctica · Arctic · Himalayas
+                        </span>
+                        <span className="text-xs font-bold uppercase tracking-widest text-[#93C5FD]">
                           {slide.label}
-                        </div>
-                        <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight mb-3 leading-tight">
-                          {slide.heading}
-                        </h1>
-                      </>
-                    )}
-                    <p className="text-xs sm:text-sm text-slate-200 mb-6 leading-relaxed">
-                      {slide.description}
-                    </p>
-                    <div className="flex flex-wrap items-center gap-3">
-                      {/* Terracotta Button */}
-                      <button
-                        onClick={() => onNavigate(slide.primaryDest)}
-                        className="px-5 py-2.5 rounded-full bg-[#2563EB] hover:bg-[#1e3a8a] text-white font-semibold text-xs transition-colors shadow-sm"
-                      >
-                        {slide.primaryCta}
-                      </button>
-                      <button
-                        onClick={() => onNavigate(slide.secondaryDest)}
-                        className="px-5 py-2.5 rounded-full bg-white/15 hover:bg-white/25 border border-white/40 text-white font-semibold text-xs transition-colors"
-                      >
-                        {slide.secondaryCta}
-                      </button>
+                        </span>
+                      </div>
+
+                      {/* Clean, readable heading */}
+                      <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight mb-3 leading-tight text-white drop-shadow-sm">
+                        {slide.heading}
+                      </h1>
+
+                      <p className="text-xs sm:text-sm text-slate-200 mb-6 leading-relaxed max-w-xl">
+                        {slide.description}
+                      </p>
+
+                      {/* CTA Buttons */}
+                      <div className="flex flex-wrap items-center gap-3">
+                        <button
+                          type="button"
+                          onClick={() => onNavigate(slide.primaryDest)}
+                          className="px-5 py-2.5 rounded-full bg-[#2563EB] hover:bg-[#1e3a8a] text-white font-semibold text-xs transition-all shadow-sm cursor-pointer hover:scale-102 active:scale-98"
+                        >
+                          {slide.primaryCta}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => onNavigate(slide.secondaryDest)}
+                          className="px-5 py-2.5 rounded-full bg-white/15 hover:bg-white/25 border border-white/40 text-white font-semibold text-xs transition-all cursor-pointer hover:scale-102 active:scale-98"
+                        >
+                          {slide.secondaryCta}
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
 
-          {/* EXACT Terracotta Circular Chevrons (< and >) Matching Reference Screenshot */}
+          {/* Navigation Chevron Left */}
           <button
-            onClick={() =>
-              setCurrentSlide(
-                (prev) => (prev - 1 + HERO_SLIDES.length) % HERO_SLIDES.length,
-              )
-            }
+            type="button"
+            onClick={prevHeroSlide}
             aria-label="Previous Slide"
-            className="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full bg-[#2563EB]/85 hover:bg-[#2563EB] text-white flex items-center justify-center transition-all shadow-md"
+            className="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full bg-[#2563EB]/85 hover:bg-[#2563EB] text-white flex items-center justify-center transition-all shadow-md cursor-pointer hover:scale-105 active:scale-95"
           >
             <svg
               viewBox="0 0 24 24"
@@ -1500,12 +1512,12 @@ export default function LandingPage({
             </svg>
           </button>
 
+          {/* Navigation Chevron Right */}
           <button
-            onClick={() =>
-              setCurrentSlide((prev) => (prev + 1) % HERO_SLIDES.length)
-            }
+            type="button"
+            onClick={nextHeroSlide}
             aria-label="Next Slide"
-            className="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full bg-[#2563EB]/85 hover:bg-[#2563EB] text-white flex items-center justify-center transition-all shadow-md"
+            className="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full bg-[#2563EB]/85 hover:bg-[#2563EB] text-white flex items-center justify-center transition-all shadow-md cursor-pointer hover:scale-105 active:scale-95"
           >
             <svg
               viewBox="0 0 24 24"
@@ -1518,10 +1530,28 @@ export default function LandingPage({
             </svg>
           </button>
 
-          {/* Circular Pause Button in the bottom right corner of carousel */}
+          {/* Slide Indicator Dots (Elevated to bottom-8 to completely clear the stats strip) */}
+          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2 bg-black/50 backdrop-blur-xs px-3.5 py-1.5 rounded-full border border-white/20 shadow-md">
+            {HERO_SLIDES.map((_, idx) => (
+              <button
+                key={idx}
+                type="button"
+                onClick={() => setCurrentSlide(idx)}
+                aria-label={`Go to slide ${idx + 1}`}
+                className={`transition-all duration-300 rounded-full cursor-pointer ${
+                  currentSlide === idx
+                    ? "w-7 h-2 bg-white shadow-xs"
+                    : "w-2 h-2 bg-white/50 hover:bg-white hover:scale-125"
+                }`}
+              />
+            ))}
+          </div>
+
+          {/* Circular Pause/Play Button (Elevated to bottom-8) */}
           <button
+            type="button"
             onClick={() => setIsHeroPlaying((prev) => !prev)}
-            className="absolute bottom-4 right-4 z-20 w-8 h-8 rounded-full bg-[#1D4ED8] hover:bg-[#1e40af] text-white flex items-center justify-center shadow-md transition-colors"
+            className="absolute bottom-8 right-4 z-20 w-8 h-8 rounded-full bg-[#1D4ED8] hover:bg-[#1e40af] text-white flex items-center justify-center shadow-md transition-colors cursor-pointer"
             title={isHeroPlaying ? "Pause Carousel" : "Play Carousel"}
             aria-label="Pause Carousel"
           >
@@ -1963,7 +1993,7 @@ export default function LandingPage({
         </section>
 
         {/* ================================================================
-            7. MANN KI BAAT (Official MyGov Radio & E-Booklet Dialogue)
+            7. MANN KI BAAT (National Radio & E-Booklet Dialogue)
         ================================================================ */}
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-14">
           <div className="mb-6 text-left">
@@ -2351,19 +2381,19 @@ export default function LandingPage({
         </section>
 
         {/* ================================================================
-            8. MYGOV MEDIA (Exact Layout & Typography matching official MyGov)
+            8. POLAR SCIENCE MEDIA (Video Showcase & Reels)
         ================================================================ */}
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-14">
           <div className="mb-6 text-left">
             <h2 className="text-2xl sm:text-3xl md:text-[2rem] font-bold text-[#111827] tracking-tight">
-              MyGov Media
+              Polar Outreach Media
             </h2>
             <p className="text-sm sm:text-base text-[#4B5563] mt-1.5 font-normal">
-              Connecting citizens and government through the power of media
+              Connecting citizens and researchers through polar science media
             </p>
           </div>
 
-          {/* Featured Video Card matching official MyGov */}
+          {/* Featured Video Card */}
           <div className="bg-white rounded-2xl border border-[#E5E7EB] shadow-xs overflow-hidden mb-8 p-6 sm:p-8">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
               {/* Left 6 cols: Video Player with bottom control strip */}
@@ -2456,7 +2486,7 @@ export default function LandingPage({
                   Ancient History | Dr. Vikram Sampath
                 </h3>
 
-                {/* Channel Row matching official screenshot */}
+                {/* Channel Row */}
                 <div className="flex items-center gap-2 pt-1">
                   <div className="w-6 h-8 flex flex-col items-center justify-center flex-shrink-0 text-[#1E293B]">
                     <svg viewBox="0 0 40 48" fill="none" className="w-5 h-7">
@@ -2487,19 +2517,16 @@ export default function LandingPage({
                       />
                     </svg>
                   </div>
-                  <div className="flex items-center gap-1">
-                    <span className="font-extrabold text-sm text-[#0F172A]">
-                      my
+                  <div className="flex items-center gap-1.5">
+                    <span className="font-extrabold text-sm text-[#003366]">
+                      NCPOR
                     </span>
-                    <span className="font-black text-sm text-[#1D4ED8]">
-                      GOV
-                    </span>
-                    <span className="text-[10px] text-[#1A3C6E] font-semibold -ml-0.5">
-                      मेरी सरकार
+                    <span className="font-bold text-sm text-[#0284C7]">
+                      Media
                     </span>
                   </div>
                   <span className="text-sm font-bold text-[#111827] ml-2">
-                    MyGov India
+                    NCPOR India
                   </span>
                   {/* Verified Badge */}
                   <span className="w-4 h-4 rounded-full bg-slate-400 text-white flex items-center justify-center">
@@ -2873,7 +2900,7 @@ export default function LandingPage({
                 title: "Surviving the Antarctic Winter at -40°C",
                 speaker: "Dr. Thamban Meloth, Director NCPOR",
                 image:
-                  "https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?w=600&q=80",
+                  "https://images.unsplash.com/photo-1551415923-a2297c7fda79?w=600&q=80",
                 duration: "14:32",
                 size: "18.4 MB",
               },
@@ -3573,7 +3600,7 @@ export default function LandingPage({
       </main>
 
       {/* ================================================================
-          21. OFFICIAL MYGOV DARK CHARCOAL INSTITUTIONAL FOOTER
+          21. OFFICIAL NCPOR DARK CHARCOAL INSTITUTIONAL FOOTER
       ================================================================ */}
       <footer className="bg-[#1E252B] text-slate-300 text-xs border-t border-slate-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-8">
@@ -3866,19 +3893,19 @@ export default function LandingPage({
               </ul>
             </div>
 
-            {/* Column 4: Useful Links (Styled Pill Badges Grid matching MyGov) */}
+            {/* Column 4: Useful Links (Quick Access Grid) */}
             <div>
               <div className="font-bold text-white text-xs uppercase mb-3 text-[#38BDF8]">
                 USEFUL LINKS
               </div>
               <div className="grid grid-cols-2 gap-2">
                 {[
-                  "MyGov Quiz",
-                  "MyGov Innovation",
-                  "MyGov Blog",
+                  "Polar Science Quiz",
+                  "NCPOR Innovation",
+                  "Polar Blog",
                   "Campus Program",
                   "Transforming India",
-                  "MyGov Pledge",
+                  "Citizen Pledge",
                   "Self4Society",
                   "Saathi Portal",
                   "Data.gov.in",
@@ -3902,7 +3929,7 @@ export default function LandingPage({
             {/* Social Icons */}
             <div>
               <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2.5">
-                Connect with MyGov & NCPOR
+                Connect with NCPOR & MoES
               </div>
               <div className="flex items-center gap-2">
                 {[

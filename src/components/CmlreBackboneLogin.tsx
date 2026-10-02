@@ -46,7 +46,7 @@ export default function CmlreBackboneLogin({
     <div className="min-h-screen flex flex-col bg-white text-[#0F172A] font-sans antialiased selection:bg-[#E0F2FE]">
       {/* ── TOP NAV BAR (#003366 DEEP NAVY INSTITUTIONAL HEADER) ────────────── */}
       <header className="w-full bg-[#003366] text-white px-4 sm:px-8 py-3.5 flex items-center justify-between shadow-md z-30 flex-shrink-0">
-        {/* Left: Ashoka Lion Emblem + NCPOR / MyGov Institutional Branding */}
+        {/* Left: Ashoka Lion Emblem + NCPOR Institutional Branding */}
         <div
           onClick={onBackToHome}
           className="flex items-center gap-2.5 sm:gap-3 cursor-pointer group flex-shrink-0"
@@ -83,21 +83,8 @@ export default function CmlreBackboneLogin({
             </div>
           </div>
 
-          {/* MyGov Official Bilingual Logo & Institutional NCPOR Identity */}
+          {/* Institutional NCPOR Identity */}
           <div className="flex items-center gap-2 sm:gap-3">
-            <div className="leading-none border-r border-white/25 pr-2 sm:pr-3">
-              <div className="flex items-baseline gap-0.5">
-                <span className="font-extrabold text-xl sm:text-2xl text-emerald-400 tracking-tight font-sans">
-                  my
-                </span>
-                <span className="font-black text-xl sm:text-2xl text-white tracking-tight font-sans">
-                  GOV
-                </span>
-              </div>
-              <div className="text-[9px] sm:text-[10px] font-bold text-sky-200 tracking-tight -mt-0.5 font-sans">
-                मेरी सरकार
-              </div>
-            </div>
             <div className="leading-tight">
               <div className="flex items-center gap-1 sm:gap-1.5">
                 <span className="font-black text-base sm:text-xl tracking-tight text-white font-sans">

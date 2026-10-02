@@ -232,7 +232,7 @@ export default function Header({
   return (
     <>
       {/* ================================================================
-          OFFICIAL MYGOV RADIX INSTITUTIONAL HEADER (EXACT LANDING PAGE STYLE)
+          OFFICIAL NCPOR INSTITUTIONAL HEADER (EXACT LANDING PAGE STYLE)
       ================================================================ */}
       <header
         className="header sticky top-0 z-40 w-full"
@@ -323,21 +323,8 @@ export default function Header({
                     </div>
                   </div>
 
-                  {/* MyGov Official Bilingual Logo & Institutional NCPOR Identity */}
+                  {/* Institutional NCPOR Identity */}
                   <div className="flex items-center gap-2 sm:gap-3">
-                    <div className="leading-none border-r border-white/25 pr-2 sm:pr-3">
-                      <div className="flex items-baseline gap-0.5">
-                        <span className="font-extrabold text-xl sm:text-2xl text-emerald-400 tracking-tight font-sans">
-                          my
-                        </span>
-                        <span className="font-black text-xl sm:text-2xl text-white tracking-tight font-sans">
-                          GOV
-                        </span>
-                      </div>
-                      <div className="text-[9px] sm:text-[10px] font-bold text-sky-200 tracking-tight -mt-0.5 font-sans">
-                        मेरी सरकार
-                      </div>
-                    </div>
                     <div className="leading-tight">
                       <div className="flex items-center gap-1 sm:gap-1.5">
                         <span className="font-black text-base sm:text-xl tracking-tight text-white font-sans">
@@ -569,7 +556,7 @@ export default function Header({
             </div>
           </div>
 
-          {/* 3. FULL MEGAMENU DROPDOWN (5 Columns matching MyGov) */}
+          {/* 3. FULL MEGAMENU DROPDOWN (5 Columns) */}
           {megaMenuOpen && (
             <div className="megamenu-wrap animate-in fade-in slide-in-from-top-1 duration-150">
               <div className="megamenu">

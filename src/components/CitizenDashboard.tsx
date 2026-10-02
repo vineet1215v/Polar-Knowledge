@@ -9,7 +9,7 @@ export interface UserProfileData {
   level: string
 }
 
-interface MyGovCitizenDashboardProps {
+interface CitizenDashboardProps {
   user: UserProfileData
   onNavigate: (page: string) => void
   onLogout: () => void
@@ -32,7 +32,7 @@ interface CertificateItem {
 const CERTIFICATES: CertificateItem[] = [
   {
     id: "cert-1",
-    certNumber: "MYGOV/NCPOR/2026/Q-94821",
+    certNumber: "NCPOR/2026/Q-94821",
     title: "National Polar Science Day Quiz 2026",
     subtitle:
       "Certificate of Merit for Exceptional Performance in Cryospheric and Oceanographic Sciences",
@@ -45,7 +45,7 @@ const CERTIFICATES: CertificateItem[] = [
   },
   {
     id: "cert-2",
-    certNumber: "MYGOV/NCPOR/2026/PLG-1029",
+    certNumber: "NCPOR/2026/PLG-1029",
     title: "Antarctic Wilderness Conservation & Zero-Waste Pledge",
     subtitle:
       "Certificate of Commitment towards preserving Antarctica's pristine fragile ecosystems and SCAR protocols",
@@ -57,7 +57,7 @@ const CERTIFICATES: CertificateItem[] = [
   },
   {
     id: "cert-3",
-    certNumber: "MYGOV/NCPOR/2025/HCK-4029",
+    certNumber: "NCPOR/2025/HCK-4029",
     title: "Arctic Climate Teleconnections Citizen Science Challenge",
     subtitle:
       "Citation of Merit for Computational Modeling of Monsoonal Teleconnections with Arctic Sea-Ice Anomalies",
@@ -70,7 +70,7 @@ const CERTIFICATES: CertificateItem[] = [
   },
   {
     id: "cert-4",
-    certNumber: "MYGOV/NCPOR/2025/PLG-0812",
+    certNumber: "NCPOR/2025/PLG-0812",
     title: "International Day of Polar Oceans – Clean Seas Pledge",
     subtitle:
       "Citizen Pledge supporting deep-sea biogeochemistry preservation and polar microplastic mitigation",
@@ -200,12 +200,12 @@ const EXPEDITION_PROPOSALS: ExpeditionProposal[] = [
   },
 ]
 
-export default function MyGovCitizenDashboard({
+export default function CitizenDashboard({
   user,
   onNavigate,
   onLogout,
   onClose,
-}: MyGovCitizenDashboardProps) {
+}: CitizenDashboardProps) {
   const [activeTab, setActiveTab] =
     useState<"certificates" | "activity" | "badges" | "expeditions" | "saved">(
       "certificates",
@@ -226,7 +226,7 @@ export default function MyGovCitizenDashboard({
 
   const handleCopyLink = (certNum: string) => {
     if (navigator.clipboard) {
-      navigator.clipboard.writeText(`https://verify.mygov.in/cert/${certNum}`)
+      navigator.clipboard.writeText(`https://verify.ncpor.gov.in/cert/${certNum}`)
       setCopySuccess(true)
       setTimeout(() => setCopySuccess(false), 2500)
     }
@@ -281,7 +281,7 @@ export default function MyGovCitizenDashboard({
             <div>
               <div className="flex items-center gap-2">
                 <span className="font-extrabold text-base tracking-tight text-white">
-                  MyGov Citizen & Researcher Portal
+                  NCPOR Citizen & Researcher Portal
                 </span>
                 <span className="text-[10px] uppercase font-bold tracking-widest px-2 py-0.5 rounded-sm bg-white/20 text-white">
                   MoES · NCPOR
@@ -335,7 +335,7 @@ export default function MyGovCitizenDashboard({
 
       {/* ── Main Dashboard Content ── */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6 space-y-6">
-        {/* 1. CITIZEN PROFILE HERO CARD (Official MyGov Identity Card) */}
+        {/* 1. CITIZEN PROFILE HERO CARD (Official Citizen Identity Card) */}
         <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
           {/* Card Top Strip with Saffron/Navy Pattern */}
           <div className="h-24 bg-gradient-to-r from-[#1A3C6E] via-[#0F294D] to-[#1D4ED8] relative px-6 flex items-end">
@@ -433,7 +433,7 @@ export default function MyGovCitizenDashboard({
                   {user.points}
                 </div>
                 <div className="text-[11px] font-semibold text-slate-600 mt-0.5">
-                  MyGov Points
+                  Portal Points
                 </div>
               </div>
               <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl text-center hover:border-blue-300 transition-colors">
@@ -603,7 +603,7 @@ export default function MyGovCitizenDashboard({
                 </h3>
                 <p className="text-xs text-slate-500 mt-0.5">
                   Authenticated and digitally verifiable certificates earned
-                  through MyGov and NCPOR Polar initiatives.
+                  through NCPOR Polar initiatives.
                 </p>
               </div>
               <div className="flex items-center gap-2 text-xs text-slate-500 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-200">
@@ -806,7 +806,7 @@ export default function MyGovCitizenDashboard({
                   points: "500 Pts",
                   status: "Unlocked",
                   icon: "badge",
-                  desc: "First 5 citizen contributions on MyGov",
+                  desc: "First 5 citizen contributions on Polar Portal",
                 },
                 {
                   title: "Discoverer",
@@ -1129,7 +1129,7 @@ export default function MyGovCitizenDashboard({
                 MINISTRY OF EARTH SCIENCES
               </div>
               <div className="text-[10px] font-semibold text-[#1D4ED8] mb-4">
-                National Centre for Polar and Ocean Research (NCPOR) & MyGov
+                National Centre for Polar and Ocean Research (NCPOR)
               </div>
 
               {/* Title */}
