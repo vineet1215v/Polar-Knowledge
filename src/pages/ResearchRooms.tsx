@@ -258,14 +258,14 @@ const INITIAL_ROOMS: ResearchRoom[] = [
     expeditionRef: "CCAMLR Scientific Survey 2024",
     leadScientist: {
       name: "Dr. Ramesh Rao",
-      role: "Marine Biologist",
-      institution: "CMLRE Kochi · MoES",
+      role: "Polar Biologist",
+      institution: "NCPOR Goa · MoES",
       avatar: "👨‍🔬"
     },
     researchQuestion: "Does shoaling of the aragonite saturation horizon in the Indian sector of the Southern Ocean alter sagittal otolith CaCO3 ring density?",
     hypothesis: "Lower winter pH (<7.92) impairs calcium carbonate crystallization rates in juvenile Dissostichus mawsoni, producing detectable microstructural porosity in otolith growth rings.",
     activeMembers: [
-      { id: "m3-1", name: "Dr. Ramesh Rao", role: "Marine Biologist", institution: "CMLRE", avatar: "👨‍🔬", status: "online" },
+      { id: "m3-1", name: "Dr. Ramesh Rao", role: "Polar Biologist", institution: "NCPOR", avatar: "👨‍🔬", status: "online" },
       { id: "m3-2", name: "Dr. Ananya Joshi", role: "Micro-CT Specialist", institution: "NCPOR", avatar: "👩‍🔬", status: "online" },
       { id: "m3-3", name: "PolarAI Copilot", role: "Autonomous Research Agent", institution: "NCPOR AI Core", avatar: "🤖", status: "online" }
     ],
@@ -275,8 +275,8 @@ const INITIAL_ROOMS: ResearchRoom[] = [
       {
         id: "ot-1",
         sender: "Dr. Ramesh Rao",
-        role: "Marine Biologist",
-        institution: "CMLRE",
+        role: "Polar Biologist",
+        institution: "NCPOR",
         avatar: "👨‍🔬",
         timestamp: "Yesterday, 11:10 AM",
         text: "We completed 3D tomographic scanning of 2,450 sagittal otolith vouchers from our Southern Ocean cruises. The data vouchers are officially uploaded to the open portal."
@@ -297,7 +297,7 @@ const INITIAL_ROOMS: ResearchRoom[] = [
         title: "Southern Ocean Dissostichus mawsoni Otolith Tomography Repository",
         format: "TIFF 3D / HDF5",
         size: "3.4 GB",
-        doi: "10.5067/CMLRE-OTOLITH-SO24",
+        doi: "10.5067/NCPOR-OTOLITH-SO24",
         parameters: ["Specimen ID", "Otolith Mass (mg)", "Volume (mm³)", "CaCO3 Density (g/cm³)", "Ring Count"]
       }
     ],
@@ -306,7 +306,7 @@ const INITIAL_ROOMS: ResearchRoom[] = [
 - Coupled with CTD pH and dissolved inorganic carbon (DIC) transects across Prydz Bay.`,
     tasks: [
       { id: "t-ot-1", title: "Correlate Otolith density with NetCDF ocean acidification grids", assignee: "Dr. Ananya Joshi", status: "in-progress", priority: "high" },
-      { id: "t-ot-2", title: "Submit voucher samples to National Marine Biodiversity Museum", assignee: "Dr. Ramesh Rao", status: "todo", priority: "low" }
+      { id: "t-ot-2", title: "Submit voucher samples to National Polar Biodiversity Repository", assignee: "Dr. Ramesh Rao", status: "todo", priority: "low" }
     ],
     findings: [
       "Significant decrease in otolith core density detected in post-2020 toothfish cohorts.",

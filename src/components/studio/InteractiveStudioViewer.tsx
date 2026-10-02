@@ -1256,7 +1256,7 @@ function FlashcardsStudio({ onToast }: { onToast?: (msg: string) => void }) {
       question: "What is otolith microstructure analysis used for in polar fish species?",
       answer: "Fish otoliths (ear stones) form daily and annual growth increments called annuli. Microscopic counting allows exact age validation, growth rate calculation, and paleothermometry.",
       citation: "NCPOR Bio Lab · Otolith Validation Database",
-      category: "Marine Biology",
+      category: "Polar Biology",
     },
   ]
 

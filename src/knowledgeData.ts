@@ -123,7 +123,7 @@ export interface PublicationFinding {
 export const researchers: Researcher[] = [
   { id: "r1", name: "Dr. A. Sharma", role: "Glaciologist", domain: "Glaciology", expeditions: ["46th IAE", "45th IAE", "44th IAE"], publications: 42 },
   { id: "r2", name: "Dr. P. Verma", role: "Atmospheric Scientist", domain: "Atmospheric Science", expeditions: ["45th IAE", "43rd IAE"], publications: 31 },
-  { id: "r3", name: "Dr. K. Mehta", role: "Marine Biologist", domain: "Polar Biology", expeditions: ["46th IAE", "44th IAE", "42nd IAE"], publications: 27 },
+  { id: "r3", name: "Dr. K. Mehta", role: "Polar Biologist", domain: "Polar Biology", expeditions: ["46th IAE", "44th IAE", "42nd IAE"], publications: 27 },
   { id: "r4", name: "Dr. S. Iyer", role: "Physical Oceanographer", domain: "Oceanography", expeditions: ["43rd IAE", "41st IAE", "Arctic 2023"], publications: 38 },
   { id: "r5", name: "Dr. M. Das", role: "Remote Sensing Specialist", domain: "Remote Sensing", expeditions: ["46th IAE", "45th IAE"], publications: 19 },
   { id: "r6", name: "Dr. D. Nair", role: "Glaciologist", domain: "Glaciology", expeditions: ["44th IAE", "43rd IAE", "42nd IAE"], publications: 24 },

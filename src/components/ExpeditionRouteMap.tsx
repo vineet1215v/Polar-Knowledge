@@ -75,7 +75,7 @@ export const EXPEDITION_ROUTES: ExpeditionRoute[] = [
         iceThickness: "0.0 m",
         windSpeed: "16 kts SE",
         notes:
-          "Mid-ocean logistics stop. Refueled low-sulfur marine gas oil; medical fitness recertification of 42 members.",
+          "Mid-ocean logistics stop. Refueled low-sulfur naval gas oil; medical fitness recertification of 42 members.",
         action:
           "Calibrated atmospheric aerosol counters on upper monkey bridge.",
       },
@@ -212,7 +212,7 @@ export const EXPEDITION_ROUTES: ExpeditionRoute[] = [
       },
       {
         id: "b3",
-        name: "Kerguelen Marine Plateau",
+        name: "Kerguelen Polar Plateau",
         lat: -49.3,
         lng: 69.8,
         day: "Day 18",
@@ -251,7 +251,7 @@ export const EXPEDITION_ROUTES: ExpeditionRoute[] = [
         notes:
           "Arrived at India's high-tech Bharati Station overlooking Prydz Bay.",
         action:
-          "Activated satellite ground receiving antenna and marine geology drill.",
+          "Activated satellite ground receiving antenna and polar geology drill.",
       },
     ],
   },
@@ -371,7 +371,7 @@ export const EXPEDITION_ROUTES: ExpeditionRoute[] = [
         iceThickness: "0.0 m",
         windSpeed: "15 kts E",
         notes:
-          "Scientific expedition departure with 28 oceanographers and marine geophysicists.",
+          "Scientific expedition departure with 28 oceanographers and polar geophysicists.",
         action:
           "Sediment multicorer and CTD carousel pre-flight checks completed.",
       },

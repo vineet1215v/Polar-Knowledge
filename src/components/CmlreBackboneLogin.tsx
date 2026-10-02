@@ -143,7 +143,7 @@ export default function CmlreBackboneLogin({
           {/* Authentic Marine Life Photo (Pufferfish / Ocean Reef) */}
           <img
             src="https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=1600&q=85"
-            alt="Marine biodiversity - NCPOR"
+            alt="Polar biodiversity - NCPOR"
             className="absolute inset-0 w-full h-full object-cover object-center filter brightness-95"
           />
 

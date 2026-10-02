@@ -663,14 +663,14 @@ export const aiLectures: AILecture[] = [
   },
   {
     id: "lec2",
-    title: "Marine Ecology of the Southern Ocean & The Krill Engine",
+    title: "Polar Ecology of the Southern Ocean & The Krill Engine",
     speaker: "Dr. Rahul Mohan",
-    role: "Senior Marine Scientist",
+    role: "Senior Polar Scientist",
     institution: "NCPOR Polar Biology Division",
     duration: "15:20",
     videoThumb:
       "https://images.unsplash.com/photo-1504858700536-882c978a3464?w=800&q=80",
-    topic: "Polar Marine Biology",
+    topic: "Polar Biology",
     overview:
       "Explore the extraordinary adaptations of Antarctic krill, penguins, and deep-sea cold corals, and how the biological carbon pump sequesters gigatonnes of carbon to the Southern Ocean abyssal plain.",
     keyFormulasOrTakeaways: [
@@ -1030,7 +1030,7 @@ export const studentAiAnswers: Record<string, string> = {
     " Antarctica is the coldest, windiest, and driest continent on Earth for three major scientific reasons:\n\n1. **High Elevation:** Antarctica is the highest continent on Earth, with an average elevation over 2,500 meters (8,200 ft). The higher you climb, the colder the air gets!\n2. **Extreme High Albedo:** Antarctica is covered by a massive white ice sheet that reflects nearly 90% of all incoming solar radiation.\n3. **Polar Isolation (The Antarctic Circumpolar Current):** Unlike the Arctic (which is surrounded by warm continents), Antarctica is isolated in the Southern Ocean by fierce westerly winds and the world's strongest ocean current, blocking warm equatorial heat from reaching it.",
 
   "what do polar scientists do?":
-    " Indian scientists at NCPOR's stations (**Maitri** and **Bharati** in Antarctica, and **Himadri** in the Arctic) conduct cutting-edge research across many fields:\n\n- **Glaciologists** drill deep ice cores to read ancient climate history from thousands of years ago.\n- **Meteorologists** launch weather balloons into the polar stratosphere to track ozone recovery and polar vortex winds.\n- **Marine Biologists** study how tiny krill and deep-sea organisms survive sub-zero temperatures using natural anti-freeze proteins.\n- **Geophysicists** monitor Earth's magnetic field and cosmic rays, which enter near the magnetic poles.",
+    " Indian scientists at NCPOR's stations (**Maitri** and **Bharati** in Antarctica, and **Himadri** in the Arctic) conduct cutting-edge research across many fields:\n\n- **Glaciologists** drill deep ice cores to read ancient climate history from thousands of years ago.\n- **Meteorologists** launch weather balloons into the polar stratosphere to track ozone recovery and polar vortex winds.\n- **Polar Biologists** study how tiny krill and deep-sea organisms survive sub-zero temperatures using natural anti-freeze proteins.\n- **Geophysicists** monitor Earth's magnetic field and cosmic rays, which enter near the magnetic poles.",
 
   "what animals live in antarctica?":
     "EXP Antarctica is surrounded by rich marine life, but very few animals live permanently on the frozen inland ice sheet:\n\n- **Penguins:** Emperor penguins (who nest during the brutal winter) and Adelie penguins (who nest on coastal rocks in summer).\n- **Seals:** Weddell seals (who can dive over 600m deep!), Crabeater seals, and predatory Leopard seals.\n- **Whales:** Blue whales, Humpback whales, and Orcas that feed on dense swarms of Antarctic krill during summer.\n- **Land Wildlife:** The largest purely terrestrial animal living on mainland Antarctica year-round is the **Belgica antarctica**—a tiny wingless midge only 6mm long!",
@@ -2027,14 +2027,14 @@ export const lmsCourses: LMSCourse[] = [
   },
   {
     id: "course-biology",
-    title: "Southern Ocean Marine Ecology & Extremophiles",
+    title: "Southern Ocean Polar Ecology & Extremophiles",
     code: "NCPOR-BIO-103",
-    faculty: "Dr. Rahul Mohan (Senior Marine Scientist)",
+    faculty: "Dr. Rahul Mohan (Senior Polar Scientist)",
     badge: "Ecology & Extremophiles",
     category: "Polar Biology",
     startDate: "1 Sep 2025",
     targetAudience:
-      "For Marine Ecologists, Astrobiologists & Psychrophile Researchers",
+      "For Polar Ecologists, Astrobiologists & Psychrophile Researchers",
     bannerImage:
       "https://images.unsplash.com/photo-1504858700536-882c978a3464?w=800&q=80",
     level: "Beginner",
@@ -2047,8 +2047,8 @@ export const lmsCourses: LMSCourse[] = [
         title: "The Krill Engine & Under-Ice Diatom Nursery",
         duration: "15:20",
         speaker: "Dr. Rahul Mohan",
-        role: "Senior Marine Scientist",
-        institution: "NCPOR Marine Biology Lab",
+        role: "Senior Polar Scientist",
+        institution: "NCPOR Polar Biology Lab",
         videoThumb:
           "https://images.unsplash.com/photo-1504858700536-882c978a3464?w=800&q=80",
         summary:
@@ -2606,7 +2606,7 @@ export const lmsCourses: LMSCourse[] = [
     category: "Ocean & Sea Ice",
     startDate: "20 Oct 2025",
     targetAudience:
-      "For Marine Biogeochemists, Carbon Accountants & Expedition Scientists",
+      "For Polar Biogeochemists, Carbon Accountants & Expedition Scientists",
     bannerImage:
       "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&q=80",
     level: "Advanced",

@@ -90,7 +90,7 @@ const INITIAL_NOTEBOOK_SOURCES: NotebookSource[] = [
     snippet:
       "Field science mission report covering 44 ongoing projects across glaciology, space weather, oceanography, and biology. Features deep ice-core drilling at Dronning Maud Land and CTD profiling in Prydz Bay.",
     fullContent:
-      "TITLE: 46th Indian Antarctic Expedition (IAE-46) Science Report\nLEADERSHIP: National Centre for Polar and Ocean Research (NCPOR)\nPARTICIPANTS: 58 scientists from 14 national research institutes (NCPOR, IMD, WIHG, CMFRI, NHO, ISRO)\n\nKEY SCIENTIFIC MISSIONS:\n1. Deep Ice Core Drilling: Retrieved 120m ice core from Princess Astrid Coast to reconstruct Holocene climate and volcanic aerosol deposition.\n2. Prydz Bay Marine Biology: Plankton net tows and CTD rosettes down to 1,200m depth mapping Euphausia superba swarms and Dissostichus mawsoni (toothfish) population density.\n3. Geomagnetic Pulsation Array: Coordinated fluxgate magnetometer observations linking solar wind perturbations to high-latitude auroral electrojet currents.\n4. Logistics & Sustainability: Upgraded Maitri's waste bio-digesters and commissioned new containerized solar-wind hybrid microgrid reducing diesel reliance by 22%.",
+      "TITLE: 46th Indian Antarctic Expedition (IAE-46) Science Report\nLEADERSHIP: National Centre for Polar and Ocean Research (NCPOR)\nPARTICIPANTS: 58 scientists from 14 national research institutes (NCPOR, IMD, WIHG, CMFRI, NHO, ISRO)\n\nKEY SCIENTIFIC MISSIONS:\n1. Deep Ice Core Drilling: Retrieved 120m ice core from Princess Astrid Coast to reconstruct Holocene climate and volcanic aerosol deposition.\n2. Prydz Bay Polar Biology: Plankton net tows and CTD rosettes down to 1,200m depth mapping Euphausia superba swarms and Dissostichus mawsoni (toothfish) population density.\n3. Geomagnetic Pulsation Array: Coordinated fluxgate magnetometer observations linking solar wind perturbations to high-latitude auroral electrojet currents.\n4. Logistics & Sustainability: Upgraded Maitri's waste bio-digesters and commissioned new containerized solar-wind hybrid microgrid reducing diesel reliance by 22%.",
     selected: true,
   },
   {
@@ -187,7 +187,7 @@ const ALL_REPOSITORY_SOURCES: RepoSourceItem[] = [
     snippet:
       "Field science mission report covering 44 ongoing projects across glaciology, space weather, oceanography, and biology. Features deep ice-core drilling at Dronning Maud Land and CTD profiling in Prydz Bay.",
     fullContent:
-      "TITLE: 46th Indian Antarctic Expedition (IAE-46) Science Report\nLEADERSHIP: National Centre for Polar and Ocean Research (NCPOR)\nPARTICIPANTS: 58 scientists from 14 national research institutes (NCPOR, IMD, WIHG, CMFRI, NHO, ISRO)\n\nKEY SCIENTIFIC MISSIONS:\n1. Deep Ice Core Drilling: Retrieved 120m ice core from Princess Astrid Coast to reconstruct Holocene climate and volcanic aerosol deposition.\n2. Prydz Bay Marine Biology: Plankton net tows and CTD rosettes down to 1,200m depth mapping Euphausia superba swarms and Dissostichus mawsoni (toothfish) population density.\n3. Geomagnetic Pulsation Array: Coordinated fluxgate magnetometer observations linking solar wind perturbations to high-latitude auroral electrojet currents.\n4. Logistics & Sustainability: Upgraded Maitri's waste bio-digesters and commissioned new containerized solar-wind hybrid microgrid reducing diesel reliance by 22%.",
+      "TITLE: 46th Indian Antarctic Expedition (IAE-46) Science Report\nLEADERSHIP: National Centre for Polar and Ocean Research (NCPOR)\nPARTICIPANTS: 58 scientists from 14 national research institutes (NCPOR, IMD, WIHG, CMFRI, NHO, ISRO)\n\nKEY SCIENTIFIC MISSIONS:\n1. Deep Ice Core Drilling: Retrieved 120m ice core from Princess Astrid Coast to reconstruct Holocene climate and volcanic aerosol deposition.\n2. Prydz Bay Polar Biology: Plankton net tows and CTD rosettes down to 1,200m depth mapping Euphausia superba swarms and Dissostichus mawsoni (toothfish) population density.\n3. Geomagnetic Pulsation Array: Coordinated fluxgate magnetometer observations linking solar wind perturbations to high-latitude auroral electrojet currents.\n4. Logistics & Sustainability: Upgraded Maitri's waste bio-digesters and commissioned new containerized solar-wind hybrid microgrid reducing diesel reliance by 22%.",
   },
   {
     id: "repo-4",
@@ -240,7 +240,7 @@ const ALL_REPOSITORY_SOURCES: RepoSourceItem[] = [
     repository: "NCPOR",
     category: "Otoliths",
     type: "publication",
-    authorOrOrigin: "CCAMLR & NCPOR Marine Living Resources",
+    authorOrOrigin: "CCAMLR & NCPOR Polar Living Resources",
     yearOrDate: "2023",
     wordCount: 11200,
     doiOrRef: "NCPOR-OTOLITH-DM-2023-V1",

@@ -73,7 +73,7 @@ const CERTIFICATES: CertificateItem[] = [
     certNumber: "MYGOV/NCPOR/2025/PLG-0812",
     title: "International Day of Polar Oceans – Clean Seas Pledge",
     subtitle:
-      "Citizen Pledge supporting deep-sea biogeochemistry preservation and marine microplastic mitigation",
+      "Citizen Pledge supporting deep-sea biogeochemistry preservation and polar microplastic mitigation",
     issueDate: "08 June 2025",
     category: "Pledge",
     signatory: "Head of Ocean Sciences",

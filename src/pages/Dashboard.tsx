@@ -200,7 +200,7 @@ const featuredExpeditions = [
     status: "Active",
     statusBadge: "Underway · 11.2 Knots",
     dates: "Dec 2024 – Feb 2025",
-    crew: "28 Polar Oceanographers",
+    crew: "28 Marine Oceanographers",
     lead: "Ministry of Earth Sciences (MoES)",
     summary:
       "Conducting 40 hydrographic CTD rosette casts, measuring Antarctic Circumpolar Current transport rates, and sampling carbon sequestration.",
@@ -292,7 +292,7 @@ const landmarkDiscoveries = [
     doi: "10.1007/s00382-022-06123-5",
     lead: "Dr. S. Iyer, Dr. M. Das et al. (Arctic Oceanography Team)",
     summary:
-      "Autonomous underwater profiler recorded seasonal pulses of warm transformed Atlantic water altering high-latitude Arctic salinity and polar ecosystems.",
+      "Autonomous underwater profiler recorded seasonal pulses of warm transformed Atlantic water altering high-latitude Arctic salinity and marine ecosystems.",
     impact: "Continuous Timeseries from India's 1st Arctic Mooring",
     badge: "Oceanographic First",
     image:
@@ -1185,13 +1185,13 @@ export default function Dashboard({ onNavigate, onAddToWorkspace }: Props) {
         </div>
       )}
 
-      {/* ── FLOATING POLAR AI BUTTON (BOTTOM RIGHT) ───────────────────────── */}
+      {/* ── FLOATING MARINE AI BUTTON (BOTTOM RIGHT) ───────────────────────── */}
       <aside className="fixed bottom-6 right-6 z-40">
         <button
           onClick={() => onNavigate("ai")}
           className="group flex flex-col items-center gap-1 focus:outline-hidden cursor-pointer"
-          title="Open Polar AI Assistant"
-          aria-label="Open Polar AI Assistant"
+          title="Open Marine AI Assistant"
+          aria-label="Open Marine AI Assistant"
         >
           <div className="w-13 h-13 rounded-full bg-[#001D3D] border-2 border-sky-400/80 shadow-2xl flex items-center justify-center text-white relative transition-transform duration-200 group-hover:scale-110">
             <div className="absolute inset-0 rounded-full border border-sky-400 animate-ping opacity-25 pointer-events-none" />
@@ -1207,7 +1207,7 @@ export default function Dashboard({ onNavigate, onAddToWorkspace }: Props) {
             </svg>
           </div>
           <span className="bg-[#002855] text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-md border border-sky-300/40 tracking-wide">
-            Polar AI
+            Marine AI
           </span>
         </button>
       </aside>

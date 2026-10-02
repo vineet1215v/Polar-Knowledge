@@ -226,7 +226,7 @@ export default function Profile({ onNavigate, onToast }: Props) {
                   Dr. Vikramaditya Sen is an Senior Research Oceanographer at the National Centre for Polar and Ocean Research (NCPOR), Ministry of Earth Sciences. With over 14 years of high-latitude scientific experience, Dr. Sen's research focuses on cryospheric biogeochemistry, Antarctic freshwater limnology (Priyadarshini Lake, Schirmacher Oasis), and Southern Ocean fish growth dynamics using otolith microscopic increment calibration.
                 </p>
                 <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                  He has served as Team Lead on multiple Indian Antarctic Expeditions (IAE) operating from Maitri and Bharati stations, and led marine sampling transects aboard ORV Sagar Kanya and MV Sagar Nidhi.
+                  He has served as Team Lead on multiple Indian Antarctic Expeditions (IAE) operating from Maitri and Bharati stations, and led polar sampling transects aboard ORV Sagar Kanya and MV Sagar Nidhi.
                 </p>
               </div>
 
@@ -357,7 +357,7 @@ export default function Profile({ onNavigate, onToast }: Props) {
                   {
                     title: "Indian Arctic Expedition (Himadri 2021)",
                     dates: "Jul 2021 – Sep 2021",
-                    role: "Marine Biologist",
+                    role: "Polar Biologist",
                     station: "Himadri, Ny-Ålesund",
                     highlight: "Kongsfjorden fjord eDNA water column profiling and IndARC mooring inspection.",
                   },

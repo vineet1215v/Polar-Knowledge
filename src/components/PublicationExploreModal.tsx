@@ -268,7 +268,7 @@ export default function PublicationExploreModal({
                     Maitri / Southern Ocean
                   </div>
                   <div className="text-[11px] text-emerald-600 font-medium mt-0.5">
-                    Ground & Marine
+                    Ground &amp; Polar
                   </div>
                 </div>
                 <div className="card p-3.5 bg-white border border-slate-200">

@@ -202,7 +202,7 @@ const INVOLVE_TABS = [
     dest: "events",
     iconType: "talk",
     subhead:
-      "Join live webinars and presentations by chief glaciologists and marine biologists",
+      "Join live webinars and presentations by chief glaciologists and polar biologists",
   },
   {
     id: "quiz",
@@ -2709,22 +2709,22 @@ export default function LandingPage({
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex items-end p-3">
                         <span className="text-white text-xs font-bold leading-tight">
-                          Marine Conservation
+                          Polar Conservation
                         </span>
                       </div>
                     </div>
                     <h3 className="text-sm font-bold text-[#111827] mb-1.5 leading-snug">
-                      Clean Oceans & Marine Life Pledge
+                      Clean Oceans &amp; Polar Life Pledge
                     </h3>
                     <p className="text-xs text-[#4B5563] leading-relaxed mb-4 line-clamp-2">
                       Commit to eliminating single-use plastics and protecting
-                      marine ecosystems against microplastic infiltration.
+                      polar ecosystems against microplastic infiltration.
                     </p>
                   </div>
                   <button
                     onClick={() => {
                       alert(
-                        "Congratulations! You have taken the Clean Oceans & Marine Life Pledge.",
+                        "Congratulations! You have taken the Clean Oceans & Polar Life Pledge.",
                       )
                     }}
                     className="w-full py-2 rounded-full bg-[#1D4ED8] hover:bg-[#1e40af] text-white text-xs font-bold transition-colors"
@@ -2830,7 +2830,7 @@ export default function LandingPage({
               </h2>
               <p className="text-sm text-[#4B5563] mt-1 font-normal">
                 Listen to our podcast series featuring chief glaciologists,
-                wintering expeditioners, and marine biologists
+                wintering expeditioners, and polar biologists
               </p>
             </div>
 
@@ -3360,7 +3360,7 @@ export default function LandingPage({
                   </svg>
                 </div>
                 <h3 className="text-base font-bold text-[#111827] mb-2 leading-snug">
-                  Ocean Sciences & Marine Geophysics
+                  Ocean Sciences & Polar Geophysics
                 </h3>
                 <p className="text-xs text-[#4B5563] leading-relaxed mb-4">
                   Managing hydrothermal vent mapping, Southern Ocean

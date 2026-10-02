@@ -93,7 +93,7 @@ const FIELD_DISPATCHES: Record<number, FieldDispatch[]> = {
       day: "Day 32",
       date: "19 Dec 2023",
       location: "Prydz Bay Coastal Polynya (-68.20°S, 76.10°E)",
-      author: "Marine Biology Team",
+      author: "Polar Biology Team",
       title: "Adelie Penguin Foraging Acoustic Tracking",
       content:
         "Surveyed coastal polynya front adjacent to Larsemann Hills. Multi-frequency echo sounders mapped dense krill swarms (Euphausia superba) feeding penguin foraging grounds.",

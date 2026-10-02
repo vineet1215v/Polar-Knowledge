@@ -113,7 +113,7 @@ const SUGGESTED_TOPICS = [
   "46th Indian Antarctic Expedition reaches Maitri & Bharati stations",
   "Antarctic Sea Ice records 2024-2026: Southern Ocean Cryosphere Analysis",
   "Himadri Arctic Station: Microplastics discovered in Svalbard snow samples",
-  "Prydz Bay Marine Ecosystem Survey reveals resilient benthic fauna",
+  "Prydz Bay Polar Ecosystem Survey reveals resilient benthic fauna",
   "NCPOR & MoES National Polar Fellowship 2026-27 Applications Open",
 ]
 
@@ -239,7 +239,7 @@ ${
 "${topic}"
 
 Key Takeaways for the Polar Science & Climate Policy Community:
- Field Observations: Ongoing observational cycles validate critical shifts in cryospheric and marine boundary dynamics.
+ Field Observations: Ongoing observational cycles validate critical shifts in cryospheric and polar boundary dynamics.
  High-Resolution Datasets: Verified field datasets have been ingested into the NCPOR Polar Knowledge Repository for open-access scientific inquiry.
  Global Teleconnections: Findings offer crucial insights into teleconnections linking the Southern Ocean to the Indian monsoon system.
 

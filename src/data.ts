@@ -62,7 +62,7 @@ export const expeditions = [
     year: 2019,
     region: "Antarctic",
     status: "Completed",
-    description: "Comprehensive glaciology, meteorology and marine biology research.",
+    description: "Comprehensive glaciology, meteorology and polar biology research.",
     image: "https://images.unsplash.com/photo-1766465405501-ab1cce22d097?w=400&q=80",
   },
   {
